@@ -125,26 +125,25 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 - [ ] console.log 제거
 - [ ] 보안 검토 (API 키, 시크릿)
 
-## 설치된 스킬 (~/.agents/skills/)
+## 설치된 스킬 (~/.claude/skills/)
 
-### Frontend (7개)
+### Frontend (6개)
 | 스킬 | 용도 |
 |------|------|
-| `vercel-react-best-practices` | React/Next.js 성능 패턴 |
-| `react-patterns` | React 디자인 패턴 |
+| `react-patterns` | React 19 전체 패턴 (hooks, 서버 컴포넌트, Actions) |
+| `vercel-react-best-practices` | React/Next.js 성능 최적화 |
 | `typescript-advanced-types` | 고급 타입 시스템 |
-| `shadcn-ui` | 커스텀 컴포넌트 |
-| `tailwind-design-system` | Tailwind 시스템 |
-| `ui-ux-pro-max` | UX 종합 가이드 |
-| `web-design-guidelines` | UI 가이드라인/리뷰 |
+| `shadcn-ui` | shadcn/ui 컴포넌트 라이브러리 |
+| `tailwind-design-system` | Tailwind CSS 디자인 시스템 |
+| `ui-ux-pro-max` | UI/UX 종합 가이드 + 디자인 시스템 생성 |
 
 ### Backend - FastAPI/Python (4개)
 | 스킬 | 용도 |
 |------|------|
 | `fastapi-templates` | FastAPI 템플릿/패턴 |
-| `api-design-principles` | REST API 설계 원칙 |
+| `api-design-principles` | REST/GraphQL API 설계 원칙 |
 | `async-python-patterns` | Python 비동기 패턴 |
-| `python-testing-patterns` | Python 테스트 패턴 |
+| `python-testing-patterns` | pytest 테스트 패턴 |
 
 ### 워크플로우
 ```
