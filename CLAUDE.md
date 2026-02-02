@@ -66,6 +66,7 @@ Shift+Tab → Plan 모드 토글
 | `/build-fix` | 빌드 에러 수정 |
 | `/handoff` | HANDOFF.md 생성 |
 | `/compact-guide` | 컨텍스트 관리 가이드 |
+| `/techdebt` | 기술 부채 정리 (중복 코드, console.log 등) |
 
 ## 사용 가능한 에이전트
 | 에이전트 | 용도 |
@@ -153,6 +154,37 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 # 백엔드는 일반 플래닝 사용
 /plan [요청사항] → 구현 → /verify
 ```
+
+## 고급 활용법
+
+### 병렬 작업 (git worktree)
+동시에 3-5개 작업 병렬 진행 가능:
+```bash
+# worktree 생성
+git worktree add ../project-feat feature-branch
+git worktree add ../project-fix bugfix-branch
+
+# 각 터미널에서 Claude Code 실행
+cd ../project-feat && claude
+cd ../project-fix && claude
+```
+
+### 서브에이전트 활용
+복잡한 작업 시 프롬프트에 추가:
+```
+"use subagents를 사용해서 병렬로 처리해줘"
+```
+→ 메인 컨텍스트 깔끔하게 유지
+
+### 검토 강화 프롬프트
+- "이 변경사항을 엄격히 검토해줘"
+- "이게 작동한다는 걸 증명해봐"
+- 평균적 결과 시: "우아한 솔루션으로 다시 구현해"
+
+### 실수 시 대처
+- 잘못되는 순간 즉시 Plan 모드로 돌아가 재계획
+- 무리하게 밀어붙이지 말 것
+- "CLAUDE.md 업데이트해서 같은 실수 반복하지 않도록 해"
 
 ## Claude가 자주 실수하는 것 (여기에 추가)
 <!-- Claude가 실수할 때마다 여기에 규칙 추가 -->
