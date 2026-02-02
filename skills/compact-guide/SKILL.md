@@ -1,3 +1,10 @@
+---
+name: compact-guide
+description: 컨텍스트 관리 가이드. "컨텍스트", "토큰", "compact" 키워드에 활성화.
+disable-model-invocation: false
+user-invocable: true
+---
+
 # 컨텍스트 관리 가이드
 
 컨텍스트는 신선한 우유와 같습니다. 시간이 지나면 상합니다.

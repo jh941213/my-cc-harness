@@ -1,3 +1,10 @@
+---
+name: tdd
+description: 테스트 주도 개발 - 테스트 먼저 작성 후 구현. "TDD", "테스트 먼저", "테스트 주도" 키워드에 활성화.
+disable-model-invocation: false
+allowed-tools: Read, Write, Edit, Bash
+---
+
 # TDD (테스트 주도 개발)
 
 테스트를 먼저 작성하고, 코드를 구현하는 TDD 방식을 적용합니다.

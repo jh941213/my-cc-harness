@@ -49,19 +49,7 @@ curl -fsSL https://raw.githubusercontent.com/jh941213/my-claude-code-asset/main/
 │   ├── architect.md
 │   ├── security-reviewer.md
 │   └── tdd-guide.md
-├── commands/           # 슬래시 커맨드 (11개)
-│   ├── plan.md
-│   ├── frontend.md
-│   ├── commit-push-pr.md
-│   ├── verify.md
-│   ├── review.md
-│   ├── simplify.md
-│   ├── tdd.md
-│   ├── build-fix.md
-│   ├── handoff.md
-│   ├── compact-guide.md
-│   └── techdebt.md        ← 신규
-├── skills/             # 스킬 (10개)
+├── skills/             # 스킬 (21개) - commands 통합됨
 │   ├── react-patterns/
 │   ├── vercel-react-best-practices/
 │   ├── typescript-advanced-types/
@@ -93,23 +81,23 @@ curl -fsSL https://raw.githubusercontent.com/jh941213/my-claude-code-asset/main/
 | `security-reviewer` | 보안 취약점 분석 |
 | `tdd-guide` | TDD 방식 안내 |
 
-### 슬래시 커맨드 (11개)
+### 워크플로우 스킬 (11개)
 
-| 커맨드 | 용도 |
-|--------|------|
+| 스킬 | 용도 |
+|------|------|
 | `/plan` | 작업 계획 수립 |
-| `/frontend` | 빅테크 스타일 UI 개발 (플래닝→구현) |
-| `/commit-push-pr` | 커밋 → 푸시 → PR 한 번에 |
+| `/frontend` | 빅테크 스타일 UI 개발 |
+| `/commit-push-pr` | 커밋 → 푸시 → PR |
 | `/verify` | 테스트, 린트, 빌드 검증 |
 | `/review` | 코드 리뷰 |
 | `/simplify` | 코드 단순화 |
 | `/tdd` | 테스트 주도 개발 |
 | `/build-fix` | 빌드 에러 수정 |
-| `/handoff` | HANDOFF.md 생성 (세션 인계) |
+| `/handoff` | HANDOFF.md 생성 |
 | `/compact-guide` | 컨텍스트 관리 가이드 |
-| `/techdebt` | 기술 부채 정리 (중복 코드, console.log 등) |
+| `/techdebt` | 기술 부채 정리 |
 
-### 스킬 (10개)
+### 기술 스킬 (10개)
 
 #### Frontend (6개)
 | 스킬 | 용도 |

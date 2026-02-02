@@ -1,3 +1,10 @@
+---
+name: techdebt
+description: 기술 부채 정리 - 중복 코드, console.log, 사용하지 않는 import 등 검사 및 정리. 세션 종료 전 사용 권장.
+disable-model-invocation: true
+allowed-tools: Read, Grep, Glob, Edit, Bash
+---
+
 # 기술 부채 정리
 
 세션 종료 전 코드베이스의 기술 부채를 찾아 정리합니다.
@@ -24,33 +31,33 @@
 - 너무 긴 함수 (50줄 초과)
 - 깊은 중첩 (4단계 초과)
 
-## 실행 방법
+## 검사 명령어
+```bash
+# console.log 찾기
+grep -r "console\." --include="*.ts" --include="*.tsx" src/
 
-1. 현재 프로젝트의 src 폴더 스캔
-2. 위 항목들 검사
-3. 발견된 문제 목록 출력
-4. 사용자 확인 후 자동 수정
+# TODO 주석 찾기
+grep -rn "TODO\|FIXME\|HACK\|XXX" --include="*.ts" --include="*.tsx" src/
+
+# any 타입 찾기
+grep -rn ": any" --include="*.ts" --include="*.tsx" src/
+```
 
 ## 출력 형식
-
 ```
 ## 기술 부채 리포트
 
 ### 중복 코드 (3건)
 - src/utils.ts:formatDate ↔ src/helpers.ts:formatDateTime
-- ...
 
 ### 사용하지 않는 import (12건)
 - src/components/Button.tsx: React (unused)
-- ...
 
 ### 디버그 코드 (5건)
 - src/api/auth.ts:23 - console.log
-- ...
 
 ### 코드 품질 이슈 (8건)
 - src/services/user.ts:45 - any 타입 사용
-- ...
 
 총 28건의 기술 부채가 발견되었습니다.
 자동 수정을 진행할까요? (Y/n)

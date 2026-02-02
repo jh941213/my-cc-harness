@@ -1,3 +1,10 @@
+---
+name: build-fix
+description: TypeScript 및 빌드 에러를 점진적으로 수정. "빌드 에러", "build error", "컴파일 에러" 키워드에 활성화.
+disable-model-invocation: false
+allowed-tools: Read, Edit, Bash, Grep
+---
+
 # 빌드 에러 수정
 
 TypeScript 및 빌드 에러를 점진적으로 수정합니다.

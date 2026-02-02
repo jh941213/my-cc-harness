@@ -1,3 +1,10 @@
+---
+name: handoff
+description: 세션 종료 전 HANDOFF.md 작업 인계 문서 생성. "인계", "handoff", "세션 정리" 키워드에 활성화.
+disable-model-invocation: true
+allowed-tools: Read, Write, Bash
+---
+
 # HANDOFF.md 생성
 
 세션 종료 전 작업 인계 문서를 생성합니다.

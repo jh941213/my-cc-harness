@@ -1,8 +1,15 @@
+---
+name: review
+description: 현재 브랜치의 변경사항 코드 리뷰. "리뷰", "review", "검토" 키워드에 활성화.
+disable-model-invocation: false
+allowed-tools: Read, Bash, Grep, Glob
+---
+
 # 코드 리뷰
 
 현재 브랜치의 변경사항을 리뷰합니다.
 
-## 확인할 내용
+## 변경사항 확인
 ```bash
 git diff main...HEAD --stat
 git log main...HEAD --oneline
@@ -19,3 +26,6 @@ git log main...HEAD --oneline
 ## 출력 형식
 각 파일에 대해 한국어로 리뷰 의견을 작성합니다.
 개선이 필요한 부분은 구체적인 제안과 함께 알려줍니다.
+
+## CLAUDE.md 업데이트
+리뷰 중 발견한 패턴이나 실수는 CLAUDE.md에 규칙으로 추가합니다.

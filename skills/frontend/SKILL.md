@@ -1,3 +1,12 @@
+---
+name: frontend
+description: 빅테크 스타일(Stripe, Vercel, Apple) UI 개발. 플래닝 → 구현까지 한 번에. "프론트엔드", "UI 만들어", "페이지 만들어" 키워드에 활성화.
+disable-model-invocation: false
+context: fork
+agent: frontend-developer
+allowed-tools: Read, Write, Edit, Bash, Glob, Grep
+---
+
 # 프론트엔드 UI 개발
 
 빅테크 스타일(Stripe, Vercel, Apple)의 프론트엔드 UI를 **플래닝 → 구현**까지 한 번에 진행합니다.
@@ -68,12 +77,11 @@
 
 ### 필수 의존성
 ```bash
-# 확인/설치
 npm install tailwindcss @tailwindcss/typography
 npm install clsx tailwind-merge
 npm install framer-motion
 npm install lucide-react
-npx shadcn@latest init  # shadcn/ui
+npx shadcn@latest init
 ```
 
 ## Phase 3: 검증
@@ -93,12 +101,3 @@ npx shadcn@latest init  # shadcn/ui
 ```
 /frontend 대시보드 만들어줘. Stripe 스타일로, 사이드바 + 메인 콘텐츠 영역 + 차트 카드들.
 ```
-
-## 관련 스킬 (자동 활용)
-- vercel-react-best-practices
-- react-patterns
-- typescript-advanced-types
-- shadcn-ui
-- tailwind-design-system
-- frontend-design
-- web-design-guidelines

@@ -53,12 +53,12 @@ Shift+Tab → Plan 모드 토글
 - 다음에 뭐 해야 하는지
 - 주의할 점
 
-## 사용 가능한 커맨드
-| 커맨드 | 용도 |
-|--------|------|
+## 워크플로우 스킬 (슬래시 커맨드)
+| 스킬 | 용도 |
+|------|------|
 | `/plan` | 작업 계획 수립 |
-| `/frontend` | 빅테크 스타일 UI 개발 (플래닝→구현) |
-| `/commit-push-pr` | 커밋→푸시→PR 한 번에 |
+| `/frontend` | 빅테크 스타일 UI 개발 |
+| `/commit-push-pr` | 커밋→푸시→PR |
 | `/verify` | 테스트, 린트, 빌드 검증 |
 | `/review` | 코드 리뷰 |
 | `/simplify` | 코드 단순화 |
@@ -66,7 +66,7 @@ Shift+Tab → Plan 모드 토글
 | `/build-fix` | 빌드 에러 수정 |
 | `/handoff` | HANDOFF.md 생성 |
 | `/compact-guide` | 컨텍스트 관리 가이드 |
-| `/techdebt` | 기술 부채 정리 (중복 코드, console.log 등) |
+| `/techdebt` | 기술 부채 정리 |
 
 ## 사용 가능한 에이전트
 | 에이전트 | 용도 |

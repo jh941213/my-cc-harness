@@ -1,3 +1,10 @@
+---
+name: plan
+description: 복잡한 작업 전 계획 수립. Plan 모드에서 사용하거나 "계획", "플랜", "어떻게 구현" 등의 키워드에 자동 활성화.
+disable-model-invocation: false
+allowed-tools: Read, Grep, Glob
+---
+
 # 작업 계획 수립
 
 새로운 기능이나 복잡한 작업을 시작하기 전에 계획을 세웁니다.
@@ -26,4 +33,6 @@
 - ...
 ```
 
+## 계획 확정 후
 계획이 승인되면 auto-accept 모드로 전환하여 구현합니다.
+실수가 발생하면 즉시 Plan 모드로 돌아가 재계획합니다.
