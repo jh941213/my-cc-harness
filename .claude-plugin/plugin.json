@@ -1,0 +1,22 @@
+{
+  "name": "claude-code-power-pack",
+  "description": "Boris Cherny 팁 + 해커톤 우승 스킬 기반 올인원 Claude Code 플러그인. 21개 스킬, 6개 에이전트.",
+  "version": "1.0.0",
+  "author": {
+    "name": "Community Contributors"
+  },
+  "homepage": "https://github.com/jh941213/my-claude-code-asset",
+  "repository": "https://github.com/jh941213/my-claude-code-asset",
+  "license": "MIT",
+  "keywords": [
+    "boris-cherny",
+    "workflow",
+    "react",
+    "typescript",
+    "fastapi",
+    "code-review",
+    "tdd",
+    "skills-sh",
+    "all-in-one"
+  ]
+}

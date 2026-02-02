@@ -1,0 +1,20 @@
+{
+  "name": "claude-power-pack",
+  "owner": {
+    "name": "Community Contributors"
+  },
+  "metadata": {
+    "description": "Boris Cherny 팁 + skills.sh 해커톤 우승작 기반 올인원 플러그인",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "claude-code-power-pack",
+      "source": "./",
+      "description": "워크플로우 11개 + 기술 스킬 10개 + 에이전트 6개 올인원",
+      "version": "1.0.0",
+      "category": "productivity",
+      "tags": ["boris-cherny", "skills-sh", "all-in-one", "workflow", "react", "fastapi"]
+    }
+  ]
+}
