@@ -11,7 +11,7 @@ Boris Cherny(Claude Code 창시자) 팁 + skills.sh 해커톤 우승작 기반 *
 /plugin marketplace add jh941213/my-claude-code-asset
 
 # 플러그인 설치
-/plugin install claude-code-power-pack@claude-power-pack
+/plugin install ccpp@ccpp
 ```
 
 ## 포함된 스킬 (23개)
@@ -20,19 +20,19 @@ Boris Cherny(Claude Code 창시자) 팁 + skills.sh 해커톤 우승작 기반 *
 
 | 스킬 | 용도 |
 |------|------|
-| `/claude-code-power-pack:plan` | 작업 계획 수립 |
-| `/claude-code-power-pack:spec` | SPEC 기반 개발 - 심층 인터뷰로 명세서 작성 |
-| `/claude-code-power-pack:spec-verify` | 명세서 기반 구현 검증 |
-| `/claude-code-power-pack:frontend` | 빅테크 스타일 UI 개발 |
-| `/claude-code-power-pack:verify` | 테스트, 린트, 빌드 검증 |
-| `/claude-code-power-pack:commit-push-pr` | 커밋 → 푸시 → PR |
-| `/claude-code-power-pack:review` | 코드 리뷰 |
-| `/claude-code-power-pack:simplify` | 코드 단순화 |
-| `/claude-code-power-pack:tdd` | 테스트 주도 개발 |
-| `/claude-code-power-pack:build-fix` | 빌드 에러 수정 |
-| `/claude-code-power-pack:handoff` | HANDOFF.md 세션 인계 |
-| `/claude-code-power-pack:compact-guide` | 컨텍스트 관리 가이드 |
-| `/claude-code-power-pack:techdebt` | 기술 부채 정리 |
+| `/ccpp:plan` | 작업 계획 수립 |
+| `/ccpp:spec` | SPEC 기반 개발 - 심층 인터뷰로 명세서 작성 |
+| `/ccpp:spec-verify` | 명세서 기반 구현 검증 |
+| `/ccpp:frontend` | 빅테크 스타일 UI 개발 |
+| `/ccpp:verify` | 테스트, 린트, 빌드 검증 |
+| `/ccpp:commit-push-pr` | 커밋 → 푸시 → PR |
+| `/ccpp:review` | 코드 리뷰 |
+| `/ccpp:simplify` | 코드 단순화 |
+| `/ccpp:tdd` | 테스트 주도 개발 |
+| `/ccpp:build-fix` | 빌드 에러 수정 |
+| `/ccpp:handoff` | HANDOFF.md 세션 인계 |
+| `/ccpp:compact-guide` | 컨텍스트 관리 가이드 |
+| `/ccpp:techdebt` | 기술 부채 정리 |
 
 ### 기술 스킬 (10개)
 
