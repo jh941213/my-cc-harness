@@ -1,5 +1,7 @@
 # Claude Code Power Pack
 
+[![Version](https://img.shields.io/badge/version-0.2.0-blue.svg)](https://github.com/jh941213/my-claude-code-asset)
+
 Boris Cherny(Claude Code 창시자) 팁 + skills.sh 해커톤 우승작 기반 **올인원 플러그인**
 
 ## 설치
@@ -125,6 +127,42 @@ git worktree add ../project-fix -b fix/bug
 - [Boris Cherny 트위터](https://x.com/bcherny)
 - [Claude Code Skills 공식 문서](https://code.claude.com/docs/en/skills)
 - [skills.sh](https://skills.sh/) - AI 에이전트 스킬 디렉토리
+
+---
+
+## Changelog
+
+### v0.2.0 (2025-02-03)
+
+**새로운 스킬**
+- `/spec` - SPEC 기반 개발 (Thariq 워크플로우)
+  - AskUserQuestion으로 40개+ 심층 인터뷰
+  - SPEC.md 명세서 자동 생성
+- `/spec-verify` - 명세서 기반 구현 검증
+  - Task 에이전트로 자동 검증
+  - SPEC-REVIEW.md 피드백 생성
+
+**새로운 플러그인**
+- `mgrep@Mixedbread-Grep` - 강력한 검색 도구
+- `claude-hud@claude-hud` - 상태 표시줄 HUD
+
+**설정 변경**
+- 웹 검색 규칙 추가: WebSearch/WebFetch 비활성화
+- MCP 검색 도구 활성화: Tavily (일반 검색), Exa (코드 검색)
+- statusLine 설정 추가 (claude-hud)
+- `settings.local.example.json` 템플릿 추가
+
+**문서 업데이트**
+- SPEC 기반 개발 워크플로우 섹션 추가
+- 웹 검색 규칙 섹션 추가
+- 스킬 개수: 21개 → 23개
+
+### v0.1.0 (2025-01-22)
+
+- 초기 릴리스
+- 워크플로우 스킬 11개
+- 기술 스킬 10개
+- 에이전트 6개
 
 ## 라이선스
 
