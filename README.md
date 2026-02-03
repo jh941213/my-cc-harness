@@ -36,7 +36,7 @@ curl -fsSL https://raw.githubusercontent.com/jh941213/my-claude-code-asset/main/
 | 항목 | 플러그인 설치 | 전체 설정 |
 |------|:------------:|:--------:|
 | Skills (28개) | ✅ | ✅ |
-| Agents (6개) | ❌ | ✅ |
+| Agents (7개) | ❌ | ✅ |
 | Rules (5개) | ❌ | ✅ |
 | CLAUDE.md | ❌ | ✅ |
 | settings.json | ❌ | ✅ |
@@ -86,7 +86,7 @@ curl -fsSL https://raw.githubusercontent.com/jh941213/my-claude-code-asset/main/
 | `/ccpp:stitch-loop` | Stitch로 멀티 페이지 웹사이트 자율 생성 |
 | `/ccpp:stitch-react` | Stitch 스크린 → React 컴포넌트 변환 |
 
-## 포함된 에이전트 (6개)
+## 포함된 에이전트 (7개)
 
 > **Note**: 에이전트는 플러그인으로 설치되지 않습니다. `~/.claude/agents/`에 직접 복사하거나, Claude에게 저장소 반영을 요청하세요.
 
@@ -94,6 +94,7 @@ curl -fsSL https://raw.githubusercontent.com/jh941213/my-claude-code-asset/main/
 |----------|------|
 | `planner` | 복잡한 기능 계획 수립 |
 | `frontend-developer` | 빅테크 스타일 UI 구현 |
+| `stitch-developer` | Stitch MCP 기반 UI/웹사이트 생성 |
 | `code-reviewer` | 코드 품질/보안 리뷰 |
 | `architect` | 시스템 아키텍처 설계 |
 | `security-reviewer` | 보안 취약점 분석 |
@@ -207,6 +208,10 @@ git worktree add ../project-fix -b fix/bug
 - `/ccpp:stitch-enhance-prompt` - UI 아이디어 → Stitch 최적화 프롬프트 변환
 - `/ccpp:stitch-loop` - Stitch로 멀티 페이지 웹사이트 자율 생성
 - `/ccpp:stitch-react` - Stitch 스크린 → React 컴포넌트 변환
+
+**새로운 에이전트**
+- `stitch-developer` - Stitch MCP 기반 UI/웹사이트 생성 전문가
+  - 디자인 시스템 분석, 프롬프트 최적화, 멀티 페이지 생성, React 변환
 
 **플러그인 구조 개선**
 - plugin.json에 skills 경로 추가
