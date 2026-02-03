@@ -13,7 +13,7 @@
     {
       "name": "ccpp",
       "source": "./",
-      "description": "워크플로우 13개 + 기술 스킬 10개 + E2E/Stitch 5개 + 에이전트 8개 올인원",
+      "description": "워크플로우 13개 + 기술 스킬 10개 + E2E/Stitch 5개 + 이미지 1개 + 에이전트 8개 올인원",
       "version": "0.3.0",
       "category": "productivity",
       "tags": ["boris-cherny", "skills-sh", "all-in-one", "workflow", "react", "fastapi"]

@@ -35,13 +35,13 @@ curl -fsSL https://raw.githubusercontent.com/jh941213/my-claude-code-asset/main/
 
 | 항목 | 플러그인 설치 | 전체 설정 |
 |------|:------------:|:--------:|
-| Skills (28개) | ✅ | ✅ |
+| Skills (29개) | ✅ | ✅ |
 | Agents (8개) | ❌ | ✅ |
 | Rules (5개) | ❌ | ✅ |
 | CLAUDE.md | ❌ | ✅ |
 | settings.json | ❌ | ✅ |
 
-## 포함된 스킬 (28개)
+## 포함된 스킬 (29개)
 
 ### 워크플로우 스킬 (13개)
 
@@ -85,6 +85,12 @@ curl -fsSL https://raw.githubusercontent.com/jh941213/my-claude-code-asset/main/
 | `/ccpp:stitch-enhance-prompt` | UI 아이디어 → Stitch 최적화 프롬프트 변환 |
 | `/ccpp:stitch-loop` | Stitch로 멀티 페이지 웹사이트 자율 생성 |
 | `/ccpp:stitch-react` | Stitch 스크린 → React 컴포넌트 변환 |
+
+### 이미지 생성 스킬 (1개)
+
+| 스킬 | 용도 |
+|------|------|
+| `/ccpp:nano-banana` | Gemini CLI로 이미지 생성/편집 (썸네일, 아이콘, 다이어그램 등) |
 
 ## 포함된 에이전트 (8개)
 
@@ -217,6 +223,11 @@ git worktree add ../project-fix -b fix/bug
   - 비유 기반 쉬운 설명, 코드 주석 풍부하게
   - 작업 완료 후 EXPLANATION.md 자동 생성
 
+**새로운 스킬**
+- `nano-banana` - Gemini CLI 기반 이미지 생성/편집
+  - 썸네일, 아이콘, 다이어그램, 패턴 생성
+  - 사진 복원, 이미지 편집
+
 **플러그인 구조 개선**
 - plugin.json에 skills 경로 추가
 - marketplace.json에 $schema 추가
@@ -225,7 +236,7 @@ git worktree add ../project-fix -b fix/bug
 **문서 업데이트**
 - 설치 가이드 개선 (플러그인 vs 전체 설정 비교)
 - Agents/Rules 수동 설치 방법 추가
-- 스킬 개수: 23개 → 28개
+- 스킬 개수: 23개 → 29개
 
 ### v0.2.0 (2025-02-03)
 
