@@ -1,7 +1,9 @@
 {
-  "name": "ccpp",
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "my-claude-code-asset",
   "owner": {
-    "name": "Community Contributors"
+    "name": "jh941213",
+    "email": ""
   },
   "metadata": {
     "description": "Boris Cherny 팁 + skills.sh 해커톤 우승작 기반 올인원 플러그인",

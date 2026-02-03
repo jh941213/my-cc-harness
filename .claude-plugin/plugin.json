@@ -18,5 +18,8 @@
     "tdd",
     "skills-sh",
     "all-in-one"
-  ]
+  ],
+  "skills": "./skills/",
+  "agents": "./agents/",
+  "rules": "./rules/"
 }
