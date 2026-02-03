@@ -3,9 +3,15 @@
     "context7@claude-plugins-official": true,
     "frontend-design@claude-plugins-official": true,
     "ralph-loop@claude-plugins-official": true,
-    "vercel@claude-plugins-official": true
+    "vercel@claude-plugins-official": true,
+    "mgrep@Mixedbread-Grep": true,
+    "claude-hud@claude-hud": true
   },
   "language": "한국어",
+  "statusLine": {
+    "type": "command",
+    "command": "bash -c '\"$NODE\" \"$(ls -td ~/.claude/plugins/cache/claude-hud/claude-hud/*/ 2>/dev/null | head -1)dist/index.js\"'"
+  },
   "permissions": {
     "allow": [
       "Bash(git status:*)",

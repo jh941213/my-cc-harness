@@ -43,10 +43,12 @@ Shift+Tab → Plan 모드 토글
 → /handoff (HANDOFF.md 생성) → /clear → 새 세션
 ```
 
-## 워크플로우 스킬 (11개)
+## 워크플로우 스킬 (13개)
 | 스킬 | 용도 |
 |------|------|
 | `/plan` | 작업 계획 수립 |
+| `/spec` | SPEC 기반 개발 - 심층 인터뷰 |
+| `/spec-verify` | 명세서 기반 구현 검증 |
 | `/frontend` | 빅테크 스타일 UI 개발 |
 | `/commit-push-pr` | 커밋→푸시→PR |
 | `/verify` | 테스트, 린트, 빌드 검증 |
@@ -127,3 +129,24 @@ git worktree add ../project-fix -b fix/bug
 Co-Authored-By: Claude <noreply@anthropic.com>
 ```
 타입: feat, fix, docs, style, refactor, test, chore
+
+## SPEC 기반 개발 (Thariq 워크플로우)
+
+**대규모 기능 개발 시 권장** - Anthropic 엔지니어 Thariq의 방식
+
+### 핵심 원칙
+- **컨텍스트 분리**: 인터뷰 세션 != 구현 세션
+- **사용자 컨트롤**: 40개+ 질문으로 방향 직접 결정
+- **상세 문서화**: 다음 세션에서 바로 실행 가능
+
+### 워크플로우
+```
+세션 1: 인터뷰
+/spec -> AskUserQuestion으로 심층 인터뷰 -> SPEC.md 생성
+
+세션 2: 구현 (새 세션)
+"SPEC.md 읽고 구현해줘"
+
+세션 3: 검증
+/spec-verify -> 서브에이전트가 명세서 대비 검증 -> 피드백 반영
+```

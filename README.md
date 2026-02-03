@@ -12,13 +12,15 @@ Boris Cherny(Claude Code 창시자) 팁 + skills.sh 해커톤 우승작 기반 *
 /plugin install claude-code-power-pack@claude-power-pack
 ```
 
-## 포함된 스킬 (21개)
+## 포함된 스킬 (23개)
 
-### 워크플로우 스킬 (11개)
+### 워크플로우 스킬 (13개)
 
 | 스킬 | 용도 |
 |------|------|
 | `/claude-code-power-pack:plan` | 작업 계획 수립 |
+| `/claude-code-power-pack:spec` | SPEC 기반 개발 - 심층 인터뷰로 명세서 작성 |
+| `/claude-code-power-pack:spec-verify` | 명세서 기반 구현 검증 |
 | `/claude-code-power-pack:frontend` | 빅테크 스타일 UI 개발 |
 | `/claude-code-power-pack:verify` | 테스트, 린트, 빌드 검증 |
 | `/claude-code-power-pack:commit-push-pr` | 커밋 → 푸시 → PR |
