@@ -21,20 +21,27 @@ Do NOT attempt to generate images through any other method.
 
 ## Before First Use
 
-1. Verify extension is installed:
+### 1. Install Gemini CLI (Google 공식)
 ```bash
-gemini extensions list | grep nanobanana
+npm install -g @google/gemini-cli
 ```
 
-2. If missing, install it:
+### 2. Install nanobanana extension
 ```bash
 gemini extensions install https://github.com/gemini-cli-extensions/nanobanana
 ```
 
-3. Verify API key is set:
+### 3. Verify installation
 ```bash
-[ -n "$GEMINI_API_KEY" ] && echo "API key configured" || echo "Missing GEMINI_API_KEY"
+gemini extensions list | grep nanobanana
 ```
+
+### 4. Set API key (optional - Google 로그인으로 대체 가능)
+```bash
+export GEMINI_API_KEY="your-api-key"
+```
+
+또는 `gemini` 실행 후 Google 계정으로 로그인
 
 ## Command Selection
 
