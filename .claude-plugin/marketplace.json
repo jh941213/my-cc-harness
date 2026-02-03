@@ -7,14 +7,14 @@
   },
   "metadata": {
     "description": "Boris Cherny 팁 + skills.sh 해커톤 우승작 기반 올인원 플러그인",
-    "version": "0.2.0"
+    "version": "0.3.0"
   },
   "plugins": [
     {
       "name": "ccpp",
       "source": "./",
-      "description": "워크플로우 13개 + 기술 스킬 10개 + 에이전트 6개 올인원",
-      "version": "0.2.0",
+      "description": "워크플로우 13개 + 기술 스킬 10개 + E2E/Stitch 5개 + 에이전트 6개 올인원",
+      "version": "0.3.0",
       "category": "productivity",
       "tags": ["boris-cherny", "skills-sh", "all-in-one", "workflow", "react", "fastapi"]
     }

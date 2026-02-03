@@ -1,6 +1,6 @@
 # Claude Code Power Pack
 
-[![Version](https://img.shields.io/badge/version-0.2.0-blue.svg)](https://github.com/jh941213/my-claude-code-asset)
+[![Version](https://img.shields.io/badge/version-0.3.0-blue.svg)](https://github.com/jh941213/my-claude-code-asset)
 
 Boris Cherny(Claude Code 창시자) 팁 + skills.sh 해커톤 우승작 기반 **올인원 플러그인**
 
@@ -35,13 +35,13 @@ curl -fsSL https://raw.githubusercontent.com/jh941213/my-claude-code-asset/main/
 
 | 항목 | 플러그인 설치 | 전체 설정 |
 |------|:------------:|:--------:|
-| Skills (23개) | ✅ | ✅ |
+| Skills (28개) | ✅ | ✅ |
 | Agents (6개) | ❌ | ✅ |
 | Rules (5개) | ❌ | ✅ |
 | CLAUDE.md | ❌ | ✅ |
 | settings.json | ❌ | ✅ |
 
-## 포함된 스킬 (23개)
+## 포함된 스킬 (28개)
 
 ### 워크플로우 스킬 (13개)
 
@@ -75,6 +75,16 @@ curl -fsSL https://raw.githubusercontent.com/jh941213/my-claude-code-asset/main/
 | `api-design-principles` | skills.sh | REST/GraphQL API 설계 |
 | `async-python-patterns` | skills.sh | Python 비동기 패턴 |
 | `python-testing-patterns` | skills.sh | pytest 테스트 패턴 |
+
+### E2E & Stitch 스킬 (5개)
+
+| 스킬 | 용도 |
+|------|------|
+| `/ccpp:e2e-agent-browser` | agent-browser CLI로 E2E 테스트 자동화 |
+| `/ccpp:stitch-design-md` | Stitch 프로젝트 → DESIGN.md 생성 |
+| `/ccpp:stitch-enhance-prompt` | UI 아이디어 → Stitch 최적화 프롬프트 변환 |
+| `/ccpp:stitch-loop` | Stitch로 멀티 페이지 웹사이트 자율 생성 |
+| `/ccpp:stitch-react` | Stitch 스크린 → React 컴포넌트 변환 |
 
 ## 포함된 에이전트 (6개)
 
@@ -184,6 +194,27 @@ git worktree add ../project-fix -b fix/bug
 ---
 
 ## Changelog
+
+### v0.3.0 (2025-02-03)
+
+**새로운 스킬 (5개)**
+- `/ccpp:e2e-agent-browser` - agent-browser CLI 기반 E2E 테스트 자동화
+  - 스냅샷 기반 접근성 트리와 ref 시스템
+  - CI/CD 통합 지원
+- `/ccpp:stitch-design-md` - Stitch 프로젝트 분석 → DESIGN.md 생성
+- `/ccpp:stitch-enhance-prompt` - UI 아이디어 → Stitch 최적화 프롬프트 변환
+- `/ccpp:stitch-loop` - Stitch로 멀티 페이지 웹사이트 자율 생성
+- `/ccpp:stitch-react` - Stitch 스크린 → React 컴포넌트 변환
+
+**플러그인 구조 개선**
+- plugin.json에 skills 경로 추가
+- marketplace.json에 $schema 추가
+- install.sh 버그 수정 (commands → skills)
+
+**문서 업데이트**
+- 설치 가이드 개선 (플러그인 vs 전체 설정 비교)
+- Agents/Rules 수동 설치 방법 추가
+- 스킬 개수: 23개 → 28개
 
 ### v0.2.0 (2025-02-03)
 
