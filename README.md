@@ -6,13 +6,40 @@ Boris Cherny(Claude Code 창시자) 팁 + skills.sh 해커톤 우승작 기반 *
 
 ## 설치
 
-```bash
-# 마켓플레이스 추가
-/plugin marketplace add jh941213/my-claude-code-asset
+### 방법 1: 플러그인 설치 (Skills만 설치됨)
 
-# 플러그인 설치
-/plugin install ccpp@ccpp
+```bash
+# 터미널에서 실행
+claude plugin marketplace add jh941213/my-claude-code-asset
+claude plugin install ccpp@my-claude-code-asset
 ```
+
+> **Note**: 플러그인 시스템은 **skills만** 지원합니다. 에이전트와 rules는 별도 설정이 필요합니다.
+
+### 방법 2: 전체 설정 (Agents + Rules 포함)
+
+Claude Code 세션에서 아래 프롬프트 입력:
+
+```
+https://github.com/jh941213/my-claude-code-asset 저장소의 agents/, rules/, CLAUDE.md를
+내 ~/.claude/ 폴더에 반영해줘
+```
+
+또는 install.sh 스크립트 실행:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/jh941213/my-claude-code-asset/main/install.sh | bash
+```
+
+### 설치 항목 비교
+
+| 항목 | 플러그인 설치 | 전체 설정 |
+|------|:------------:|:--------:|
+| Skills (23개) | ✅ | ✅ |
+| Agents (6개) | ❌ | ✅ |
+| Rules (5개) | ❌ | ✅ |
+| CLAUDE.md | ❌ | ✅ |
+| settings.json | ❌ | ✅ |
 
 ## 포함된 스킬 (23개)
 
@@ -51,6 +78,8 @@ Boris Cherny(Claude Code 창시자) 팁 + skills.sh 해커톤 우승작 기반 *
 
 ## 포함된 에이전트 (6개)
 
+> **Note**: 에이전트는 플러그인으로 설치되지 않습니다. `~/.claude/agents/`에 직접 복사하거나, Claude에게 저장소 반영을 요청하세요.
+
 | 에이전트 | 용도 |
 |----------|------|
 | `planner` | 복잡한 기능 계획 수립 |
@@ -59,6 +88,30 @@ Boris Cherny(Claude Code 창시자) 팁 + skills.sh 해커톤 우승작 기반 *
 | `architect` | 시스템 아키텍처 설계 |
 | `security-reviewer` | 보안 취약점 분석 |
 | `tdd-guide` | TDD 방식 안내 |
+
+**수동 설치:**
+```bash
+# agents 폴더 복사
+curl -fsSL https://github.com/jh941213/my-claude-code-asset/archive/main.tar.gz | tar -xz -C /tmp
+cp /tmp/my-claude-code-asset-main/agents/*.md ~/.claude/agents/
+```
+
+## 포함된 Rules (5개)
+
+> **Note**: Rules도 플러그인으로 설치되지 않습니다. `~/.claude/rules/`에 직접 복사하세요.
+
+| 규칙 파일 | 용도 |
+|-----------|------|
+| `coding-style.md` | 코딩 스타일 가이드 (불변성, 파일 구성) |
+| `git-workflow.md` | Git 브랜치 전략, 커밋 메시지 형식 |
+| `testing.md` | 테스트 작성 원칙, 커버리지 목표 |
+| `performance.md` | 프론트엔드/백엔드 성능 최적화 |
+| `security.md` | 보안 체크리스트, 시크릿 관리 |
+
+**수동 설치:**
+```bash
+cp /tmp/my-claude-code-asset-main/rules/*.md ~/.claude/rules/
+```
 
 ## Boris Cherny 팁 (Claude Code 창시자)
 
