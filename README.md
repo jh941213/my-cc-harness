@@ -107,6 +107,19 @@ git worktree add ../project-fix -b fix/bug
 4. **HANDOFF.md** - 세션 인계 문서 필수
 5. **검증 루프** - 작업 후 반드시 `/verify`
 
+## 웹 검색 규칙
+
+내장 WebSearch/WebFetch는 비활성화하고 MCP 도구를 사용합니다:
+
+| 용도 | 사용할 MCP |
+|------|-----------|
+| 일반 검색 (문서, 뉴스, 정보) | **Tavily** (`mcp__tavily__*`) |
+| 코드 검색 (스니펫, 구현 예제) | **Exa** (`mcp__exa__*`) |
+
+**판단 기준:**
+- "어떻게 동작하는지" 알고 싶다 → **Tavily**
+- "어떻게 구현하는지" 코드가 필요하다 → **Exa**
+
 ## 참고 자료
 
 - [Boris Cherny 트위터](https://x.com/bcherny)

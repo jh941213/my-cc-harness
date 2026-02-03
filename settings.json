@@ -46,9 +46,14 @@
       "Bash(uvicorn:*)",
       "Bash(pytest:*)",
       "Bash(ruff:*)",
-      "Bash(mypy:*)"
+      "Bash(mypy:*)",
+      "mcp__tavily__*",
+      "mcp__exa__*"
     ],
-    "deny": []
+    "deny": [
+      "WebSearch",
+      "WebFetch"
+    ]
   },
   "hooks": {
     "PostToolUse": [
