@@ -1,6 +1,6 @@
 {
   "name": "ccpp",
-  "description": "Boris Cherny 팁 + 해커톤 우승 스킬 기반 올인원 Claude Code 플러그인. 28개 스킬, 7개 에이전트.",
+  "description": "Boris Cherny 팁 + 해커톤 우승 스킬 기반 올인원 Claude Code 플러그인. 28개 스킬, 8개 에이전트.",
   "version": "0.3.0",
   "author": {
     "name": "Community Contributors"
