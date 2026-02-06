@@ -1,6 +1,6 @@
 # Claude Code Power Pack
 
-[![Version](https://img.shields.io/badge/version-0.3.0-blue.svg)](https://github.com/jh941213/my-claude-code-asset)
+[![Version](https://img.shields.io/badge/version-0.3.1-blue.svg)](https://github.com/jh941213/my-claude-code-asset)
 
 Boris Cherny(Claude Code 창시자) 팁 + skills.sh 해커톤 우승작 기반 **올인원 플러그인**
 
@@ -138,9 +138,9 @@ cp /tmp/my-claude-code-asset-main/rules/*.md ~/.claude/rules/
 터미널 5개 + claude.ai/code 5-10개 동시 실행
 ```
 
-### 2. Opus 4.5 + Thinking
+### 2. Opus 4.6 + Thinking
 ```
-항상 Opus 4.5 사용. 느리지만 스티어링 적어서 결과적으로 빠름.
+항상 Opus 4.6 사용. 느리지만 스티어링 적어서 결과적으로 빠름.
 ```
 
 ### 3. Plan 모드 필수
@@ -204,6 +204,15 @@ git worktree add ../project-fix -b fix/bug
 ---
 
 ## Changelog
+
+### v0.3.1 (2026-02-06)
+
+**버그 수정**
+- `settings.json`의 `ccpp@ccpp` → `ccpp@my-claude-code-asset`로 수정 (플러그인 마켓플레이스 참조 오류)
+- `install.sh` 에이전트/스킬 개수 업데이트 (6→8개 에이전트, 23→29개 스킬)
+
+**문서 업데이트**
+- Opus 4.5 → Opus 4.6 반영
 
 ### v0.3.0 (2025-02-03)
 
