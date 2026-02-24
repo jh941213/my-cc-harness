@@ -1,6 +1,6 @@
 # Claude Code Power Pack
 
-[![Version](https://img.shields.io/badge/version-0.3.1-blue.svg)](https://github.com/jh941213/my-claude-code-asset)
+[![Version](https://img.shields.io/badge/version-0.4.0-blue.svg)](https://github.com/jh941213/my-claude-code-asset)
 
 Boris Cherny(Claude Code 창시자) 팁 + skills.sh 해커톤 우승작 기반 **올인원 플러그인**
 
@@ -35,15 +35,15 @@ curl -fsSL https://raw.githubusercontent.com/jh941213/my-claude-code-asset/main/
 
 | 항목 | 플러그인 설치 | 전체 설정 |
 |------|:------------:|:--------:|
-| Skills (29개) | ✅ | ✅ |
+| Skills (30개) | ✅ | ✅ |
 | Agents (8개) | ❌ | ✅ |
 | Rules (5개) | ❌ | ✅ |
 | CLAUDE.md | ❌ | ✅ |
 | settings.json | ❌ | ✅ |
 
-## 포함된 스킬 (29개)
+## 포함된 스킬 (30개)
 
-### 워크플로우 스킬 (13개)
+### 워크플로우 스킬 (14개)
 
 | 스킬 | 용도 |
 |------|------|
@@ -52,6 +52,7 @@ curl -fsSL https://raw.githubusercontent.com/jh941213/my-claude-code-asset/main/
 | `/ccpp:spec-verify` | 명세서 기반 구현 검증 |
 | `/ccpp:frontend` | 빅테크 스타일 UI 개발 |
 | `/ccpp:verify` | 테스트, 린트, 빌드 검증 |
+| `/ccpp:e2e-verify` | 피처 기반 E2E 테스트 검증 |
 | `/ccpp:commit-push-pr` | 커밋 → 푸시 → PR |
 | `/ccpp:review` | 코드 리뷰 |
 | `/ccpp:simplify` | 코드 단순화 |
@@ -167,9 +168,16 @@ Claude가 실수할 때마다 규칙 추가
 
 ### 7. git worktree 병렬 작업
 ```bash
-git worktree add ../project-feat -b feature/login
-git worktree add ../project-fix -b fix/bug
-# 각 터미널에서 claude 실행
+# CLI에서 자동 생성/정리
+claude --worktree   # 또는 claude -w
+# 세션 내에서: EnterWorktree 사용
+# 서브에이전트: isolation: "worktree" 옵션
+```
+
+### 8. 병렬 에이전트 실행
+```
+Plan 후 Task가 독립적이면 → 무조건 병렬 호출
+피처가 겹치지 않으면 → 병렬, 겹치면 → 순차
 ```
 
 ## 핵심 원칙
@@ -204,6 +212,23 @@ git worktree add ../project-fix -b fix/bug
 ---
 
 ## Changelog
+
+### v0.4.0 (2026-02-24)
+
+**새로운 스킬**
+- `/ccpp:e2e-verify` - 피처 기반 E2E 테스트 검증 (verify 이후 실제 브라우저 테스트)
+
+**새로운 기능**
+- 세션 초기화 시 Worktree 사용 여부 자동 질문
+- 병렬 에이전트 실행 규칙 추가 (독립 Task는 무조건 병렬 호출)
+- `claude --worktree` / `EnterWorktree` 지원
+
+**변경사항**
+- `langfuse` 스킬 제거
+- Boris 팁 확장 (핵심 원칙, 워크플로우 오케스트레이션, 작업 관리 등)
+- Prompt Caching 캐시 보존 규칙 추가
+- 검색 도구 규칙 추가 (Tavily/Exa/mgrep/Context7)
+- 스킬 개수: 29개 → 30개
 
 ### v0.3.1 (2026-02-06)
 

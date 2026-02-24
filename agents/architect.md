@@ -1,7 +1,7 @@
 ---
 name: architect
 description: 시스템 아키텍처 설계 및 기술 의사결정 전문가. 새로운 기능의 아키텍처 설계나 시스템 구조 변경 시 사용.
-tools: Read, Grep, Glob, WebSearch
+tools: Read, Grep, Glob
 model: opus
 ---
 
