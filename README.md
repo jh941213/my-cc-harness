@@ -1,20 +1,31 @@
+<div align="center">
+
 # Claude Code Power Pack
 
-[![Version](https://img.shields.io/badge/version-0.5.0-blue.svg)](https://github.com/jh941213/my-claude-code-asset)
+<img src="assets/hero.png" alt="Claude Code Power Pack" width="720" />
 
-<p align="center">
-  <img src="assets/hero.png" alt="Claude Code Power Pack - Agent Harness" width="800" />
-</p>
+[![Version](https://img.shields.io/badge/version-0.5.0-7C3AED.svg?style=for-the-badge)](https://github.com/jh941213/my-claude-code-asset)
+[![License](https://img.shields.io/badge/license-MIT-E87C3E.svg?style=for-the-badge)](LICENSE)
+[![Skills](https://img.shields.io/badge/skills-32-blue.svg?style=for-the-badge)](#포함된-스킬-32개)
+[![Agents](https://img.shields.io/badge/agents-10-green.svg?style=for-the-badge)](#포함된-에이전트-10개)
 
-실무에서 바로 쓸 수 있는 **Claude Code 최적 에이전트 하네스** — Skills, Agents, Hooks, Rules 올인원
+**실무에서 바로 쓸 수 있는 Claude Code 최적 에이전트 하네스**
+
+`Skills` `Agents` `Hooks` `Rules` `Commands` 올인원
+
+---
+
+**32개 스킬** | **10개 에이전트** | **5개 조건부 Rules** | **Hooks 보장 시스템** | **Six Thinking Hats PRD**
+
+</div>
 
 ## v0.5.0 주요 변경
 
-- **CLAUDE.md 논문 기반 최적화**: 277줄 → 94줄 (ETH Zurich 논문 + Addy Osmani 가이드)
+- **CLAUDE.md 최적화**: 277줄 → 94줄 (ETH Zurich 논문 + Addy Osmani 가이드 기반)
 - **Hooks 보장 시스템**: 금지 사항을 "제안" → "물리적 차단"으로 격상
 - **Rules 조건부 로드**: YAML frontmatter로 관련 파일 작업 시에만 로드
-- **새 에이전트**: `prd-planner` (인사이트 중심 PRD), `docs-writer` (자동 문서 생성)
-- **새 커맨드**: `/prd`, `/docs`
+- **Six Thinking Hats PRD**: `prd-planner` 에이전트에 de Bono의 6색 모자 프레임워크 통합
+- **자동 문서 생성**: `docs-writer` 에이전트가 구현과 병렬로 /docs/ 자동 생성
 
 ## 설치
 
