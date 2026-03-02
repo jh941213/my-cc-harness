@@ -2,7 +2,7 @@
 
 [![Version](https://img.shields.io/badge/version-0.5.0-blue.svg)](https://github.com/jh941213/my-claude-code-asset)
 
-논문 기반 Context Engineering + Six Thinking Hats PRD + Hooks 보장 시스템으로 구성된 **Claude Code 올인원 하네스**
+실무에서 바로 쓸 수 있는 **Claude Code 최적 에이전트 하네스** — Skills, Agents, Hooks, Rules 올인원
 
 ## v0.5.0 주요 변경
 
