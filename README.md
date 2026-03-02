@@ -240,6 +240,33 @@ Plan 후 Task가 독립적이면 → 무조건 병렬 호출
 피처가 겹치지 않으면 → 병렬, 겹치면 → 순차
 ```
 
+## OpenAI Codex CLI 버전
+
+<div align="center">
+
+**동일한 하네스를 OpenAI Codex CLI에서도 사용할 수 있습니다.**
+
+[![Codex CLI Power Pack](https://img.shields.io/badge/Codex_CLI_Power_Pack-33_Skills-orange.svg?style=for-the-badge)](https://github.com/jh941213/my-codex-cli-asset)
+
+</div>
+
+| | Claude Code Power Pack | Codex CLI Power Pack |
+|---|:---:|:---:|
+| **Skills** | 32개 (`/ccpp:skill`) | 33개 (`$skill`) |
+| **Agents** | 10개 (서브에이전트) | AGENTS.md 통합 |
+| **Rules** | 5개 (YAML 조건부 로드) | AGENTS.md 통합 |
+| **Hooks** | settings.json 물리 차단 | config.toml |
+| **PRD** | Six Thinking Hats | Six Thinking Hats |
+| **자동 문서** | docs-writer 병렬 실행 | $docs |
+| **모델** | Claude Opus 4.6 | GPT-5.3 Codex |
+
+```bash
+# Codex CLI 버전 설치
+curl -fsSL https://raw.githubusercontent.com/jh941213/my-codex-cli-asset/main/install.sh | bash
+```
+
+> **GitHub**: [jh941213/my-codex-cli-asset](https://github.com/jh941213/my-codex-cli-asset)
+
 ## 참고 자료
 
 - [Boris Cherny 트위터](https://x.com/bcherny)
