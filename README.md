@@ -2,7 +2,7 @@
 
 [![Version](https://img.shields.io/badge/version-0.5.0-blue.svg)](https://github.com/jh941213/my-claude-code-asset)
 
-Boris Cherny(Claude Code 창시자) 팁 + skills.sh 해커톤 우승작 기반 **올인원 플러그인**
+논문 기반 Context Engineering + Six Thinking Hats PRD + Hooks 보장 시스템으로 구성된 **Claude Code 올인원 하네스**
 
 ## v0.5.0 주요 변경
 
@@ -79,7 +79,7 @@ CLAUDE.md의 "제안"을 settings.json의 "보장"으로 격상:
 
 | 스킬 | 용도 |
 |------|------|
-| `/ccpp:prd` | **NEW** 인사이트 중심 PRD 생성 (시장 리서치 + 5라운드 인터뷰) |
+| `/ccpp:prd` | **NEW** 인사이트 중심 PRD 생성 (Six Thinking Hats + 시장 리서치 + 5라운드 인터뷰) |
 | `/ccpp:docs` | **NEW** 코드 변경 기반 자동 문서 생성 |
 | `/ccpp:plan` | 작업 계획 수립 |
 | `/ccpp:spec` | SPEC 기반 개발 - 심층 인터뷰로 명세서 작성 |
@@ -133,7 +133,7 @@ CLAUDE.md의 "제안"을 settings.json의 "보장"으로 격상:
 
 | 에이전트 | 용도 |
 |----------|------|
-| `prd-planner` | **NEW** 인사이트 중심 PRD 생성 (시장 리서치 + 경쟁 분석 + 5라운드 인터뷰) |
+| `prd-planner` | **NEW** Six Thinking Hats 기반 인사이트 PRD (시장 리서치 + 경쟁 분석 + 5라운드 인터뷰) |
 | `docs-writer` | **NEW** 코드 변경 감지 → /docs/ 자동 문서 생성 (구현과 병렬 실행) |
 | `planner` | 복잡한 기능 계획 수립 (docs-writer 병렬 실행 포함) |
 | `frontend-developer` | 빅테크 스타일 UI 구현 |
@@ -156,13 +156,13 @@ cp /tmp/my-claude-code-asset-main/agents/*.md ~/.claude/agents/
 
 | 커맨드 | 용도 |
 |--------|------|
-| `/prd [아이디어]` | 인사이트 중심 PRD 생성 |
+| `/prd [아이디어]` | Six Thinking Hats 기반 인사이트 PRD 생성 |
 | `/docs [유형]` | 코드 변경 기반 자동 문서 생성 |
 
 ### PRD → SPEC → 구현 파이프라인
 
 ```
-/prd [아이디어]  → PRD.md (무엇을, 왜 — 인사이트 중심)
+/prd [아이디어]  → PRD.md (무엇을, 왜 — Six Hats 인사이트)
 /spec            → SPEC.md (어떻게 — 기술 상세)
 /plan            → 구현 계획 (+ docs-writer 병렬 실행)
 구현 → /review → /verify → /docs
@@ -257,10 +257,11 @@ Plan 후 Task가 독립적이면 → 무조건 병렬 호출
 - 관련 파일 작업 시에만 로드 (토큰 절약)
 
 **새로운 에이전트 (2개)**
-- `prd-planner` - 인사이트 중심 PRD 생성
+- `prd-planner` - Six Thinking Hats 기반 인사이트 PRD 생성
   - 서브에이전트 3개 병렬 시장 리서치
-  - 5라운드 인사이트 인터뷰 (Why 5번, 가정 뒤집기, 모순 탐지)
-  - 경쟁사 공백 분석, 가정 위험도 매트릭스
+  - Six Thinking Hats 매핑 5라운드 인터뷰 (White+Red → Black+Green → Blue)
+  - Hat 충돌 해소 프레임워크 (Yellow vs Black, Red vs White)
+  - 경쟁사 공백 분석, 가정 위험도 매트릭스, Six Hats 제품 평가표
 - `docs-writer` - 코드 변경 자동 문서 생성
   - git diff 기반 변경 파일 감지
   - 파일 유형별 문서 자동 생성 (API, 컴포넌트, 유틸, 모델)
