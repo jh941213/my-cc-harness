@@ -2,7 +2,7 @@
 
 # Claude Code Power Pack
 
-<img src="assets/hero.png" alt="Claude Code Power Pack" width="720" />
+<img src="assets/banner.png" alt="Claude Code Power Pack" width="720" />
 
 [![Version](https://img.shields.io/badge/version-0.5.0-7C3AED.svg?style=for-the-badge)](https://github.com/jh941213/my-claude-code-asset)
 [![License](https://img.shields.io/badge/license-MIT-E87C3E.svg?style=for-the-badge)](LICENSE)
