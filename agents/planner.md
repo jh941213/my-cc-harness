@@ -85,6 +85,24 @@ model: opus
 - [ ] 기준 2
 ```
 
+## 병렬 문서 생성
+
+구현 단계에 에이전트를 실행할 때, `docs-writer`를 **background로 병렬 실행**:
+
+```
+구현 Phase:
+├─ 구현 에이전트 A (foreground)
+├─ 구현 에이전트 B (foreground)
+└─ docs-writer (run_in_background: true): 변경 파일 분석 → /docs/ 자동 생성
+```
+
+구현 계획 템플릿의 마지막 단계에 항상 포함:
+```markdown
+### 문서화 단계 (구현과 병렬)
+- docs-writer 에이전트를 background로 실행
+- 변경된 파일 기준으로 /docs/ 자동 생성
+```
+
 ## 모범 사례
 
 1. **구체적으로**: 정확한 파일 경로, 함수명, 변수명 사용

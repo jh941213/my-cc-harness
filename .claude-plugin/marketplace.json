@@ -6,15 +6,15 @@
     "email": ""
   },
   "metadata": {
-    "description": "Boris Cherny 팁 + skills.sh 해커톤 우승작 기반 올인원 플러그인",
-    "version": "0.4.0"
+    "description": "Boris Cherny 팁 + 논문 기반 최적화 올인원 플러그인",
+    "version": "0.5.0"
   },
   "plugins": [
     {
       "name": "ccpp",
       "source": "./",
-      "description": "워크플로우 14개 + 기술 스킬 10개 + E2E/Stitch 5개 + 이미지 1개 + 에이전트 8개 올인원",
-      "version": "0.4.0",
+      "description": "워크플로우 16개 + 기술 스킬 10개 + E2E/Stitch 5개 + 이미지 1개 + 에이전트 10개 올인원",
+      "version": "0.5.0",
       "category": "productivity",
       "tags": ["boris-cherny", "skills-sh", "all-in-one", "workflow", "react", "fastapi"]
     }

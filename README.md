@@ -1,8 +1,16 @@
 # Claude Code Power Pack
 
-[![Version](https://img.shields.io/badge/version-0.4.0-blue.svg)](https://github.com/jh941213/my-claude-code-asset)
+[![Version](https://img.shields.io/badge/version-0.5.0-blue.svg)](https://github.com/jh941213/my-claude-code-asset)
 
 Boris Cherny(Claude Code 창시자) 팁 + skills.sh 해커톤 우승작 기반 **올인원 플러그인**
+
+## v0.5.0 주요 변경
+
+- **CLAUDE.md 논문 기반 최적화**: 277줄 → 94줄 (ETH Zurich 논문 + Addy Osmani 가이드)
+- **Hooks 보장 시스템**: 금지 사항을 "제안" → "물리적 차단"으로 격상
+- **Rules 조건부 로드**: YAML frontmatter로 관련 파일 작업 시에만 로드
+- **새 에이전트**: `prd-planner` (인사이트 중심 PRD), `docs-writer` (자동 문서 생성)
+- **새 커맨드**: `/prd`, `/docs`
 
 ## 설치
 
@@ -16,12 +24,12 @@ claude plugin install ccpp@my-claude-code-asset
 
 > **Note**: 플러그인 시스템은 **skills만** 지원합니다. 에이전트와 rules는 별도 설정이 필요합니다.
 
-### 방법 2: 전체 설정 (Agents + Rules 포함)
+### 방법 2: 전체 설정 (Agents + Rules + Commands 포함)
 
 Claude Code 세션에서 아래 프롬프트 입력:
 
 ```
-https://github.com/jh941213/my-claude-code-asset 저장소의 agents/, rules/, CLAUDE.md를
+https://github.com/jh941213/my-claude-code-asset 저장소의 agents/, rules/, commands/, CLAUDE.md를
 내 ~/.claude/ 폴더에 반영해줘
 ```
 
@@ -35,18 +43,44 @@ curl -fsSL https://raw.githubusercontent.com/jh941213/my-claude-code-asset/main/
 
 | 항목 | 플러그인 설치 | 전체 설정 |
 |------|:------------:|:--------:|
-| Skills (30개) | ✅ | ✅ |
-| Agents (8개) | ❌ | ✅ |
-| Rules (5개) | ❌ | ✅ |
+| Skills (32개) | ✅ | ✅ |
+| Agents (10개) | ❌ | ✅ |
+| Rules (5개, 조건부) | ❌ | ✅ |
+| Commands (2개) | ❌ | ✅ |
 | CLAUDE.md | ❌ | ✅ |
 | settings.json | ❌ | ✅ |
 
-## 포함된 스킬 (30개)
+## CLAUDE.md 최적화 철학
 
-### 워크플로우 스킬 (14개)
+> ETH Zurich 논문 + Anthropic 공식 가이드 기반
+
+**"Claude가 코드를 읽어도 알 수 없는 것만 적어라."**
+
+- 200줄 이내 (현재 94줄)
+- 발견 가능한 정보 제거 (스킬 목록, 에이전트 목록, 코드베이스 개요)
+- 린터로 강제 가능한 규칙은 hooks로 이동
+- Auto Memory(MEMORY.md)와 역할 분리
+
+## Hooks 보장 시스템
+
+CLAUDE.md의 "제안"을 settings.json의 "보장"으로 격상:
+
+| 규칙 | 방식 | Hook 유형 |
+|------|------|-----------|
+| main/master push 금지 | 물리적 차단 | PreToolUse |
+| force push 금지 | 물리적 차단 | PreToolUse |
+| .env 커밋 금지 | 물리적 차단 | PreCommit |
+| console.log 커밋 금지 | 경고 + 차단 | PreCommit |
+| prettier 자동 포맷팅 | 자동 실행 | PostToolUse |
+
+## 포함된 스킬 (32개)
+
+### 워크플로우 스킬 (16개)
 
 | 스킬 | 용도 |
 |------|------|
+| `/ccpp:prd` | **NEW** 인사이트 중심 PRD 생성 (시장 리서치 + 5라운드 인터뷰) |
+| `/ccpp:docs` | **NEW** 코드 변경 기반 자동 문서 생성 |
 | `/ccpp:plan` | 작업 계획 수립 |
 | `/ccpp:spec` | SPEC 기반 개발 - 심층 인터뷰로 명세서 작성 |
 | `/ccpp:spec-verify` | 명세서 기반 구현 검증 |
@@ -93,16 +127,18 @@ curl -fsSL https://raw.githubusercontent.com/jh941213/my-claude-code-asset/main/
 |------|------|
 | `/ccpp:nano-banana` | Gemini CLI로 이미지 생성/편집 (썸네일, 아이콘, 다이어그램 등) |
 
-## 포함된 에이전트 (8개)
+## 포함된 에이전트 (10개)
 
 > **Note**: 에이전트는 플러그인으로 설치되지 않습니다. `~/.claude/agents/`에 직접 복사하거나, Claude에게 저장소 반영을 요청하세요.
 
 | 에이전트 | 용도 |
 |----------|------|
-| `planner` | 복잡한 기능 계획 수립 |
+| `prd-planner` | **NEW** 인사이트 중심 PRD 생성 (시장 리서치 + 경쟁 분석 + 5라운드 인터뷰) |
+| `docs-writer` | **NEW** 코드 변경 감지 → /docs/ 자동 문서 생성 (구현과 병렬 실행) |
+| `planner` | 복잡한 기능 계획 수립 (docs-writer 병렬 실행 포함) |
 | `frontend-developer` | 빅테크 스타일 UI 구현 |
 | `stitch-developer` | Stitch MCP 기반 UI/웹사이트 생성 |
-| `junior-mentor` | 🆕 주니어 학습 하네스 - 코드 + EXPLANATION.md 생성 |
+| `junior-mentor` | 주니어 학습 하네스 - 코드 + EXPLANATION.md 생성 |
 | `code-reviewer` | 코드 품질/보안 리뷰 |
 | `architect` | 시스템 아키텍처 설계 |
 | `security-reviewer` | 보안 취약점 분석 |
@@ -110,27 +146,39 @@ curl -fsSL https://raw.githubusercontent.com/jh941213/my-claude-code-asset/main/
 
 **수동 설치:**
 ```bash
-# agents 폴더 복사
 curl -fsSL https://github.com/jh941213/my-claude-code-asset/archive/main.tar.gz | tar -xz -C /tmp
 cp /tmp/my-claude-code-asset-main/agents/*.md ~/.claude/agents/
 ```
 
-## 포함된 Rules (5개)
+## 포함된 Commands (2개)
 
-> **Note**: Rules도 플러그인으로 설치되지 않습니다. `~/.claude/rules/`에 직접 복사하세요.
+> **Note**: Commands는 `~/.claude/commands/`에 설치됩니다.
 
-| 규칙 파일 | 용도 |
-|-----------|------|
-| `coding-style.md` | 코딩 스타일 가이드 (불변성, 파일 구성) |
-| `git-workflow.md` | Git 브랜치 전략, 커밋 메시지 형식 |
-| `testing.md` | 테스트 작성 원칙, 커버리지 목표 |
-| `performance.md` | 프론트엔드/백엔드 성능 최적화 |
-| `security.md` | 보안 체크리스트, 시크릿 관리 |
+| 커맨드 | 용도 |
+|--------|------|
+| `/prd [아이디어]` | 인사이트 중심 PRD 생성 |
+| `/docs [유형]` | 코드 변경 기반 자동 문서 생성 |
 
-**수동 설치:**
-```bash
-cp /tmp/my-claude-code-asset-main/rules/*.md ~/.claude/rules/
+### PRD → SPEC → 구현 파이프라인
+
 ```
+/prd [아이디어]  → PRD.md (무엇을, 왜 — 인사이트 중심)
+/spec            → SPEC.md (어떻게 — 기술 상세)
+/plan            → 구현 계획 (+ docs-writer 병렬 실행)
+구현 → /review → /verify → /docs
+```
+
+## 포함된 Rules (5개, 조건부 로드)
+
+> YAML frontmatter로 관련 파일 작업 시에만 로드됩니다.
+
+| 규칙 파일 | 조건 | 용도 |
+|-----------|------|------|
+| `coding-style.md` | `**/*.ts`, `**/*.tsx`, `**/*.js` | 불변성, 파일 구성 |
+| `git-workflow.md` | 모든 파일 | Git 브랜치, 커밋 형식 |
+| `testing.md` | `**/*.test.*`, `**/*.spec.*` | 테스트 원칙, 커버리지 |
+| `performance.md` | `**/*.ts`, `**/*.tsx`, `**/*.py` | 성능 최적화 |
+| `security.md` | `**/*.ts`, `**/*.tsx`, `**/*.py`, `**/*.env*` | 보안 체크리스트 |
 
 ## Boris Cherny 팁 (Claude Code 창시자)
 
@@ -168,10 +216,7 @@ Claude가 실수할 때마다 규칙 추가
 
 ### 7. git worktree 병렬 작업
 ```bash
-# CLI에서 자동 생성/정리
 claude --worktree   # 또는 claude -w
-# 세션 내에서: EnterWorktree 사용
-# 서브에이전트: isolation: "worktree" 옵션
 ```
 
 ### 8. 병렬 에이전트 실행
@@ -180,38 +225,59 @@ Plan 후 Task가 독립적이면 → 무조건 병렬 호출
 피처가 겹치지 않으면 → 병렬, 겹치면 → 순차
 ```
 
-## 핵심 원칙
-
-1. **주니어처럼 대하기** - 작업을 작게 쪼개서 지시
-2. **Plan 모드 먼저** - 복잡한 작업은 계획부터
-3. **컨텍스트 관리** - 80-100k 토큰 전에 리셋
-4. **HANDOFF.md** - 세션 인계 문서 필수
-5. **검증 루프** - 작업 후 반드시 `/verify`
-
-## 검색 규칙
-
-내장 WebSearch/Grep/Glob은 사용하지 않고 아래 도구를 사용합니다:
-
-| 용도 | 도구 | 설명 |
-|------|------|------|
-| 로컬 코드 검색 | **mgrep** | 코드베이스 탐색, 파일/함수 찾기 |
-| 일반 웹 검색 | **Tavily** (`mcp__tavily__*`) | 문서, 뉴스, 정보, 개념 설명 |
-| 코드 스니펫 검색 | **Exa** (`mcp__exa__*`) | 구현 예제, API 사용법, 코드 패턴 |
-
-**판단 기준:**
-- 로컬 코드에서 찾기 → **mgrep**
-- "어떻게 동작하는지" 알고 싶다 → **Tavily**
-- "어떻게 구현하는지" 코드가 필요하다 → **Exa**
-
 ## 참고 자료
 
 - [Boris Cherny 트위터](https://x.com/bcherny)
 - [Claude Code Skills 공식 문서](https://code.claude.com/docs/en/skills)
 - [skills.sh](https://skills.sh/) - AI 에이전트 스킬 디렉토리
+- [ETH Zurich 논문 - AGENTS.md 효과 분석](https://arxiv.org/abs/2602.11988)
+- [Addy Osmani - Stop Using /init for AGENTS.md](https://addyosmani.com/blog/agents-md/)
 
 ---
 
 ## Changelog
+
+### v0.5.0 (2026-03-02)
+
+**CLAUDE.md 논문 기반 최적화**
+- 277줄 → 94줄 (ETH Zurich 논문 + Anthropic 가이드 기반)
+- 발견 가능한 정보 제거 (스킬/에이전트/기술 테이블)
+- 사용자 가이드와 Claude 지시 분리
+- Karpathy 원칙 추가: Think Before Coding, Goal-Driven Execution
+
+**Hooks 보장 시스템**
+- main/master push → PreToolUse hook 차단
+- force push → PreToolUse hook 차단
+- .env 커밋 → PreCommit hook 차단
+- console.log 커밋 → PreCommit hook 차단
+- prettier → PostToolUse hook 자동 실행
+
+**Rules 조건부 로드**
+- 모든 rules에 YAML frontmatter 추가
+- 관련 파일 작업 시에만 로드 (토큰 절약)
+
+**새로운 에이전트 (2개)**
+- `prd-planner` - 인사이트 중심 PRD 생성
+  - 서브에이전트 3개 병렬 시장 리서치
+  - 5라운드 인사이트 인터뷰 (Why 5번, 가정 뒤집기, 모순 탐지)
+  - 경쟁사 공백 분석, 가정 위험도 매트릭스
+- `docs-writer` - 코드 변경 자동 문서 생성
+  - git diff 기반 변경 파일 감지
+  - 파일 유형별 문서 자동 생성 (API, 컴포넌트, 유틸, 모델)
+  - 구현 에이전트와 background 병렬 실행
+
+**새로운 커맨드 (2개)**
+- `/prd [아이디어]` - 인사이트 중심 PRD 생성
+- `/docs [유형]` - 코드 변경 기반 자동 문서 생성
+
+**새로운 스킬 (2개)**
+- `prd` - PRD 생성 스킬
+- `docs` - 자동 문서 생성 스킬
+
+**변경사항**
+- `planner` 에이전트 업데이트 (docs-writer 병렬 실행 가이드 추가)
+- 에이전트 개수: 8개 → 10개
+- 스킬 개수: 30개 → 32개
 
 ### v0.4.0 (2026-02-24)
 
@@ -243,8 +309,6 @@ Plan 후 Task가 독립적이면 → 무조건 병렬 호출
 
 **새로운 스킬 (5개)**
 - `/ccpp:e2e-agent-browser` - agent-browser CLI 기반 E2E 테스트 자동화
-  - 스냅샷 기반 접근성 트리와 ref 시스템
-  - CI/CD 통합 지원
 - `/ccpp:stitch-design-md` - Stitch 프로젝트 분석 → DESIGN.md 생성
 - `/ccpp:stitch-enhance-prompt` - UI 아이디어 → Stitch 최적화 프롬프트 변환
 - `/ccpp:stitch-loop` - Stitch로 멀티 페이지 웹사이트 자율 생성
@@ -252,57 +316,20 @@ Plan 후 Task가 독립적이면 → 무조건 병렬 호출
 
 **새로운 에이전트 (2개)**
 - `stitch-developer` - Stitch MCP 기반 UI/웹사이트 생성 전문가
-  - 디자인 시스템 분석, 프롬프트 최적화, 멀티 페이지 생성, React 변환
 - `junior-mentor` - 주니어 개발자 학습 하네스
-  - 비유 기반 쉬운 설명, 코드 주석 풍부하게
-  - 작업 완료 후 EXPLANATION.md 자동 생성
 
 **새로운 스킬**
 - `nano-banana` - Gemini CLI 기반 이미지 생성/편집
-  - 썸네일, 아이콘, 다이어그램, 패턴 생성
-  - 사진 복원, 이미지 편집
-
-**플러그인 구조 개선**
-- plugin.json에 skills 경로 추가
-- marketplace.json에 $schema 추가
-- install.sh 버그 수정 (commands → skills)
-
-**문서 업데이트**
-- 설치 가이드 개선 (플러그인 vs 전체 설정 비교)
-- Agents/Rules 수동 설치 방법 추가
-- 스킬 개수: 23개 → 29개
 
 ### v0.2.0 (2025-02-03)
 
 **새로운 스킬**
 - `/spec` - SPEC 기반 개발 (Thariq 워크플로우)
-  - AskUserQuestion으로 40개+ 심층 인터뷰
-  - SPEC.md 명세서 자동 생성
 - `/spec-verify` - 명세서 기반 구현 검증
-  - Task 에이전트로 자동 검증
-  - SPEC-REVIEW.md 피드백 생성
-
-**새로운 플러그인**
-- `mgrep@Mixedbread-Grep` - 강력한 검색 도구
-- `claude-hud@claude-hud` - 상태 표시줄 HUD
-
-**설정 변경**
-- 웹 검색 규칙 추가: WebSearch/WebFetch 비활성화
-- MCP 검색 도구 활성화: Tavily (일반 검색), Exa (코드 검색)
-- statusLine 설정 추가 (claude-hud)
-- `settings.local.example.json` 템플릿 추가
-
-**문서 업데이트**
-- SPEC 기반 개발 워크플로우 섹션 추가
-- 웹 검색 규칙 섹션 추가
-- 스킬 개수: 21개 → 23개
 
 ### v0.1.0 (2025-01-22)
 
 - 초기 릴리스
-- 워크플로우 스킬 11개
-- 기술 스킬 10개
-- 에이전트 6개
 
 ## 라이선스
 

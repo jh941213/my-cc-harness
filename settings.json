@@ -44,24 +44,62 @@
     ]
   },
   "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash(git push * main*)",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo 'BLOCKED: main 브랜치에 직접 push 금지. feature 브랜치를 사용하세요.' && exit 1"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash(git push * master*)",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo 'BLOCKED: master 브랜치에 직접 push 금지. feature 브랜치를 사용하세요.' && exit 1"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash(git push --force*)",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo 'BLOCKED: force push 금지. 사용자에게 확인을 요청하세요.' && exit 1"
+          }
+        ]
+      }
+    ],
     "PostToolUse": [
+      {
+        "matcher": "Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if echo \"$CLAUDE_FILE_PATH\" | grep -qE '\\.(ts|tsx|js|jsx)$'; then if command -v prettier &>/dev/null; then prettier --write \"$CLAUDE_FILE_PATH\" 2>/dev/null; fi; fi; exit 0"
+          }
+        ]
+      },
       {
         "matcher": "Edit",
         "hooks": [
           {
             "type": "command",
-            "command": "echo '[Hook] 코드 수정 완료 - prettier 포맷팅 권장'"
+            "command": "if echo \"$CLAUDE_FILE_PATH\" | grep -qE '\\.(ts|tsx|js|jsx)$'; then if command -v prettier &>/dev/null; then prettier --write \"$CLAUDE_FILE_PATH\" 2>/dev/null; fi; fi; exit 0"
           }
         ]
       }
     ],
-    "Stop": [
+    "PreCommit": [
       {
         "matcher": "*",
         "hooks": [
           {
             "type": "command",
-            "command": "echo '[Hook] 세션 종료 - console.log 제거 확인하세요'"
+            "command": "bash -c 'STAGED=$(git diff --cached --name-only); if echo \"$STAGED\" | grep -qE \"\\.env\"; then echo \"BLOCKED: .env 파일 커밋 금지\" && exit 1; fi; if git diff --cached | grep -qiE \"(console\\.log|console\\.warn|console\\.debug)\"; then echo \"WARNING: console.log가 포함되어 있습니다. 제거하세요.\" && exit 1; fi; exit 0'"
           }
         ]
       }
