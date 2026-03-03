@@ -6,9 +6,9 @@
 
 [![Version](https://img.shields.io/badge/version-0.6.0-7C3AED.svg?style=for-the-badge)](https://github.com/jh941213/my-claude-code-asset)
 [![License](https://img.shields.io/badge/license-MIT-E87C3E.svg?style=for-the-badge)](LICENSE)
-[![Skills](https://img.shields.io/badge/skills-32-blue.svg?style=for-the-badge)](#포함된-스킬-32개)
-[![Agents](https://img.shields.io/badge/agents-10-green.svg?style=for-the-badge)](#포함된-에이전트-10개)
-[![TTH](https://img.shields.io/badge/TTH-Multi--Agent-ff6b35.svg?style=for-the-badge)](#tth-멀티-에이전트-사일로)
+[![Skills](https://img.shields.io/badge/skills-32-blue.svg?style=for-the-badge)](#-스킬-32개)
+[![Agents](https://img.shields.io/badge/agents-10-green.svg?style=for-the-badge)](#-에이전트-10개)
+[![TTH](https://img.shields.io/badge/TTH-Multi--Agent-ff6b35.svg?style=for-the-badge)](#-tth-멀티-에이전트-사일로)
 
 **실무에서 바로 쓸 수 있는 Claude Code 최적 에이전트 하네스**
 
@@ -20,7 +20,65 @@
 
 </div>
 
-## TTH 멀티 에이전트 사일로
+---
+
+## 목차
+
+- [설치](#-설치)
+- [TTH 멀티 에이전트 사일로](#-tth-멀티-에이전트-사일로)
+- [CLAUDE.md 최적화 철학](#-claudemd-최적화-철학)
+- [Hooks 보장 시스템](#-hooks-보장-시스템)
+- [스킬 (32개)](#-스킬-32개)
+- [에이전트 (10개)](#-에이전트-10개)
+- [Commands (3개)](#-commands-3개)
+- [Rules (5개)](#-rules-5개-조건부-로드)
+- [Boris Cherny 팁](#-boris-cherny-팁)
+- [Codex CLI 버전](#-codex-cli-버전)
+- [참고 자료](#-참고-자료)
+- [Changelog](#-changelog)
+
+---
+
+## 🚀 설치
+
+### 방법 1: 원클릭 전체 설치 (권장)
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/jh941213/my-claude-code-asset/main/install.sh | bash
+```
+
+### 방법 2: 플러그인 설치 (Skills만)
+
+```bash
+claude plugin marketplace add jh941213/my-claude-code-asset
+claude plugin install ccpp@my-claude-code-asset
+```
+
+> **Note**: 플러그인 시스템은 **skills만** 지원합니다. 에이전트, rules, TTH는 별도 설정이 필요합니다.
+
+### 방법 3: Claude에게 직접 요청
+
+```
+https://github.com/jh941213/my-claude-code-asset 저장소의 agents/, rules/, commands/, CLAUDE.md를
+내 ~/.claude/ 폴더에 반영해줘
+```
+
+### 설치 항목 비교
+
+| 항목 | 플러그인 설치 | 전체 설정 |
+|------|:---:|:---:|
+| Skills (32개) | ✅ | ✅ |
+| Agents (10개) | ❌ | ✅ |
+| Rules (5개) | ❌ | ✅ |
+| Commands (3개) | ❌ | ✅ |
+| TTH Team Roles (5개) | ❌ | ✅ |
+| TTH Hooks (2개) | ❌ | ✅ |
+| CLAUDE.md | ❌ | ✅ |
+| settings.json | ❌ | ✅ |
+
+---
+
+## 🤖 TTH 멀티 에이전트 사일로
 
 <div align="center">
 <img src="assets/tth-banner.png" alt="TTH Multi-Agent Harness" width="720" />
@@ -34,6 +92,14 @@
 /tth "TODO 앱 만들어줘"
 ```
 
+### 3축 통합
+
+| 축 | 원출처 | 역할 |
+|---|---|---|
+| **Toss 사일로** | 토스 조직문화 | DRI 구조, 파일 경계, 자율 의사결정 |
+| **Tesla 5-Step** | 머스크 | 의심 → 삭제 → 단순화 → 가속 → 자동화 |
+| **Ralph Loop** | ghuntley/ralph | 반복 수렴, backpressure, progress.txt 학습 |
+
 ### 팀 구성 (M7 CEO 매핑)
 
 | 역할 | 이름 | CEO 철학 |
@@ -43,14 +109,6 @@
 | Frontend | **저커버그** (Mark Zuckerberg) | Move Fast, 프로덕트 중심 |
 | Backend | **젠슨** (Jensen Huang) | Intellectual Honesty, 기술적 깊이 |
 | QA | **베조스** (Jeff Bezos) | Customer Obsession, "?" 이메일 |
-
-### 3축 통합
-
-| 축 | 원출처 | 역할 |
-|---|---|---|
-| **Toss 사일로** | 토스 조직문화 | DRI 구조, 파일 경계, 자율 의사결정 |
-| **Tesla 5-Step** | 머스크 | 의심 → 삭제 → 단순화 → 가속 → 자동화 |
-| **Ralph Loop** | ghuntley/ralph | 반복 수렴, backpressure, progress.txt 학습 |
 
 ### 파이프라인
 
@@ -99,55 +157,7 @@ Phase 5: HANDOFF.md + TeamDelete
 
 ---
 
-## v0.5.0 주요 변경
-
-- **CLAUDE.md 최적화**: 277줄 → 94줄 (ETH Zurich 논문 + Addy Osmani 가이드 기반)
-- **Hooks 보장 시스템**: 금지 사항을 "제안" → "물리적 차단"으로 격상
-- **Rules 조건부 로드**: YAML frontmatter로 관련 파일 작업 시에만 로드
-- **Six Thinking Hats PRD**: `prd-planner` 에이전트에 de Bono의 6색 모자 프레임워크 통합
-- **자동 문서 생성**: `docs-writer` 에이전트가 구현과 병렬로 /docs/ 자동 생성
-
-## 설치
-
-### 방법 1: 플러그인 설치 (Skills만 설치됨)
-
-```bash
-# 터미널에서 실행
-claude plugin marketplace add jh941213/my-claude-code-asset
-claude plugin install ccpp@my-claude-code-asset
-```
-
-> **Note**: 플러그인 시스템은 **skills만** 지원합니다. 에이전트와 rules는 별도 설정이 필요합니다.
-
-### 방법 2: 전체 설정 (Agents + Rules + Commands 포함)
-
-Claude Code 세션에서 아래 프롬프트 입력:
-
-```
-https://github.com/jh941213/my-claude-code-asset 저장소의 agents/, rules/, commands/, CLAUDE.md를
-내 ~/.claude/ 폴더에 반영해줘
-```
-
-또는 install.sh 스크립트 실행:
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/jh941213/my-claude-code-asset/main/install.sh | bash
-```
-
-### 설치 항목 비교
-
-| 항목 | 플러그인 설치 | 전체 설정 |
-|------|:------------:|:--------:|
-| Skills (32개) | ✅ | ✅ |
-| Agents (10개) | ❌ | ✅ |
-| Rules (5개, 조건부) | ❌ | ✅ |
-| Commands (3개) | ❌ | ✅ |
-| TTH Team Roles (5개) | ❌ | ✅ |
-| TTH Hooks (2개) | ❌ | ✅ |
-| CLAUDE.md | ❌ | ✅ |
-| settings.json | ❌ | ✅ |
-
-## CLAUDE.md 최적화 철학
+## 📐 CLAUDE.md 최적화 철학
 
 > ETH Zurich 논문 + Anthropic 공식 가이드 기반
 
@@ -158,7 +168,9 @@ curl -fsSL https://raw.githubusercontent.com/jh941213/my-claude-code-asset/main/
 - 린터로 강제 가능한 규칙은 hooks로 이동
 - Auto Memory(MEMORY.md)와 역할 분리
 
-## Hooks 보장 시스템
+---
+
+## 🔒 Hooks 보장 시스템
 
 CLAUDE.md의 "제안"을 settings.json의 "보장"으로 격상:
 
@@ -172,14 +184,16 @@ CLAUDE.md의 "제안"을 settings.json의 "보장"으로 격상:
 | TTH 태스크 완료 시 typecheck/lint/test | 품질 게이트 | TaskCompleted |
 | TTH 팀원 유휴 시 남은 태스크 확인 | 유휴 방지 | TeammateIdle |
 
-## 포함된 스킬 (32개)
+---
+
+## 🛠 스킬 (32개)
 
 ### 워크플로우 스킬 (16개)
 
 | 스킬 | 용도 |
 |------|------|
-| `/ccpp:prd` | **NEW** 인사이트 중심 PRD 생성 (Six Thinking Hats + 시장 리서치 + 5라운드 인터뷰) |
-| `/ccpp:docs` | **NEW** 코드 변경 기반 자동 문서 생성 |
+| `/ccpp:prd` | 인사이트 중심 PRD 생성 (Six Thinking Hats + 시장 리서치 + 5라운드 인터뷰) |
+| `/ccpp:docs` | 코드 변경 기반 자동 문서 생성 |
 | `/ccpp:plan` | 작업 계획 수립 |
 | `/ccpp:spec` | SPEC 기반 개발 - 심층 인터뷰로 명세서 작성 |
 | `/ccpp:spec-verify` | 명세서 기반 구현 검증 |
@@ -224,16 +238,18 @@ CLAUDE.md의 "제안"을 settings.json의 "보장"으로 격상:
 
 | 스킬 | 용도 |
 |------|------|
-| `/ccpp:nano-banana` | Gemini CLI로 이미지 생성/편집 (썸네일, 아이콘, 다이어그램 등) |
+| `/ccpp:nano-banana` | Gemini로 이미지 생성/편집 (썸네일, 아이콘, 다이어그램 등) |
 
-## 포함된 에이전트 (10개)
+---
 
-> **Note**: 에이전트는 플러그인으로 설치되지 않습니다. `~/.claude/agents/`에 직접 복사하거나, Claude에게 저장소 반영을 요청하세요.
+## 🤖 에이전트 (10개)
+
+> 에이전트는 플러그인으로 설치되지 않습니다. `~/.claude/agents/`에 직접 복사하세요.
 
 | 에이전트 | 용도 |
 |----------|------|
-| `prd-planner` | **NEW** Six Thinking Hats 기반 인사이트 PRD (시장 리서치 + 경쟁 분석 + 5라운드 인터뷰) |
-| `docs-writer` | **NEW** 코드 변경 감지 → /docs/ 자동 문서 생성 (구현과 병렬 실행) |
+| `prd-planner` | Six Thinking Hats 기반 인사이트 PRD (시장 리서치 + 경쟁 분석 + 5라운드 인터뷰) |
+| `docs-writer` | 코드 변경 감지 → /docs/ 자동 문서 생성 (구현과 병렬 실행) |
 | `planner` | 복잡한 기능 계획 수립 (docs-writer 병렬 실행 포함) |
 | `frontend-developer` | 빅테크 스타일 UI 구현 |
 | `stitch-developer` | Stitch MCP 기반 UI/웹사이트 생성 |
@@ -243,19 +259,23 @@ CLAUDE.md의 "제안"을 settings.json의 "보장"으로 격상:
 | `security-reviewer` | 보안 취약점 분석 |
 | `tdd-guide` | TDD 방식 안내 |
 
-**수동 설치:**
+<details>
+<summary><b>수동 설치 방법</b></summary>
+
 ```bash
 curl -fsSL https://github.com/jh941213/my-claude-code-asset/archive/main.tar.gz | tar -xz -C /tmp
 cp /tmp/my-claude-code-asset-main/agents/*.md ~/.claude/agents/
 ```
 
-## 포함된 Commands (3개)
+</details>
 
-> **Note**: Commands는 `~/.claude/commands/`에 설치됩니다.
+---
+
+## 📝 Commands (3개)
 
 | 커맨드 | 용도 |
 |--------|------|
-| `/tth [설명]` | **NEW** TTH 멀티 에이전트 사일로 (Toss + Tesla + Ralph Loop) |
+| `/tth [설명]` | TTH 멀티 에이전트 사일로 (Toss + Tesla + Ralph Loop) |
 | `/prd [아이디어]` | Six Thinking Hats 기반 인사이트 PRD 생성 |
 | `/docs [유형]` | 코드 변경 기반 자동 문서 생성 |
 
@@ -268,7 +288,9 @@ cp /tmp/my-claude-code-asset-main/agents/*.md ~/.claude/agents/
 구현 → /review → /verify → /docs
 ```
 
-## 포함된 Rules (5개, 조건부 로드)
+---
+
+## 📏 Rules (5개, 조건부 로드)
 
 > YAML frontmatter로 관련 파일 작업 시에만 로드됩니다.
 
@@ -280,52 +302,26 @@ cp /tmp/my-claude-code-asset-main/agents/*.md ~/.claude/agents/
 | `performance.md` | `**/*.ts`, `**/*.tsx`, `**/*.py` | 성능 최적화 |
 | `security.md` | `**/*.ts`, `**/*.tsx`, `**/*.py`, `**/*.env*` | 보안 체크리스트 |
 
-## Boris Cherny 팁 (Claude Code 창시자)
+---
 
-### 1. 병렬 Claude 실행
-```
-터미널 5개 + claude.ai/code 5-10개 동시 실행
-```
+## 💡 Boris Cherny 팁
 
-### 2. Opus 4.6 + Thinking
-```
-항상 Opus 4.6 사용. 느리지만 스티어링 적어서 결과적으로 빠름.
-```
+> Claude Code 창시자의 실전 팁
 
-### 3. Plan 모드 필수
-```
-Shift+Tab 두 번 → Plan 모드
-계획 확정 후 → Auto-accept 모드로 1-shot 구현
-```
+| # | 팁 | 요약 |
+|---|---|---|
+| 1 | **병렬 실행** | 터미널 5개 + claude.ai/code 5-10개 동시 실행 |
+| 2 | **Opus 4.6** | 항상 Opus 사용. 느리지만 스티어링 적어서 결과적으로 빠름 |
+| 3 | **Plan 모드** | Shift+Tab 두 번 → Plan, 확정 후 Auto-accept로 1-shot 구현 |
+| 4 | **CLAUDE.md 공유** | 팀 전체가 git에 커밋, 실수할 때마다 규칙 추가 |
+| 5 | **즉시 재계획** | 잘못되면 Plan 모드 복귀, 무리하게 밀어붙이지 않기 |
+| 6 | **서브에이전트** | 프롬프트에 "use subagents" → 병렬 처리 |
+| 7 | **git worktree** | `claude --worktree` 또는 `claude -w`로 병렬 작업 |
+| 8 | **병렬 에이전트** | 독립 Task → 무조건 병렬, 겹치면 순차 |
 
-### 4. CLAUDE.md 팀 공유
-```
-팀 전체가 CLAUDE.md를 git에 커밋
-Claude가 실수할 때마다 규칙 추가
-```
+---
 
-### 5. 실수 시 즉시 재계획
-```
-작업 잘못되면 Plan 모드로 복귀, 무리하게 밀어붙이지 말 것
-```
-
-### 6. 서브에이전트 활용
-```
-프롬프트에 "use subagents" 추가 → 병렬 처리
-```
-
-### 7. git worktree 병렬 작업
-```bash
-claude --worktree   # 또는 claude -w
-```
-
-### 8. 병렬 에이전트 실행
-```
-Plan 후 Task가 독립적이면 → 무조건 병렬 호출
-피처가 겹치지 않으면 → 병렬, 겹치면 → 순차
-```
-
-## OpenAI Codex CLI 버전
+## 🔄 Codex CLI 버전
 
 <div align="center">
 
@@ -352,7 +348,9 @@ curl -fsSL https://raw.githubusercontent.com/jh941213/my-codex-cli-asset/main/in
 
 > **GitHub**: [jh941213/my-codex-cli-asset](https://github.com/jh941213/my-codex-cli-asset)
 
-## 참고 자료
+---
+
+## 📚 참고 자료
 
 - [Boris Cherny 트위터](https://x.com/bcherny)
 - [Claude Code Skills 공식 문서](https://code.claude.com/docs/en/skills)
@@ -362,11 +360,12 @@ curl -fsSL https://raw.githubusercontent.com/jh941213/my-codex-cli-asset/main/in
 
 ---
 
-## Changelog
+## 📋 Changelog
 
-### v0.6.0 (2026-03-03)
+<details>
+<summary><b>v0.6.0 (2026-03-03) — TTH 멀티 에이전트 사일로</b></summary>
 
-**TTH (Toss-Tesla Harness) 멀티 에이전트 사일로**
+**TTH (Toss-Tesla Harness)**
 - `/tth` 커맨드로 M7 CEO 페르소나 멀티 에이전트 팀 자동 구성
 - Toss 사일로 (DRI, 파일 경계) + Tesla 5-Step (의심→삭제→단순화→가속→자동화)
 - Ralph Loop 반복 수렴 메커니즘 통합 (backpressure, progress.txt 학습 누적)
@@ -386,12 +385,14 @@ curl -fsSL https://raw.githubusercontent.com/jh941213/my-codex-cli-asset/main/in
 **settings.json 변경**
 - `env.CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS` 추가 (Agent Teams 활성화)
 
-### v0.5.0 (2026-03-02)
+</details>
+
+<details>
+<summary><b>v0.5.0 (2026-03-02) — CLAUDE.md 최적화 + PRD + 자동 문서</b></summary>
 
 **CLAUDE.md 논문 기반 최적화**
 - 277줄 → 94줄 (ETH Zurich 논문 + Anthropic 가이드 기반)
 - 발견 가능한 정보 제거 (스킬/에이전트/기술 테이블)
-- 사용자 가이드와 Claude 지시 분리
 - Karpathy 원칙 추가: Think Before Coding, Goal-Driven Execution
 
 **Hooks 보장 시스템**
@@ -407,79 +408,58 @@ curl -fsSL https://raw.githubusercontent.com/jh941213/my-codex-cli-asset/main/in
 
 **새로운 에이전트 (2개)**
 - `prd-planner` - Six Thinking Hats 기반 인사이트 PRD 생성
-  - 서브에이전트 3개 병렬 시장 리서치
-  - Six Thinking Hats 매핑 5라운드 인터뷰 (White+Red → Black+Green → Blue)
-  - Hat 충돌 해소 프레임워크 (Yellow vs Black, Red vs White)
-  - 경쟁사 공백 분석, 가정 위험도 매트릭스, Six Hats 제품 평가표
 - `docs-writer` - 코드 변경 자동 문서 생성
-  - git diff 기반 변경 파일 감지
-  - 파일 유형별 문서 자동 생성 (API, 컴포넌트, 유틸, 모델)
-  - 구현 에이전트와 background 병렬 실행
 
 **새로운 커맨드 (2개)**
 - `/prd [아이디어]` - 인사이트 중심 PRD 생성
 - `/docs [유형]` - 코드 변경 기반 자동 문서 생성
 
-**새로운 스킬 (2개)**
-- `prd` - PRD 생성 스킬
-- `docs` - 자동 문서 생성 스킬
+</details>
 
-**변경사항**
-- `planner` 에이전트 업데이트 (docs-writer 병렬 실행 가이드 추가)
-- 에이전트 개수: 8개 → 10개
-- 스킬 개수: 30개 → 32개
+<details>
+<summary><b>v0.4.0 (2026-02-24) — E2E 검증 + Worktree 지원</b></summary>
 
-### v0.4.0 (2026-02-24)
-
-**새로운 스킬**
-- `/ccpp:e2e-verify` - 피처 기반 E2E 테스트 검증 (verify 이후 실제 브라우저 테스트)
-
-**새로운 기능**
+- `/ccpp:e2e-verify` - 피처 기반 E2E 테스트 검증
 - 세션 초기화 시 Worktree 사용 여부 자동 질문
-- 병렬 에이전트 실행 규칙 추가 (독립 Task는 무조건 병렬 호출)
-- `claude --worktree` / `EnterWorktree` 지원
-
-**변경사항**
+- 병렬 에이전트 실행 규칙 추가
 - `langfuse` 스킬 제거
-- Boris 팁 확장 (핵심 원칙, 워크플로우 오케스트레이션, 작업 관리 등)
-- Prompt Caching 캐시 보존 규칙 추가
-- 검색 도구 규칙 추가 (Tavily/Exa/mgrep/Context7)
-- 스킬 개수: 29개 → 30개
+- Boris 팁 확장, Prompt Caching 규칙 추가
 
-### v0.3.1 (2026-02-06)
+</details>
 
-**버그 수정**
-- `settings.json`의 `ccpp@ccpp` → `ccpp@my-claude-code-asset`로 수정 (플러그인 마켓플레이스 참조 오류)
-- `install.sh` 에이전트/스킬 개수 업데이트 (6→8개 에이전트, 23→29개 스킬)
+<details>
+<summary><b>v0.3.1 (2026-02-06) — 버그 수정</b></summary>
 
-**문서 업데이트**
+- `settings.json` 플러그인 마켓플레이스 참조 오류 수정
+- `install.sh` 에이전트/스킬 개수 업데이트
 - Opus 4.5 → Opus 4.6 반영
 
-### v0.3.0 (2025-02-03)
+</details>
 
-**새로운 스킬 (5개)**
-- `/ccpp:e2e-agent-browser` - agent-browser CLI 기반 E2E 테스트 자동화
-- `/ccpp:stitch-design-md` - Stitch 프로젝트 분석 → DESIGN.md 생성
-- `/ccpp:stitch-enhance-prompt` - UI 아이디어 → Stitch 최적화 프롬프트 변환
-- `/ccpp:stitch-loop` - Stitch로 멀티 페이지 웹사이트 자율 생성
-- `/ccpp:stitch-react` - Stitch 스크린 → React 컴포넌트 변환
+<details>
+<summary><b>v0.3.0 (2025-02-03) — Stitch + 이미지 생성</b></summary>
 
-**새로운 에이전트 (2개)**
-- `stitch-developer` - Stitch MCP 기반 UI/웹사이트 생성 전문가
-- `junior-mentor` - 주니어 개발자 학습 하네스
+- E2E agent-browser, Stitch 스킬 5개 추가
+- `stitch-developer`, `junior-mentor` 에이전트 추가
+- `nano-banana` 이미지 생성 스킬 추가
 
-**새로운 스킬**
-- `nano-banana` - Gemini CLI 기반 이미지 생성/편집
+</details>
 
-### v0.2.0 (2025-02-03)
+<details>
+<summary><b>v0.2.0 (2025-02-03) — SPEC 기반 개발</b></summary>
 
-**새로운 스킬**
-- `/spec` - SPEC 기반 개발 (Thariq 워크플로우)
-- `/spec-verify` - 명세서 기반 구현 검증
+- `/spec`, `/spec-verify` 스킬 추가
 
-### v0.1.0 (2025-01-22)
+</details>
+
+<details>
+<summary><b>v0.1.0 (2025-01-22) — 초기 릴리스</b></summary>
 
 - 초기 릴리스
+
+</details>
+
+---
 
 ## 라이선스
 
