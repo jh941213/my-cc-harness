@@ -4,20 +4,96 @@
 
 <img src="assets/banner.png" alt="Claude Code Power Pack" width="720" />
 
-[![Version](https://img.shields.io/badge/version-0.5.0-7C3AED.svg?style=for-the-badge)](https://github.com/jh941213/my-claude-code-asset)
+[![Version](https://img.shields.io/badge/version-0.6.0-7C3AED.svg?style=for-the-badge)](https://github.com/jh941213/my-claude-code-asset)
 [![License](https://img.shields.io/badge/license-MIT-E87C3E.svg?style=for-the-badge)](LICENSE)
 [![Skills](https://img.shields.io/badge/skills-32-blue.svg?style=for-the-badge)](#포함된-스킬-32개)
 [![Agents](https://img.shields.io/badge/agents-10-green.svg?style=for-the-badge)](#포함된-에이전트-10개)
+[![TTH](https://img.shields.io/badge/TTH-Multi--Agent-ff6b35.svg?style=for-the-badge)](#tth-멀티-에이전트-사일로)
 
 **실무에서 바로 쓸 수 있는 Claude Code 최적 에이전트 하네스**
 
-`Skills` `Agents` `Hooks` `Rules` `Commands` 올인원
+`Skills` `Agents` `Hooks` `Rules` `Commands` `TTH` 올인원
 
 ---
 
-**32개 스킬** | **10개 에이전트** | **5개 조건부 Rules** | **Hooks 보장 시스템** | **Six Thinking Hats PRD**
+**32개 스킬** | **10개 에이전트** | **5개 조건부 Rules** | **Hooks 보장 시스템** | **TTH 멀티 에이전트**
 
 </div>
+
+## TTH 멀티 에이전트 사일로
+
+> **Toss 사일로 + Tesla 5-Step + Ralph Loop = 자율 멀티 에이전트 팀**
+
+`/tth "기능 설명"` 한 줄로 M7 CEO 페르소나 팀이 자율적으로 협업합니다.
+
+```
+/tth "TODO 앱 만들어줘"
+```
+
+### 팀 구성 (M7 CEO 매핑)
+
+| 역할 | 이름 | CEO 철학 |
+|------|------|----------|
+| PO/Team Lead | **사티아** (Satya Nadella) | Growth Mindset, 팀 임파워먼트 |
+| Designer/UX | **팀쿡** (Tim Cook) | Apple 디자인 철학, 완벽주의 |
+| Frontend | **저커버그** (Mark Zuckerberg) | Move Fast, 프로덕트 중심 |
+| Backend | **젠슨** (Jensen Huang) | Intellectual Honesty, 기술적 깊이 |
+| QA | **베조스** (Jeff Bezos) | Customer Obsession, "?" 이메일 |
+
+### 3축 통합
+
+| 축 | 원출처 | 역할 |
+|---|---|---|
+| **Toss 사일로** | 토스 조직문화 | DRI 구조, 파일 경계, 자율 의사결정 |
+| **Tesla 5-Step** | 머스크 | 의심 → 삭제 → 단순화 → 가속 → 자동화 |
+| **Ralph Loop** | ghuntley/ralph | 반복 수렴, backpressure, progress.txt 학습 |
+
+### 파이프라인
+
+```
+Phase 0: 사티아 활성화 (PO 모드)
+    ↓
+Phase 1: 요구사항 의심 (Musk Step 1)
+    ↓
+Phase 2: 동적 팀 선발 + 스토리 분해
+    ↓
+Phase 3: Ralph Loop 병렬 실행
+         (자체 검증 → pass/fail → 재시도 → 학습 누적)
+    ↓
+Phase 4: 통합 & 리뷰 (품질 게이트)
+    ↓
+Phase 5: HANDOFF.md + TeamDelete
+```
+
+### 프로젝트 유형별 자동 팀 선발
+
+| 유형 | 팀원 |
+|------|------|
+| 백엔드 전용 | 젠슨 + 베조스 |
+| 프론트엔드 전용 | 팀쿡 + 저커버그 + 베조스 |
+| 풀스택 | 팀쿡 + 저커버그 + 젠슨 + 베조스 |
+| UI 리디자인 | 팀쿡 + 저커버그 |
+| 코드 리뷰/감사 | 베조스 단독 |
+
+### TTH 파일 구조
+
+```
+~/.claude/
+├── commands/tth.md           ← /tth 슬래시 커맨드 (오케스트레이션)
+├── team-roles/
+│   ├── satya.md              ← PO/리드 (Opus)
+│   ├── tim-cook.md           ← 디자이너 (Sonnet)
+│   ├── zuckerberg.md         ← 프론트엔드 (Sonnet)
+│   ├── jensen.md             ← 백엔드 (Sonnet)
+│   └── bezos.md              ← QA (Sonnet)
+└── hooks/
+    ├── verify-task-quality.sh ← TaskCompleted 품질 게이트
+    └── check-remaining-tasks.sh ← TeammateIdle 유휴 방지
+```
+
+> **요구사항**: `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` 환경변수 필요 (settings.json에 포함됨)
+
+---
 
 ## v0.5.0 주요 변경
 
@@ -61,7 +137,9 @@ curl -fsSL https://raw.githubusercontent.com/jh941213/my-claude-code-asset/main/
 | Skills (32개) | ✅ | ✅ |
 | Agents (10개) | ❌ | ✅ |
 | Rules (5개, 조건부) | ❌ | ✅ |
-| Commands (2개) | ❌ | ✅ |
+| Commands (3개) | ❌ | ✅ |
+| TTH Team Roles (5개) | ❌ | ✅ |
+| TTH Hooks (2개) | ❌ | ✅ |
 | CLAUDE.md | ❌ | ✅ |
 | settings.json | ❌ | ✅ |
 
@@ -87,6 +165,8 @@ CLAUDE.md의 "제안"을 settings.json의 "보장"으로 격상:
 | .env 커밋 금지 | 물리적 차단 | PreCommit |
 | console.log 커밋 금지 | 경고 + 차단 | PreCommit |
 | prettier 자동 포맷팅 | 자동 실행 | PostToolUse |
+| TTH 태스크 완료 시 typecheck/lint/test | 품질 게이트 | TaskCompleted |
+| TTH 팀원 유휴 시 남은 태스크 확인 | 유휴 방지 | TeammateIdle |
 
 ## 포함된 스킬 (32개)
 
@@ -165,12 +245,13 @@ curl -fsSL https://github.com/jh941213/my-claude-code-asset/archive/main.tar.gz 
 cp /tmp/my-claude-code-asset-main/agents/*.md ~/.claude/agents/
 ```
 
-## 포함된 Commands (2개)
+## 포함된 Commands (3개)
 
 > **Note**: Commands는 `~/.claude/commands/`에 설치됩니다.
 
 | 커맨드 | 용도 |
 |--------|------|
+| `/tth [설명]` | **NEW** TTH 멀티 에이전트 사일로 (Toss + Tesla + Ralph Loop) |
 | `/prd [아이디어]` | Six Thinking Hats 기반 인사이트 PRD 생성 |
 | `/docs [유형]` | 코드 변경 기반 자동 문서 생성 |
 
@@ -179,7 +260,7 @@ cp /tmp/my-claude-code-asset-main/agents/*.md ~/.claude/agents/
 ```
 /prd [아이디어]  → PRD.md (무엇을, 왜 — Six Hats 인사이트)
 /spec            → SPEC.md (어떻게 — 기술 상세)
-/plan            → 구현 계획 (+ docs-writer 병렬 실행)
+/tth             → 멀티 에이전트 사일로로 자율 구현 (또는 /plan → 수동 구현)
 구현 → /review → /verify → /docs
 ```
 
@@ -278,6 +359,28 @@ curl -fsSL https://raw.githubusercontent.com/jh941213/my-codex-cli-asset/main/in
 ---
 
 ## Changelog
+
+### v0.6.0 (2026-03-03)
+
+**TTH (Toss-Tesla Harness) 멀티 에이전트 사일로**
+- `/tth` 커맨드로 M7 CEO 페르소나 멀티 에이전트 팀 자동 구성
+- Toss 사일로 (DRI, 파일 경계) + Tesla 5-Step (의심→삭제→단순화→가속→자동화)
+- Ralph Loop 반복 수렴 메커니즘 통합 (backpressure, progress.txt 학습 누적)
+- 프로젝트 유형별 동적 팀 선발 (백엔드/프론트/풀스택/리디자인/리뷰)
+- 서브에이전트 기반 컨텍스트 보호 전략
+
+**새로운 파일**
+- `commands/tth.md` - 메인 오케스트레이션 (5 Phase 파이프라인)
+- `team-roles/` - 5개 CEO 페르소나 역할 정의 (satya, tim-cook, zuckerberg, jensen, bezos)
+- `hooks/verify-task-quality.sh` - TaskCompleted 품질 게이트 (Node.js/Python 자동 감지)
+- `hooks/check-remaining-tasks.sh` - TeammateIdle 유휴 방지
+
+**Hooks 추가**
+- `TaskCompleted` - 태스크 완료 시 typecheck/lint/test 자동 실행, 실패 시 차단
+- `TeammateIdle` - 미완료 태스크 있으면 팀원 유휴 방지
+
+**settings.json 변경**
+- `env.CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS` 추가 (Agent Teams 활성화)
 
 ### v0.5.0 (2026-03-02)
 

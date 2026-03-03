@@ -73,6 +73,29 @@
         ]
       }
     ],
+    "TaskCompleted": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/verify-task-quality.sh",
+            "timeout": 120,
+            "statusMessage": "품질 게이트 검증 중..."
+          }
+        ]
+      }
+    ],
+    "TeammateIdle": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/check-remaining-tasks.sh",
+            "statusMessage": "남은 태스크 확인 중..."
+          }
+        ]
+      }
+    ],
     "PostToolUse": [
       {
         "matcher": "Write",
@@ -107,6 +130,9 @@
   },
   "enabledPlugins": {
     "mgrep@Mixedbread-Grep": true
+  },
+  "env": {
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
   },
   "language": "한국어",
   "skipDangerousModePermissionPrompt": true
