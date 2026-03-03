@@ -146,7 +146,7 @@ Phase 5: HANDOFF.md + TeamDelete
 ├── commands/tth.md           ← /tth 슬래시 커맨드 (오케스트레이션)
 ├── team-roles/
 │   ├── satya.md              ← PO/리드 (Opus)
-│   ├── pichai.md             ← 아키텍트 (Sonnet)
+│   ├── pichai.md             ← 아키텍트 (Opus)
 │   ├── tim-cook.md           ← 디자이너 (Sonnet)
 │   ├── zuckerberg.md         ← 프론트엔드 (Sonnet)
 │   ├── jensen.md             ← 백엔드 (Sonnet)
