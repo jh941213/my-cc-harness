@@ -22,6 +22,10 @@
 
 ## TTH 멀티 에이전트 사일로
 
+<div align="center">
+<img src="assets/tth-banner.png" alt="TTH Multi-Agent Harness" width="720" />
+</div>
+
 > **Toss 사일로 + Tesla 5-Step + Ralph Loop = 자율 멀티 에이전트 팀**
 
 `/tth "기능 설명"` 한 줄로 M7 CEO 페르소나 팀이 자율적으로 협업합니다.
