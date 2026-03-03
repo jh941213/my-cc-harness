@@ -71,7 +71,7 @@ https://github.com/jh941213/my-claude-code-asset 저장소의 agents/, rules/, c
 | Agents (10개) | ❌ | ✅ |
 | Rules (5개) | ❌ | ✅ |
 | Commands (3개) | ❌ | ✅ |
-| TTH Team Roles (5개) | ❌ | ✅ |
+| TTH Team Roles (6개) | ❌ | ✅ |
 | TTH Hooks (2개) | ❌ | ✅ |
 | CLAUDE.md | ❌ | ✅ |
 | settings.json | ❌ | ✅ |
@@ -105,6 +105,7 @@ https://github.com/jh941213/my-claude-code-asset 저장소의 agents/, rules/, c
 | 역할 | 이름 | CEO 철학 |
 |------|------|----------|
 | PO/Team Lead | **사티아** (Satya Nadella) | Growth Mindset, 팀 임파워먼트 |
+| Architect | **피차이** (Sundar Pichai) | Platform Thinking, 10x Thinking, Simplicity at Scale |
 | Designer/UX | **팀쿡** (Tim Cook) | Apple 디자인 철학, 완벽주의 |
 | Frontend | **저커버그** (Mark Zuckerberg) | Move Fast, 프로덕트 중심 |
 | Backend | **젠슨** (Jensen Huang) | Intellectual Honesty, 기술적 깊이 |
@@ -131,11 +132,12 @@ Phase 5: HANDOFF.md + TeamDelete
 
 | 유형 | 팀원 |
 |------|------|
-| 백엔드 전용 | 젠슨 + 베조스 |
+| 백엔드 전용 | 피차이 + 젠슨 + 베조스 |
 | 프론트엔드 전용 | 팀쿡 + 저커버그 + 베조스 |
-| 풀스택 | 팀쿡 + 저커버그 + 젠슨 + 베조스 |
+| 풀스택 | 피차이 + 팀쿡 + 저커버그 + 젠슨 + 베조스 |
 | UI 리디자인 | 팀쿡 + 저커버그 |
 | 코드 리뷰/감사 | 베조스 단독 |
+| 아키텍처 리팩토링 | 피차이 + 베조스 |
 
 ### TTH 파일 구조
 
@@ -144,6 +146,7 @@ Phase 5: HANDOFF.md + TeamDelete
 ├── commands/tth.md           ← /tth 슬래시 커맨드 (오케스트레이션)
 ├── team-roles/
 │   ├── satya.md              ← PO/리드 (Opus)
+│   ├── pichai.md             ← 아키텍트 (Sonnet)
 │   ├── tim-cook.md           ← 디자이너 (Sonnet)
 │   ├── zuckerberg.md         ← 프론트엔드 (Sonnet)
 │   ├── jensen.md             ← 백엔드 (Sonnet)
@@ -374,7 +377,7 @@ curl -fsSL https://raw.githubusercontent.com/jh941213/my-codex-cli-asset/main/in
 
 **새로운 파일**
 - `commands/tth.md` - 메인 오케스트레이션 (5 Phase 파이프라인)
-- `team-roles/` - 5개 CEO 페르소나 역할 정의 (satya, tim-cook, zuckerberg, jensen, bezos)
+- `team-roles/` - 6개 CEO 페르소나 역할 정의 (satya, pichai, tim-cook, zuckerberg, jensen, bezos)
 - `hooks/verify-task-quality.sh` - TaskCompleted 품질 게이트 (Node.js/Python 자동 감지)
 - `hooks/check-remaining-tasks.sh` - TeammateIdle 유휴 방지
 

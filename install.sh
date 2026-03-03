@@ -56,7 +56,7 @@ fi
 # team-roles 복사 (TTH)
 if [ -d "$TEMP_DIR/team-roles" ]; then
     cp "$TEMP_DIR/team-roles/"*.md ~/.claude/team-roles/ 2>/dev/null || true
-    echo "   team-roles/ (5개 CEO 페르소나)"
+    echo "   team-roles/ (6개 CEO 페르소나)"
 fi
 
 # hooks 복사 (TTH)
@@ -81,7 +81,7 @@ echo "   - agents/ (10개 에이전트)"
 echo "   - skills/ (32개 스킬)"
 echo "   - rules/ (5개, YAML 조건부 로드)"
 echo "   - commands/ (3개 슬래시 커맨드)"
-echo "   - team-roles/ (5개 TTH CEO 페르소나)"
+echo "   - team-roles/ (6개 TTH CEO 페르소나)"
 echo "   - hooks/ (2개 품질 게이트)"
 echo ""
 echo "TTH 멀티 에이전트 (NEW):"
