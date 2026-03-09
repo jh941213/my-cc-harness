@@ -63,7 +63,37 @@ Growth Mindset으로 팀을 이끌되, 결과에 집중한다.
 
 ### 2-3. 태스크를 스토리로 분해 (Ralph 방식)
 
-각 태스크를 **pass/fail 기준이 있는 스토리**로 분해한다:
+각 태스크를 **pass/fail 기준이 있는 스토리**로 분해한다.
+
+**S0 (최우선):** 피차이의 첫 스토리로 docs/ 초기화를 포함:
+
+```json
+{
+  "id": "S0",
+  "title": "프로젝트 docs/ 구조 초기화",
+  "owner": "피차이",
+  "priority": 0,
+  "passes": false,
+  "acceptance": "docs/ 디렉토리 + ARCHITECTURE.md + index 파일 생성",
+  "verify": "docs/ARCHITECTURE.md 존재 && docs/design-docs/index.md 존재"
+}
+```
+
+docs/ 템플릿 구조:
+```
+docs/
+├── ARCHITECTURE.md          # 전체 아키텍처 맵 (피차이 작성)
+├── QUALITY_SCORE.md         # 도메인별 품질 등급 (베조스 관리)
+├── design-docs/
+│   └── index.md             # ADR 인덱스
+├── exec-plans/
+│   ├── active/              # 진행 중 실행 계획
+│   └── completed/           # 완료된 실행 계획
+└── references/
+    └── index.md             # 외부 참조 인덱스
+```
+
+이후 나머지 스토리:
 
 ```json
 {
@@ -99,7 +129,7 @@ Growth Mindset으로 팀을 이끌되, 결과에 집중한다.
 }
 ```
 
-**스토리 의존성 원칙:** 피차이(아키텍처)와 베조스(삭제 분석)의 S1/S2는 병렬 실행 가능. 나머지 구현 스토리(S3~)는 피차이 완료 후 시작.
+**스토리 의존성 원칙:** S0(docs/ 초기화)가 최우선 완료. S1(삭제 분석)과 S2(아키텍처 설계)는 S0 완료 후 병렬 실행 가능 (`blockedBy: ["S0"]`). 나머지 구현 스토리(S3~)는 피차이의 S2 완료 후 시작.
 
 **스토리 크기 원칙 (Ralph):**
 - 적정: DB 컬럼 추가, UI 컴포넌트 1개, 서버 액션 업데이트
@@ -127,6 +157,16 @@ Growth Mindset으로 팀을 이끌되, 결과에 집중한다.
 ---
 
 ## Phase 3: Ralph Loop 실행
+
+### docs-writer 백그라운드 스폰
+
+Ralph Loop 시작과 동시에 docs-writer를 백그라운드 서브에이전트로 스폰:
+```
+Agent(subagent_type="general-purpose",
+      name="docs-writer",
+      prompt="docs-writer 역할. git diff를 기반으로 docs/ 폴더 문서를 점진적으로 업데이트. progress.txt를 모니터링하고 아키텍처 변경이 감지되면 docs/ARCHITECTURE.md를 동기화한다. 새로운 ADR이 필요하면 docs/design-docs/에 기록한다.",
+      run_in_background=true)
+```
 
 ### Ralph Loop 프로토콜 (모든 팀원 공통)
 
@@ -236,6 +276,14 @@ LOOP (스토리당 최대 3회 반복):
 ---
 
 ## Phase 5: 정리
+
+### 5-0. 최종 문서 업데이트
+
+1. **베조스**: docs/QUALITY_SCORE.md 최종 업데이트 (도메인별 등급)
+2. **docs-writer**: 최종 docs/ 동기화 (ARCHITECTURE.md, ADR 반영)
+3. **사티아**: docs-writer에게 `shutdown_request` 전송하여 종료
+
+### 5-1. HANDOFF.md 작성
 
 1. **HANDOFF.md** 작성:
    ```markdown

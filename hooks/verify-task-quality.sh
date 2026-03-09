@@ -93,5 +93,10 @@ if [ ${#ERRORS[@]} -gt 0 ]; then
   exit 2
 fi
 
+# 아키텍처 불변식 검사 (소프트 게이트 — 경고만, 차단 안 함)
+if [ -f "$HOME/.claude/hooks/check-architecture.sh" ]; then
+  source "$HOME/.claude/hooks/check-architecture.sh"
+fi
+
 echo "✅ 품질 게이트 통과"
 exit 0

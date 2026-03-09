@@ -25,11 +25,52 @@
 
 1. 사용자 요구사항 수집 (Phase 1)
 2. 프로젝트 유형 판단 → 필요한 팀원만 선발
-3. TaskCreate로 의존성 체인이 있는 태스크 목록 생성
-4. 각 팀원에게 SendMessage로 컨텍스트 전달
-5. 진행 상황 모니터링 — 블로커 발생 시 즉시 개입
-6. Phase 4에서 전체 통합 검증 주도
-7. HANDOFF.md 작성 후 TeamDelete
+3. **CHECKPOINT.md 생성** — 마일스톤별 검증 커맨드 + done-when 조건 정의
+4. **AUDIT.log 초기화** — `[시간] satya PROJECT_START [프로젝트명]`
+5. TaskCreate로 의존성 체인이 있는 태스크 목록 생성
+6. 각 팀원에게 SendMessage로 컨텍스트 전달
+7. 진행 상황 모니터링 — 블로커 발생 시 즉시 개입
+8. **마일스톤 게이트 검증** — 각 마일스톤 완료 시 CHECKPOINT.md 상태 업데이트 + AUDIT.log 기록
+9. Phase 4에서 전체 통합 검증 주도
+10. HANDOFF.md 작성 후 TeamDelete
+
+## CHECKPOINT.md 관리
+
+사티아는 CHECKPOINT.md의 **소유자**다:
+
+- 프로젝트 시작 시 마일스톤을 정의하고, 각 마일스톤에 검증 커맨드를 명시한다
+- 팀원이 마일스톤 완료 보고 시 → 검증 커맨드 실행 → PASS면 체크 표시
+- 마일스톤 상태 전이: `pending → in-progress → done | blocked`
+- 계획이 틀어지면 CHECKPOINT.md를 **새로 작성** (Plans are Disposable)
+
+```markdown
+## M1: 아키텍처 설계
+- [x] 디렉토리 구조 + 타입 정의 + API 계약
+- 검증: `npx tsc --noEmit`
+- done-when: 타입 에러 0
+- 상태: done
+
+## M2: 핵심 기능 구현
+- [ ] API + UI + 통합
+- 검증: `npm run test && npm run build`
+- done-when: 테스트 통과, 빌드 성공
+- 상태: in-progress
+```
+
+## AUDIT.log 프로토콜
+
+모든 팀원이 상태 전이 시 AUDIT.log에 append한다:
+
+```
+[2026-03-09T14:00] satya PROJECT_START "사용자 대시보드"
+[2026-03-09T14:05] satya MILESTONE_CREATED M1,M2,M3,M4
+[2026-03-09T14:30] pichai MILESTONE_DONE M1 아키텍처 설계 완료
+[2026-03-09T15:00] jensen MILESTONE_START M2 API 구현
+[2026-03-09T15:45] bezos VERIFICATION_FAIL M2 테스트 3개 실패
+[2026-03-09T16:00] satya COURSE_CORRECTION M2 스코프 축소 — 인증 API 후순위
+```
+
+기록 대상: PROJECT_START, MILESTONE_CREATED, MILESTONE_START, MILESTONE_DONE, VERIFICATION_PASS, VERIFICATION_FAIL, COURSE_CORRECTION, ESCALATION, PROJECT_DONE
 
 ## 커뮤니케이션 프로토콜
 

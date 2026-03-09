@@ -53,6 +53,36 @@
 3. 완료된 항목 체크, 각 단계마다 고수준 요약
 4. 수정받으면 `tasks/lessons.md`에 패턴 기록 (자기 개선 루프)
 
+## Long-Horizon 실행 패턴
+
+3단계 이상 또는 멀티세션 작업 시 내구성 있는 프로젝트 메모리를 사용한다.
+
+### 내구성 파일 스택
+
+| 파일 | 목적 | 생성 시점 |
+|------|------|----------|
+| `CHECKPOINT.md` | 마일스톤 + 검증 커맨드 + done-when | /plan 또는 TTH 시작 시 |
+| `AUDIT.log` | append-only 이벤트 스트림 | 첫 마일스톤 시작 시 |
+| `progress.txt` | 패턴, gotcha, 실패 교훈 (기존) | 팀 작업 시작 시 |
+
+### CHECKPOINT.md 형식
+
+마일스톤마다 검증 가능한 완료 조건을 명시:
+```
+## M1: [마일스톤명]
+- [ ] 설명
+- 검증: `npm run typecheck && npm run test`
+- done-when: 타입 에러 0, 테스트 통과
+- 상태: pending | in-progress | done | blocked
+```
+
+### AUDIT.log 규칙
+
+- 마일스톤 시작/완료, 검증 결과, 에스컬레이션, 코스 코렉션만 기록
+- 형식: `[ISO시간] [에이전트/사용자] [액션] [결과]`
+- 디버깅 로그가 아님 — 의사결정과 상태 전이만 기록
+- 예: `[2026-03-09T14:30] pichai MILESTONE_DONE M1 아키텍처 설계 완료`
+
 ## 컨텍스트 관리
 
 **컨텍스트는 신선한 우유. 시간이 지나면 상한다.**
@@ -92,3 +122,19 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 - 세션 1: /spec → 심층 인터뷰 → SPEC.md 생성
 - 세션 2: "SPEC.md 읽고 구현해줘"
 - 세션 3: /spec-verify → 명세서 대비 검증
+
+## Knowledge Map
+
+에이전트가 더 깊은 정보가 필요할 때 참조할 위치:
+
+| 카테고리 | 위치 | 설명 |
+|----------|------|------|
+| 코딩 규칙 | `~/.claude/rules/` | coding-style, security, testing, performance, git-workflow |
+| 에이전트 역할 | `~/.claude/agents/` | code-reviewer, architect, planner 등 |
+| 스킬 워크플로우 | `~/.claude/skills/` | plan, spec, verify, frontend, harness-diagnostics 등 |
+| TTH 팀 역할 | `~/.claude/team-roles/` | satya, pichai, jensen, tim-cook, zuckerberg, bezos |
+| 프로젝트 지식 | `{project}/docs/` | ARCHITECTURE.md, design-docs/, QUALITY_SCORE.md |
+| 세션 학습 | `{project}/progress.txt` | 팀 공유 메모리 (패턴, gotcha, 실패 교훈) |
+| 마일스톤 추적 | `{project}/CHECKPOINT.md` | 마일스톤 정의 + 검증 커맨드 + done-when |
+| 감사 로그 | `{project}/AUDIT.log` | append-only 이벤트 스트림 (상태 전이 기록) |
+| 지속 메모리 | `~/.claude/projects/*/memory/` | 프로젝트별 영속 메모리 |

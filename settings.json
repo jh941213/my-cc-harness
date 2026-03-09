@@ -1,4 +1,8 @@
 {
+  "env": {
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
+    "CLAUDE_CODE_TEAMMATE_MODE": "tmux"
+  },
   "permissions": {
     "allow": [
       "Bash(git status:*)",
@@ -114,11 +118,9 @@
             "command": "if echo \"$CLAUDE_FILE_PATH\" | grep -qE '\\.(ts|tsx|js|jsx)$'; then if command -v prettier &>/dev/null; then prettier --write \"$CLAUDE_FILE_PATH\" 2>/dev/null; fi; fi; exit 0"
           }
         ]
-      }
-    ],
-    "PreCommit": [
+      },
       {
-        "matcher": "*",
+        "matcher": "Bash(git commit*)",
         "hooks": [
           {
             "type": "command",
@@ -131,8 +133,13 @@
   "enabledPlugins": {
     "mgrep@Mixedbread-Grep": true
   },
-  "env": {
-    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
+  "extraKnownMarketplaces": {
+    "anthropic-agent-skills": {
+      "source": {
+        "source": "github",
+        "repo": "anthropics/skills"
+      }
+    }
   },
   "language": "한국어",
   "skipDangerousModePermissionPrompt": true
