@@ -1,6 +1,10 @@
 ---
 name: commit-push-pr
-description: 변경사항 커밋, 푸시, PR 생성을 한 번에 수행. "커밋", "PR", "푸시" 키워드에 활성화.
+description: >
+  변경사항 커밋, 푸시, PR 생성을 한 번에 수행하는 워크플로우.
+  트리거: "커밋", "PR 만들어", "푸시해", "PR 생성", "commit and push", "커밋하고 푸시", "PR 올려"
+  안티-트리거: "코드 리뷰", "git log 확인", "diff 보여줘", "브랜치 목록"
+user-invocable: true
 disable-model-invocation: true
 allowed-tools: Bash, Read
 ---

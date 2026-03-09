@@ -1,6 +1,10 @@
 ---
 name: e2e-agent-browser
-description: agent-browser CLI를 활용한 E2E 테스트 자동화. 스냅샷 기반 접근성 트리와 ref 시스템으로 안정적인 브라우저 테스트를 수행합니다. "E2E", "브라우저 테스트", "agent-browser" 키워드에 활성화.
+description: >
+  agent-browser CLI를 활용한 E2E 테스트 자동화. 스냅샷 기반 접근성 트리와 ref 시스템으로 안정적인 브라우저 테스트를 수행.
+  트리거: "E2E", "브라우저 테스트", "agent-browser", "e2e 테스트 작성", "E2E 테스트", "브라우저 자동화"
+  안티-트리거: "유닛 테스트", "API 테스트", "pytest", "Jest 테스트만", "Playwright 직접 사용"
+user-invocable: false
 ---
 
 # E2E Testing with agent-browser

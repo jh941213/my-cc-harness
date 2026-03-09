@@ -1,3 +1,11 @@
+---
+name: spec
+description: "SPEC 기반 개발 인터뷰 — 심층 질문을 통해 상세한 SPEC.md 명세서를 생성합니다. Triggers on: 스펙, spec, 명세서, 인터뷰, 기능 설계. NOT for: 바로 구현, 간단한 수정, 코드 작성."
+user-invocable: true
+disable-model-invocation: true
+allowed-tools: Read, Write, Edit
+---
+
 # SPEC 기반 개발 - 인터뷰
 
 Anthropic 엔지니어 Thariq의 SPEC 기반 개발 워크플로우입니다.

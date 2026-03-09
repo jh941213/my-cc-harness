@@ -1,7 +1,11 @@
 ---
 name: react-patterns
 version: 2.0.0
-description: Comprehensive React 19 patterns expert covering Server Components, Actions, use() hook, useOptimistic, useFormStatus, useFormState, React Compiler, concurrent features, Suspense, and modern TypeScript development. Proactively use for any React development, component architecture, state management, performance optimization, or when implementing React 19's latest features.
+description: |
+  Comprehensive React 19 patterns expert covering Server Components, Actions, use() hook, useOptimistic, useFormStatus, useFormState, React Compiler, concurrent features, Suspense, and modern TypeScript development.
+  트리거: "React", "컴포넌트", "hooks", "JSX/TSX", "상태 관리"
+  안티-트리거: "Vue", "Svelte", "Angular", "백엔드"
+user-invocable: false
 language: typescript,javascript,tsx,jsx
 framework: react
 license: MIT

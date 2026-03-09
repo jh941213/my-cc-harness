@@ -1,6 +1,7 @@
 ---
 name: simplify
-description: 코드 단순화 및 리팩토링. "단순화", "simplify", "리팩토링" 키워드에 활성화.
+description: "코드 단순화 및 리팩토링 — 변경된 코드를 리뷰하고 불필요한 추상화, 중복, 복잡성을 제거합니다. Triggers on: 단순화, simplify, 리팩토링, 코드 정리, 코드 개선. NOT for: 새 기능 추가, 버그 수정."
+user-invocable: true
 disable-model-invocation: false
 allowed-tools: Read, Edit, Grep
 ---

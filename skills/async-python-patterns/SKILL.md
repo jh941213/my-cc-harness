@@ -1,6 +1,10 @@
 ---
 name: async-python-patterns
-description: Master Python asyncio, concurrent programming, and async/await patterns for high-performance applications. Use when building async APIs, concurrent systems, or I/O-bound applications requiring non-blocking operations.
+description: >
+  Python asyncio 및 async/await 패턴 가이드. 비동기 API, 동시성 시스템, I/O 바운드 애플리케이션 구축 시 활용.
+  트리거: "asyncio", "async/await", "비동기 Python", "concurrent", "aiohttp", "비동기 패턴"
+  안티-트리거: "동기 Python", "JavaScript async", "Go goroutine", "멀티프로세싱만"
+user-invocable: false
 ---
 
 # Async Python Patterns

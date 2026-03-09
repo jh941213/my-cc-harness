@@ -1,6 +1,7 @@
 ---
 name: verify
-description: 작업 완료 후 코드 검증 (타입체크, 린트, 테스트, 빌드). "검증", "verify", "테스트", "빌드" 키워드에 활성화.
+description: "작업 완료 후 코드 검증 (타입체크, 린트, 테스트, 빌드). Triggers on: 검증, verify, 테스트 돌려, 빌드 확인, 타입체크. NOT for: E2E 테스트, 코드 작성, 구현."
+user-invocable: true
 disable-model-invocation: false
 allowed-tools: Read, Bash, Grep
 ---

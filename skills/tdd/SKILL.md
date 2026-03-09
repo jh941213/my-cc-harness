@@ -1,8 +1,9 @@
 ---
 name: tdd
-description: 테스트 주도 개발 - 테스트 먼저 작성 후 구현. "TDD", "테스트 먼저", "테스트 주도" 키워드에 활성화.
+description: 테스트 주도 개발 - 테스트 먼저 작성 후 구현. 트리거: "TDD", "테스트 먼저", "테스트 주도", "RED-GREEN-REFACTOR". 안티-트리거: "구현 먼저", "테스트 나중에".
 disable-model-invocation: false
 allowed-tools: Read, Write, Edit, Bash
+user-invocable: true
 ---
 
 # TDD (테스트 주도 개발)

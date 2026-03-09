@@ -1,6 +1,7 @@
 ---
 name: tailwind-design-system
-description: Build scalable design systems with Tailwind CSS, design tokens, component libraries, and responsive patterns. Use when creating component libraries, implementing design systems, or standardizing UI patterns.
+description: Build scalable design systems with Tailwind CSS, design tokens, component libraries, and responsive patterns. Use when creating component libraries, implementing design systems, or standardizing UI patterns. Triggers on "Tailwind", "디자인 시스템", "디자인 토큰", "컴포넌트 라이브러리", "Tailwind 설정". Anti-triggers: "Bootstrap", "순수 CSS", "CSS-in-JS".
+user-invocable: false
 ---
 
 # Tailwind Design System

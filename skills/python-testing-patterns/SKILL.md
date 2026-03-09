@@ -1,6 +1,10 @@
 ---
 name: python-testing-patterns
-description: Implement comprehensive testing strategies with pytest, fixtures, mocking, and test-driven development. Use when writing Python tests, setting up test suites, or implementing testing best practices.
+description: |
+  Implement comprehensive testing strategies with pytest, fixtures, mocking, and test-driven development.
+  트리거: "pytest", "Python 테스트", "fixture", "mocking", "테스트 작성"
+  안티-트리거: "JavaScript 테스트", "Jest", "E2E 테스트"
+user-invocable: false
 ---
 
 # Python Testing Patterns

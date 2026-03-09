@@ -1,6 +1,7 @@
 ---
 name: stitch-loop
-description: Stitch를 사용하여 자율적으로 멀티 페이지 웹사이트를 생성하는 반복 빌드 루프 패턴. "Stitch 루프", "웹사이트 생성", "멀티 페이지" 키워드에 활성화.
+description: "Stitch를 사용하여 자율적으로 멀티 페이지 웹사이트를 생성하는 반복 빌드 루프 패턴 — 바통 시스템으로 지속적 웹사이트 개발. Triggers on: Stitch 루프, 웹사이트 생성, 멀티 페이지, 빌드 루프. NOT for: 단일 페이지, React 앱."
+user-invocable: true
 allowed-tools:
   - "stitch*:*"
   - "mcp__stitch*"

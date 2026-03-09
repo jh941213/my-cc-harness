@@ -1,6 +1,7 @@
 ---
 name: handoff
-description: 세션 종료 전 HANDOFF.md 작업 인계 문서 생성. "인계", "handoff", "세션 정리" 키워드에 활성화.
+description: "세션 종료 전 HANDOFF.md 작업 인계 문서 생성. Triggers on: 인계, handoff, 세션 정리, HANDOFF.md, 작업 넘기기. NOT for: 코드 작성, 리뷰."
+user-invocable: true
 disable-model-invocation: true
 allowed-tools: Read, Write, Bash
 ---
@@ -53,3 +54,9 @@ allowed-tools: Read, Write, Bash
 - 복잡한 작업 중간에
 
 새 세션에서 "HANDOFF.md 읽고 이어서 작업해줘"라고 하면 됩니다.
+
+## HANDOFF.md 크기 가이드라인
+- 최대 100줄, 3000자 이내 목표
+- 코드 스니펫은 최소한으로 (파일 경로만 기록)
+- 핵심 컨텍스트만 기록, 세부사항은 코드에서 확인
+- 새 세션의 초기 토큰 소비를 줄여 캐시 워밍업 비용 절약

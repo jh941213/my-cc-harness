@@ -1,6 +1,6 @@
 ---
 name: compact-guide
-description: 컨텍스트 관리 가이드. "컨텍스트", "토큰", "compact" 키워드에 활성화.
+description: "컨텍스트 윈도우 관리 및 토큰 최적화 가이드. Triggers on: 컨텍스트, 토큰, compact, 메모리 관리. NOT for: 코드 작성, 디버깅."
 disable-model-invocation: false
 user-invocable: true
 ---
@@ -52,3 +52,21 @@ user-invocable: true
 
 ## 주의
 200k 토큰까지 쓸 수 있지만, 80-100k 넘으면 품질 저하!
+
+## 캐시 관점의 컨텍스트 관리
+
+### /compact가 유리한 이유
+- 시스템 프롬프트 + 도구 정의의 prefix 캐시가 유지됨
+- 대화 메시지만 요약되므로 매 턴 캐시 히트 가능
+- /clear보다 비용이 크게 낮음
+
+### /clear의 숨겨진 비용
+- 전체 prefix 캐시 무효화 (시스템 프롬프트 + 도구 + CLAUDE.md + rules/ 재계산)
+- HANDOFF.md 로드 시 추가 토큰 발생
+- 다음 API 호출부터 캐시 워밍업 필요
+
+### Compaction 타이밍 가이드
+- 50-70k 토큰: 첫 /compact (여유 있을 때 미리)
+- 80-100k 토큰: 두 번째 /compact 또는 /handoff 준비
+- /compact 후에도 80k 이상이면: /handoff → /clear → 새 세션
+- 150k 이상에서 compact하지 않기 (buffer 부족 위험)

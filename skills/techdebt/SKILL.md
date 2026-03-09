@@ -1,8 +1,9 @@
 ---
 name: techdebt
-description: 기술 부채 정리 - 중복 코드, console.log, 사용하지 않는 import 등 검사 및 정리. 세션 종료 전 사용 권장.
+description: 기술 부채 정리 - 중복 코드, console.log, 사용하지 않는 import 등 검사 및 정리. 세션 종료 전 사용 권장. 트리거: "기술 부채", "techdebt", "console.log 정리", "사용하지 않는 import", "코드 정리". 안티-트리거: "새 기능 추가", "리팩토링".
 disable-model-invocation: true
 allowed-tools: Read, Grep, Glob, Edit, Bash
+user-invocable: true
 ---
 
 # 기술 부채 정리
