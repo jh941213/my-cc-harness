@@ -380,6 +380,12 @@ curl -fsSL https://raw.githubusercontent.com/jh941213/my-codex-cli-asset/main/in
 <details>
 <summary><b>v0.7.0 (2026-03-09) — Long-Horizon 실행 패턴 + 마일스톤 게이트</b></summary>
 
+**Skills 2.0 마이그레이션**
+- 전체 30개 스킬 SKILL.md frontmatter 업데이트
+- `user-invocable` 필드 명시 추가 (슬래시 커맨드 호출 가능 여부)
+- description 구조화: 트리거/안티-트리거 분리 (한 줄 → 멀티라인 블록)
+- `allowed-tools` 정리
+
 **Long-Horizon 실행 패턴**
 - CLAUDE.md에 CHECKPOINT.md / AUDIT.log 내구성 파일 스택 추가
 - Knowledge Map 테이블 추가 (에이전트/스킬/팀역할/프로젝트 문서 참조 위치)
