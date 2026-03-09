@@ -4,9 +4,9 @@
 
 <img src="assets/banner.png" alt="Claude Code Power Pack" width="720" />
 
-[![Version](https://img.shields.io/badge/version-0.6.0-7C3AED.svg?style=for-the-badge)](https://github.com/jh941213/my-claude-code-asset)
+[![Version](https://img.shields.io/badge/version-0.7.0-7C3AED.svg?style=for-the-badge)](https://github.com/jh941213/my-claude-code-asset)
 [![License](https://img.shields.io/badge/license-MIT-E87C3E.svg?style=for-the-badge)](LICENSE)
-[![Skills](https://img.shields.io/badge/skills-32-blue.svg?style=for-the-badge)](#-스킬-32개)
+[![Skills](https://img.shields.io/badge/skills-31-blue.svg?style=for-the-badge)](#-스킬-31개)
 [![Agents](https://img.shields.io/badge/agents-10-green.svg?style=for-the-badge)](#-에이전트-10개)
 [![TTH](https://img.shields.io/badge/TTH-Multi--Agent-ff6b35.svg?style=for-the-badge)](#-tth-멀티-에이전트-사일로)
 
@@ -16,7 +16,7 @@
 
 ---
 
-**32개 스킬** | **10개 에이전트** | **5개 조건부 Rules** | **Hooks 보장 시스템** | **TTH 멀티 에이전트**
+**31개 스킬** | **10개 에이전트** | **5개 조건부 Rules** | **Hooks 보장 시스템** | **TTH 멀티 에이전트**
 
 </div>
 
@@ -28,7 +28,7 @@
 - [TTH 멀티 에이전트 사일로](#-tth-멀티-에이전트-사일로)
 - [CLAUDE.md 최적화 철학](#-claudemd-최적화-철학)
 - [Hooks 보장 시스템](#-hooks-보장-시스템)
-- [스킬 (32개)](#-스킬-32개)
+- [스킬 (31개)](#-스킬-31개)
 - [에이전트 (10개)](#-에이전트-10개)
 - [Commands (3개)](#-commands-3개)
 - [Rules (5개)](#-rules-5개-조건부-로드)
@@ -67,7 +67,7 @@ https://github.com/jh941213/my-claude-code-asset 저장소의 agents/, rules/, c
 
 | 항목 | 플러그인 설치 | 전체 설정 |
 |------|:---:|:---:|
-| Skills (32개) | ✅ | ✅ |
+| Skills (31개) | ✅ | ✅ |
 | Agents (10개) | ❌ | ✅ |
 | Rules (5개) | ❌ | ✅ |
 | Commands (3개) | ❌ | ✅ |
@@ -111,6 +111,16 @@ https://github.com/jh941213/my-claude-code-asset 저장소의 agents/, rules/, c
 | Backend | **젠슨** (Jensen Huang) | Intellectual Honesty, 기술적 깊이 |
 | QA | **베조스** (Jeff Bezos) | Customer Obsession, "?" 이메일 |
 
+### Long-Horizon 실행 패턴
+
+3단계 이상 또는 멀티세션 작업 시, 내구성 있는 프로젝트 메모리를 자동 생성합니다:
+
+| 파일 | 관리자 | 목적 |
+|------|--------|------|
+| `CHECKPOINT.md` | 사티아 (생성) + 피차이 (검증 커맨드) | 마일스톤 정의 + 검증 + done-when |
+| `AUDIT.log` | 사티아 (기록) + 베조스 (게이트) | append-only 이벤트 스트림 |
+| `progress.txt` | 전체 팀 | 패턴, gotcha, 실패 교훈 |
+
 ### 파이프라인
 
 ```
@@ -118,12 +128,13 @@ Phase 0: 사티아 활성화 (PO 모드)
     ↓
 Phase 1: 요구사항 의심 (Musk Step 1)
     ↓
-Phase 2: 동적 팀 선발 + 스토리 분해
+Phase 2: 동적 팀 선발 + 스토리 분해 + CHECKPOINT.md 생성
     ↓
 Phase 3: Ralph Loop 병렬 실행
          (자체 검증 → pass/fail → 재시도 → 학습 누적)
+         마일스톤마다 AUDIT.log 기록
     ↓
-Phase 4: 통합 & 리뷰 (품질 게이트)
+Phase 4: 통합 & 리뷰 (베조스 마일스톤 게이트 검증)
     ↓
 Phase 5: HANDOFF.md + TeamDelete
 ```
@@ -145,14 +156,15 @@ Phase 5: HANDOFF.md + TeamDelete
 ~/.claude/
 ├── commands/tth.md           ← /tth 슬래시 커맨드 (오케스트레이션)
 ├── team-roles/
-│   ├── satya.md              ← PO/리드 (Opus)
-│   ├── pichai.md             ← 아키텍트 (Opus)
+│   ├── satya.md              ← PO/리드 (Opus) — CHECKPOINT.md, AUDIT.log 관리
+│   ├── pichai.md             ← 아키텍트 (Opus) — 마일스톤 검증 커맨드 정의
 │   ├── tim-cook.md           ← 디자이너 (Sonnet)
 │   ├── zuckerberg.md         ← 프론트엔드 (Sonnet)
 │   ├── jensen.md             ← 백엔드 (Sonnet)
-│   └── bezos.md              ← QA (Sonnet)
+│   └── bezos.md              ← QA (Sonnet) — 마일스톤 게이트 최종 검증
 └── hooks/
     ├── verify-task-quality.sh ← TaskCompleted 품질 게이트
+    ├── check-architecture.sh  ← 아키텍처 불변성 체크
     └── check-remaining-tasks.sh ← TeammateIdle 유휴 방지
 ```
 
@@ -166,7 +178,7 @@ Phase 5: HANDOFF.md + TeamDelete
 
 **"Claude가 코드를 읽어도 알 수 없는 것만 적어라."**
 
-- 200줄 이내 (현재 94줄)
+- 200줄 이내 (현재 140줄)
 - 발견 가능한 정보 제거 (스킬 목록, 에이전트 목록, 코드베이스 개요)
 - 린터로 강제 가능한 규칙은 hooks로 이동
 - Auto Memory(MEMORY.md)와 역할 분리
@@ -185,18 +197,17 @@ CLAUDE.md의 "제안"을 settings.json의 "보장"으로 격상:
 | console.log 커밋 금지 | 경고 + 차단 | PreCommit |
 | prettier 자동 포맷팅 | 자동 실행 | PostToolUse |
 | TTH 태스크 완료 시 typecheck/lint/test | 품질 게이트 | TaskCompleted |
+| 아키텍처 불변성 위반 감지 | 구조 보호 | TaskCompleted |
 | TTH 팀원 유휴 시 남은 태스크 확인 | 유휴 방지 | TeammateIdle |
 
 ---
 
-## 🛠 스킬 (32개)
+## 🛠 스킬 (31개)
 
-### 워크플로우 스킬 (16개)
+### 워크플로우 스킬 (15개)
 
 | 스킬 | 용도 |
 |------|------|
-| `/ccpp:prd` | 인사이트 중심 PRD 생성 (Six Thinking Hats + 시장 리서치 + 5라운드 인터뷰) |
-| `/ccpp:docs` | 코드 변경 기반 자동 문서 생성 |
 | `/ccpp:plan` | 작업 계획 수립 |
 | `/ccpp:spec` | SPEC 기반 개발 - 심층 인터뷰로 명세서 작성 |
 | `/ccpp:spec-verify` | 명세서 기반 구현 검증 |
@@ -211,6 +222,7 @@ CLAUDE.md의 "제안"을 settings.json의 "보장"으로 격상:
 | `/ccpp:handoff` | HANDOFF.md 세션 인계 |
 | `/ccpp:compact-guide` | 컨텍스트 관리 가이드 |
 | `/ccpp:techdebt` | 기술 부채 정리 |
+| `/ccpp:harness-diagnostics` | TTH 하네스 진단 및 디버깅 |
 
 ### 기술 스킬 (10개)
 
@@ -336,7 +348,7 @@ cp /tmp/my-claude-code-asset-main/agents/*.md ~/.claude/agents/
 
 | | Claude Code Power Pack | Codex CLI Power Pack |
 |---|:---:|:---:|
-| **Skills** | 32개 (`/ccpp:skill`) | 33개 (`$skill`) |
+| **Skills** | 31개 (`/ccpp:skill`) | 33개 (`$skill`) |
 | **Agents** | 10개 (서브에이전트) | AGENTS.md 통합 |
 | **Rules** | 5개 (YAML 조건부 로드) | AGENTS.md 통합 |
 | **Hooks** | settings.json 물리 차단 | config.toml |
@@ -364,6 +376,32 @@ curl -fsSL https://raw.githubusercontent.com/jh941213/my-codex-cli-asset/main/in
 ---
 
 ## 📋 Changelog
+
+<details>
+<summary><b>v0.7.0 (2026-03-09) — Long-Horizon 실행 패턴 + 마일스톤 게이트</b></summary>
+
+**Long-Horizon 실행 패턴**
+- CLAUDE.md에 CHECKPOINT.md / AUDIT.log 내구성 파일 스택 추가
+- Knowledge Map 테이블 추가 (에이전트/스킬/팀역할/프로젝트 문서 참조 위치)
+
+**TTH 마일스톤 게이트**
+- satya: CHECKPOINT.md 생성/관리 + AUDIT.log 프로토콜 (9개 이벤트 타입)
+- pichai: 마일스톤별 실행 가능한 검증 커맨드 정의
+- bezos: 마일스톤 게이트 최종 검증 (CHECKPOINT.md 실행 → AUDIT.log 기록)
+
+**새로운 파일**
+- `hooks/check-architecture.sh` - 아키텍처 불변성 체크
+- `skills/harness-diagnostics/SKILL.md` - TTH 하네스 진단 스킬
+
+**변경사항**
+- `settings.json` - TEAMMATE_MODE tmux, hook matcher 개선, extraKnownMarketplaces
+- `commands/tth.md` - 태스크 분해 섹션 확장
+- `hooks/verify-task-quality.sh` - check-architecture 연동
+
+**삭제**
+- `skills/docs/`, `skills/prd/` - 커맨드(/docs, /prd)로 완전 이전
+
+</details>
 
 <details>
 <summary><b>v0.6.0 (2026-03-03) — TTH 멀티 에이전트 사일로</b></summary>
