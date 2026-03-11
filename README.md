@@ -4,11 +4,12 @@
 
 <img src="assets/banner.png" alt="Claude Code Power Pack" width="720" />
 
-[![Version](https://img.shields.io/badge/version-0.7.0-7C3AED.svg?style=for-the-badge)](https://github.com/jh941213/my-claude-code-asset)
+[![Version](https://img.shields.io/badge/version-0.8.0-7C3AED.svg?style=for-the-badge)](https://github.com/jh941213/my-claude-code-asset)
 [![License](https://img.shields.io/badge/license-MIT-E87C3E.svg?style=for-the-badge)](LICENSE)
-[![Skills](https://img.shields.io/badge/skills-31-blue.svg?style=for-the-badge)](#-스킬-31개)
-[![Agents](https://img.shields.io/badge/agents-10-green.svg?style=for-the-badge)](#-에이전트-10개)
+[![Skills](https://img.shields.io/badge/skills-33-blue.svg?style=for-the-badge)](#-스킬-33개)
+[![Agents](https://img.shields.io/badge/agents-11-green.svg?style=for-the-badge)](#-에이전트-11개)
 [![TTH](https://img.shields.io/badge/TTH-Multi--Agent-ff6b35.svg?style=for-the-badge)](#-tth-멀티-에이전트-사일로)
+[![AutoDev](https://img.shields.io/badge/AutoDev-Autonomous-00d4aa.svg?style=for-the-badge)](#-autodev-자율-실험-루프)
 
 **실무에서 바로 쓸 수 있는 Claude Code 최적 에이전트 하네스**
 
@@ -16,7 +17,7 @@
 
 ---
 
-**31개 스킬** | **10개 에이전트** | **5개 조건부 Rules** | **Hooks 보장 시스템** | **TTH 멀티 에이전트**
+**33개 스킬** | **11개 에이전트** | **5개 조건부 Rules** | **Hooks 보장 시스템** | **TTH 멀티 에이전트** | **AutoDev 자율 실험**
 
 </div>
 
@@ -25,11 +26,12 @@
 ## 목차
 
 - [설치](#-설치)
+- [AutoDev 자율 실험 루프](#-autodev-자율-실험-루프)
 - [TTH 멀티 에이전트 사일로](#-tth-멀티-에이전트-사일로)
 - [CLAUDE.md 최적화 철학](#-claudemd-최적화-철학)
 - [Hooks 보장 시스템](#-hooks-보장-시스템)
-- [스킬 (31개)](#-스킬-31개)
-- [에이전트 (10개)](#-에이전트-10개)
+- [스킬 (33개)](#-스킬-33개)
+- [에이전트 (11개)](#-에이전트-11개)
 - [Commands (3개)](#-commands-3개)
 - [Rules (5개)](#-rules-5개-조건부-로드)
 - [Boris Cherny 팁](#-boris-cherny-팁)
@@ -67,14 +69,99 @@ https://github.com/jh941213/my-claude-code-asset 저장소의 agents/, rules/, c
 
 | 항목 | 플러그인 설치 | 전체 설정 |
 |------|:---:|:---:|
-| Skills (31개) | ✅ | ✅ |
-| Agents (10개) | ❌ | ✅ |
+| Skills (33개) | ✅ | ✅ |
+| Agents (11개) | ❌ | ✅ |
 | Rules (5개) | ❌ | ✅ |
 | Commands (3개) | ❌ | ✅ |
 | TTH Team Roles (6개) | ❌ | ✅ |
 | TTH Hooks (2개) | ❌ | ✅ |
 | CLAUDE.md | ❌ | ✅ |
 | settings.json | ❌ | ✅ |
+
+---
+
+## 🔬 AutoDev 자율 실험 루프
+
+<div align="center">
+<img src="assets/autodev-banner.png" alt="AutoDev - AI works while you sleep" width="720" />
+</div>
+
+> **Karpathy의 [autoresearch](https://github.com/karpathy/autoresearch) 패턴을 일반 소프트웨어 개발에 적용**
+
+AI 에이전트가 코드를 수정하고, 테스트/빌드로 검증하고, keep/discard를 반복하며 **자율적으로 코드를 개선**합니다.
+사람이 자는 동안 수십 번의 실험을 자동으로 수행합니다.
+
+```
+/autodev
+> goal: "실패하는 테스트 전부 통과시켜"
+> scope: ["src/**"]
+> budget: 50
+```
+
+### autoresearch → AutoDev 매핑
+
+| autoresearch | AutoDev |
+|---|---|
+| `val_bpb` (단일 지표) | `autodev-judge.sh` (빌드/테스트/린트 종합 스코어) |
+| `train.py` 1개 파일 | scope 내 파일들 |
+| `program.md` | `/autodev` 스킬 |
+| 5분 학습 | `npm test` / `pytest` |
+| `results.tsv` | `.autodev/results.tsv` |
+| NEVER STOP | budget 소진까지 NEVER STOP |
+
+### 실험 루프
+
+```
+LOOP (budget 소진까지):
+  1. 코드 수정 (scope 내 파일만)
+  2. git commit
+  3. 테스트/빌드 실행
+  4. 스코어 계산 (autodev-judge.sh)
+  5. 향상 → KEEP (브랜치 전진)
+     악화 → DISCARD (git reset)
+  6. 반복
+```
+
+### 병렬 모드 (`/autodev-parallel`)
+
+여러 아이디어를 git worktree로 **동시에** 실험합니다.
+
+```
+/autodev-parallel
+> goal: "API 응답시간 최적화"
+> scope: ["src/api/**"]
+> parallel: 3
+> rounds: 5
+```
+
+```
+main
+ ├── worktree A ── Agent 1: 캐시 레이어 추가
+ ├── worktree B ── Agent 2: 쿼리 최적화
+ ├── worktree C ── Agent 3: 인덱스 변경
+ └── Orchestrator: 결과 수집 → 최고 브랜치 cherry-pick
+```
+
+### 적합한 사용 사례
+
+| 시나리오 | 지표 |
+|----------|------|
+| 실패 테스트 일괄 수정 | 테스트 통과율 |
+| 성능 최적화 탐색 | 벤치마크 / Lighthouse |
+| TypeScript strict 마이그레이션 | 타입 에러 수 |
+| 의존성 메이저 업그레이드 | 빌드 + 테스트 통과 |
+| 레거시 리팩토링 | 테스트 유지 + 코드 줄 수 |
+
+### AutoDev 파일 구조
+
+```
+~/.claude/
+├── skills/
+│   ├── autodev/SKILL.md          ← 단일 실험 루프
+│   └── autodev-parallel/SKILL.md ← 병렬 워크트리 오케스트레이터
+└── hooks/
+    └── autodev-judge.sh          ← 스코어 판정 함수
+```
 
 ---
 
@@ -162,10 +249,14 @@ Phase 5: HANDOFF.md + TeamDelete
 │   ├── zuckerberg.md         ← 프론트엔드 (Sonnet)
 │   ├── jensen.md             ← 백엔드 (Sonnet)
 │   └── bezos.md              ← QA (Sonnet) — 마일스톤 게이트 최종 검증
-└── hooks/
-    ├── verify-task-quality.sh ← TaskCompleted 품질 게이트
-    ├── check-architecture.sh  ← 아키텍처 불변성 체크
-    └── check-remaining-tasks.sh ← TeammateIdle 유휴 방지
+├── hooks/
+│   ├── verify-task-quality.sh ← TaskCompleted 품질 게이트
+│   ├── check-architecture.sh  ← 아키텍처 불변성 체크
+│   ├── check-remaining-tasks.sh ← TeammateIdle 유휴 방지
+│   └── autodev-judge.sh       ← AutoDev 스코어 판정
+└── skills/
+    ├── autodev/SKILL.md       ← 자율 실험 루프
+    └── autodev-parallel/SKILL.md ← 병렬 워크트리 오케스트레이터
 ```
 
 > **요구사항**: `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` 환경변수 필요 (settings.json에 포함됨)
@@ -199,10 +290,18 @@ CLAUDE.md의 "제안"을 settings.json의 "보장"으로 격상:
 | TTH 태스크 완료 시 typecheck/lint/test | 품질 게이트 | TaskCompleted |
 | 아키텍처 불변성 위반 감지 | 구조 보호 | TaskCompleted |
 | TTH 팀원 유휴 시 남은 태스크 확인 | 유휴 방지 | TeammateIdle |
+| AutoDev 스코어 판정 | 빌드/테스트/린트 종합 스코어 | autodev-judge.sh |
 
 ---
 
-## 🛠 스킬 (31개)
+## 🛠 스킬 (33개)
+
+### 자율 실험 스킬 (2개)
+
+| 스킬 | 용도 |
+|------|------|
+| `/ccpp:autodev` | 자율 코드 실험 루프 (autoresearch 패턴) |
+| `/ccpp:autodev-parallel` | 병렬 워크트리 실험 오케스트레이터 |
 
 ### 워크플로우 스킬 (15개)
 
@@ -257,12 +356,13 @@ CLAUDE.md의 "제안"을 settings.json의 "보장"으로 격상:
 
 ---
 
-## 🤖 에이전트 (10개)
+## 🤖 에이전트 (11개)
 
 > 에이전트는 플러그인으로 설치되지 않습니다. `~/.claude/agents/`에 직접 복사하세요.
 
 | 에이전트 | 용도 |
 |----------|------|
+| `langchain-specialist` | LangChain/LangGraph/Deep Agents 프로젝트 구축 전문가 |
 | `prd-planner` | Six Thinking Hats 기반 인사이트 PRD (시장 리서치 + 경쟁 분석 + 5라운드 인터뷰) |
 | `docs-writer` | 코드 변경 감지 → /docs/ 자동 문서 생성 (구현과 병렬 실행) |
 | `planner` | 복잡한 기능 계획 수립 (docs-writer 병렬 실행 포함) |
@@ -348,8 +448,8 @@ cp /tmp/my-claude-code-asset-main/agents/*.md ~/.claude/agents/
 
 | | Claude Code Power Pack | Codex CLI Power Pack |
 |---|:---:|:---:|
-| **Skills** | 31개 (`/ccpp:skill`) | 33개 (`$skill`) |
-| **Agents** | 10개 (서브에이전트) | AGENTS.md 통합 |
+| **Skills** | 33개 (`/ccpp:skill`) | 33개 (`$skill`) |
+| **Agents** | 11개 (서브에이전트) | AGENTS.md 통합 |
 | **Rules** | 5개 (YAML 조건부 로드) | AGENTS.md 통합 |
 | **Hooks** | settings.json 물리 차단 | config.toml |
 | **PRD** | Six Thinking Hats | Six Thinking Hats |
@@ -376,6 +476,28 @@ curl -fsSL https://raw.githubusercontent.com/jh941213/my-codex-cli-asset/main/in
 ---
 
 ## 📋 Changelog
+
+<details>
+<summary><b>v0.8.0 (2026-03-11) — AutoDev 자율 실험 루프</b></summary>
+
+**AutoDev (autoresearch 패턴)**
+- Karpathy의 autoresearch에서 영감: AI 에이전트가 코드를 수정 → 검증 → keep/discard 자율 반복
+- `/autodev` 단일 실험 루프: scope 제한 + budget 기반 자율 실행
+- `/autodev-parallel` 병렬 오케스트레이터: git worktree로 다중 실험 동시 실행
+- `autodev-judge.sh` 판정 함수: 빌드/테스트/린트/코드 복잡도 종합 스코어
+
+**새로운 파일**
+- `skills/autodev/SKILL.md` - 자율 실험 루프 스킬
+- `skills/autodev-parallel/SKILL.md` - 병렬 워크트리 오케스트레이터
+- `hooks/autodev-judge.sh` - AutoDev 스코어 판정 함수
+- `agents/langchain-specialist.md` - LangChain/LangGraph 전문 에이전트
+
+**변경사항**
+- Skills: 31 → 33 (+autodev, +autodev-parallel)
+- Agents: 10 → 11 (+langchain-specialist)
+- Hooks: 3 → 4 (+autodev-judge.sh)
+
+</details>
 
 <details>
 <summary><b>v0.7.0 (2026-03-09) — Long-Horizon 실행 패턴 + 마일스톤 게이트</b></summary>
