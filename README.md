@@ -8,6 +8,7 @@
 [![License](https://img.shields.io/badge/license-MIT-E87C3E.svg?style=for-the-badge)](LICENSE)
 [![Skills](https://img.shields.io/badge/skills-33-blue.svg?style=for-the-badge)](#-스킬-33개)
 [![Agents](https://img.shields.io/badge/agents-11-green.svg?style=for-the-badge)](#-에이전트-11개)
+[![PRD](https://img.shields.io/badge/PRD-Aletheia_v2-9333ea.svg?style=for-the-badge)](#-prd-aletheia-v2)
 [![TTH](https://img.shields.io/badge/TTH-Multi--Agent-ff6b35.svg?style=for-the-badge)](#-tth-멀티-에이전트-사일로)
 [![AutoDev](https://img.shields.io/badge/AutoDev-Autonomous-00d4aa.svg?style=for-the-badge)](#-autodev-자율-실험-루프)
 
@@ -26,8 +27,9 @@
 ## 목차
 
 - [설치](#-설치)
-- [AutoDev 자율 실험 루프](#-autodev-자율-실험-루프)
+- [PRD Aletheia v2](#-prd-aletheia-v2)
 - [TTH 멀티 에이전트 사일로](#-tth-멀티-에이전트-사일로)
+- [AutoDev 자율 실험 루프](#-autodev-자율-실험-루프)
 - [CLAUDE.md 최적화 철학](#-claudemd-최적화-철학)
 - [Hooks 보장 시스템](#-hooks-보장-시스템)
 - [스킬 (33개)](#-스킬-33개)
@@ -80,87 +82,61 @@ https://github.com/jh941213/my-claude-code-asset 저장소의 agents/, rules/, c
 
 ---
 
-## 🔬 AutoDev 자율 실험 루프
+## 📋 PRD Aletheia v2
 
 <div align="center">
-<img src="assets/autodev-banner.png" alt="AutoDev - AI works while you sleep" width="720" />
+<img src="assets/tth-banner.png" alt="PRD Aletheia v2" width="720" />
 </div>
 
-> **Karpathy의 [autoresearch](https://github.com/karpathy/autoresearch) 패턴을 일반 소프트웨어 개발에 적용**
+> **인문학 프레임워크 + Six Thinking Hats + 수렴 보드 = 인사이트 중심 PRD**
 
-AI 에이전트가 코드를 수정하고, 테스트/빌드로 검증하고, keep/discard를 반복하며 **자율적으로 코드를 개선**합니다.
-사람이 자는 동안 수십 번의 실험을 자동으로 수행합니다.
-
-```
-/autodev
-> goal: "실패하는 테스트 전부 통과시켜"
-> scope: ["src/**"]
-> budget: 50
-```
-
-### autoresearch → AutoDev 매핑
-
-| autoresearch | AutoDev |
-|---|---|
-| `val_bpb` (단일 지표) | `autodev-judge.sh` (빌드/테스트/린트 종합 스코어) |
-| `train.py` 1개 파일 | scope 내 파일들 |
-| `program.md` | `/autodev` 스킬 |
-| 5분 학습 | `npm test` / `pytest` |
-| `results.tsv` | `.autodev/results.tsv` |
-| NEVER STOP | budget 소진까지 NEVER STOP |
-
-### 실험 루프
+`/prd "아이디어"` 한 줄로 복잡도 적응적 인터뷰부터 PRD 문서 생성까지 자동화합니다.
 
 ```
-LOOP (budget 소진까지):
-  1. 코드 수정 (scope 내 파일만)
-  2. git commit
-  3. 테스트/빌드 실행
-  4. 스코어 계산 (autodev-judge.sh)
-  5. 향상 → KEEP (브랜치 전진)
-     악화 → DISCARD (git reset)
-  6. 반복
+/prd "개발자를 위한 AI 코드 리뷰 SaaS"
 ```
 
-### 병렬 모드 (`/autodev-parallel`)
+### 핵심 혁신
 
-여러 아이디어를 git worktree로 **동시에** 실험합니다.
+| 요소 | 설명 |
+|------|------|
+| **복잡도 게이트** | Low/Mid/High 자동 판정 → 프로세스 적응 (2~5라운드) |
+| **수렴 보드** | 6차원 진행 추적 (🔴→🟡→🟢) — 용어, 구조, 깊이, 일관성, 견고성, 시장 |
+| **인문학 프레임워크** | 비트겐슈타인(용어정렬) + 데카르트(방법적 회의) + 소크라테스(모순탐지) + 조하리(맹점) + 가다머(정합성) |
+| **Graceful Exit** | 언제든 중간 이탈 → PRD.partial.md 저장 → 다음 세션 이어서 진행 |
 
-```
-/autodev-parallel
-> goal: "API 응답시간 최적화"
-> scope: ["src/api/**"]
-> parallel: 3
-> rounds: 5
-```
-
-```
-main
- ├── worktree A ── Agent 1: 캐시 레이어 추가
- ├── worktree B ── Agent 2: 쿼리 최적화
- ├── worktree C ── Agent 3: 인덱스 변경
- └── Orchestrator: 결과 수집 → 최고 브랜치 cherry-pick
-```
-
-### 적합한 사용 사례
-
-| 시나리오 | 지표 |
-|----------|------|
-| 실패 테스트 일괄 수정 | 테스트 통과율 |
-| 성능 최적화 탐색 | 벤치마크 / Lighthouse |
-| TypeScript strict 마이그레이션 | 타입 에러 수 |
-| 의존성 메이저 업그레이드 | 빌드 + 테스트 통과 |
-| 레거시 리팩토링 | 테스트 유지 + 코드 줄 수 |
-
-### AutoDev 파일 구조
+### 파이프라인
 
 ```
-~/.claude/
-├── skills/
-│   ├── autodev/SKILL.md          ← 단일 실험 루프
-│   └── autodev-parallel/SKILL.md ← 병렬 워크트리 오케스트레이터
-└── hooks/
-    └── autodev-judge.sh          ← 스코어 판정 함수
+Phase 0: 복잡도 판정 + 수렴 보드 초기화
+    ↓
+Phase 1 (bg) ──┐  시장 리서치 서브에이전트 (Tavily/Exa/Gemini CLI)
+Phase 2 R1 ────┘  용어 정렬 + W6H 구조 스캔 (병렬)
+    ↓
+Phase 2 R2-5: 적응적 인터뷰 (리서치 합류)
+    ↓
+Phase 3-5: prd-planner 서브에이전트에 위임
+    ├── Six Hats 합성 + 차별화 전략
+    ├── MVP 경계선 + 위험 분석
+    └── PRD.md 작성 (수렴 보드 부록 포함)
+    ↓
+Phase 6: 자가 검증 → /spec 연결
+```
+
+### 복잡도별 적응
+
+| 복잡도 | 예시 | Phase 1 | 인터뷰 |
+|--------|------|---------|--------|
+| **Low** | CLI 도구, 단순 기능 | 스킵 | 2라운드 |
+| **Mid** | 새 모듈, 라이브러리 | 서브에이전트 1개 | 3라운드 |
+| **High** | SaaS, 플랫폼 | 서브에이전트 3개 병렬 | 5라운드 |
+
+### PRD → SPEC → 구현
+
+```
+/prd [아이디어]  → PRD.md (무엇을, 왜)
+/spec            → SPEC.md (어떻게 — 기술 상세)
+/tth             → 멀티 에이전트로 자율 구현
 ```
 
 ---
@@ -260,6 +236,91 @@ Phase 5: HANDOFF.md + TeamDelete
 ```
 
 > **요구사항**: `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` 환경변수 필요 (settings.json에 포함됨)
+
+---
+
+## 🔬 AutoDev 자율 실험 루프
+
+<div align="center">
+<img src="assets/autodev-banner.png" alt="AutoDev - AI works while you sleep" width="720" />
+</div>
+
+> **Karpathy의 [autoresearch](https://github.com/karpathy/autoresearch) 패턴을 일반 소프트웨어 개발에 적용**
+
+AI 에이전트가 코드를 수정하고, 테스트/빌드로 검증하고, keep/discard를 반복하며 **자율적으로 코드를 개선**합니다.
+사람이 자는 동안 수십 번의 실험을 자동으로 수행합니다.
+
+```
+/autodev
+> goal: "실패하는 테스트 전부 통과시켜"
+> scope: ["src/**"]
+> budget: 50
+```
+
+### autoresearch → AutoDev 매핑
+
+| autoresearch | AutoDev |
+|---|---|
+| `val_bpb` (단일 지표) | `autodev-judge.sh` (빌드/테스트/린트 종합 스코어) |
+| `train.py` 1개 파일 | scope 내 파일들 |
+| `program.md` | `/autodev` 스킬 |
+| 5분 학습 | `npm test` / `pytest` |
+| `results.tsv` | `.autodev/results.tsv` |
+| NEVER STOP | budget 소진까지 NEVER STOP |
+
+### 실험 루프
+
+```
+LOOP (budget 소진까지):
+  1. 코드 수정 (scope 내 파일만)
+  2. git commit
+  3. 테스트/빌드 실행
+  4. 스코어 계산 (autodev-judge.sh)
+  5. 향상 → KEEP (브랜치 전진)
+     악화 → DISCARD (git reset)
+  6. 반복
+```
+
+### 병렬 모드 (`/autodev-parallel`)
+
+여러 아이디어를 git worktree로 **동시에** 실험합니다.
+
+```
+/autodev-parallel
+> goal: "API 응답시간 최적화"
+> scope: ["src/api/**"]
+> parallel: 3
+> rounds: 5
+```
+
+```
+main
+ ├── worktree A ── Agent 1: 캐시 레이어 추가
+ ├── worktree B ── Agent 2: 쿼리 최적화
+ ├── worktree C ── Agent 3: 인덱스 변경
+ └── Orchestrator: 결과 수집 → 최고 브랜치 cherry-pick
+```
+
+### 적합한 사용 사례
+
+| 시나리오 | 지표 |
+|----------|------|
+| 실패 테스트 일괄 수정 | 테스트 통과율 |
+| 성능 최적화 탐색 | 벤치마크 / Lighthouse |
+| TypeScript strict 마이그레이션 | 타입 에러 수 |
+| 의존성 메이저 업그레이드 | 빌드 + 테스트 통과 |
+| 레거시 리팩토링 | 테스트 유지 + 코드 줄 수 |
+
+### AutoDev 파일 구조
+
+```
+~/.claude/
+├── skills/
+│   ├── autodev/SKILL.md          ← 단일 실험 루프
+│   └── autodev-parallel/SKILL.md ← 병렬 워크트리 오케스트레이터
+└── hooks/
+    └── autodev-judge.sh          ← 스코어 판정 함수
+```
 
 ---
 
@@ -394,15 +455,6 @@ cp /tmp/my-claude-code-asset-main/agents/*.md ~/.claude/agents/
 | `/tth [설명]` | TTH 멀티 에이전트 사일로 (Toss + Tesla + Ralph Loop) |
 | `/prd [아이디어]` | Aletheia v2 — 복잡도 게이트 + 인문학 프레임워크 적응적 인터뷰 + 수렴 보드 기반 PRD 생성 |
 | `/docs [유형]` | 코드 변경 기반 자동 문서 생성 |
-
-### PRD → SPEC → 구현 파이프라인
-
-```
-/prd [아이디어]  → PRD.md (무엇을, 왜 — Aletheia v2 인사이트)
-/spec            → SPEC.md (어떻게 — 기술 상세)
-/tth             → 멀티 에이전트 사일로로 자율 구현 (또는 /plan → 수동 구현)
-구현 → /review → /verify → /docs
-```
 
 ---
 
