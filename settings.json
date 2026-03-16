@@ -38,6 +38,7 @@
       "Bash(pytest:*)",
       "Bash(ruff:*)",
       "Bash(mypy:*)",
+      "Bash(gemini:*)",
       "mcp__tavily__*",
       "mcp__exa__*",
       "mcp__context7__*"
@@ -73,6 +74,17 @@
           {
             "type": "command",
             "command": "echo 'BLOCKED: force push 금지. 사용자에게 확인을 요청하세요.' && exit 1"
+          }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'if [ -f PRD.md ]; then echo \"PRD.md 생성 완료\"; fi; exit 0'",
+            "statusMessage": "서브에이전트 완료 확인 중..."
           }
         ]
       }
