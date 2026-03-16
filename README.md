@@ -4,7 +4,7 @@
 
 <img src="assets/banner.png" alt="Claude Code Power Pack" width="720" />
 
-[![Version](https://img.shields.io/badge/version-0.8.0-7C3AED.svg?style=for-the-badge)](https://github.com/jh941213/my-claude-code-asset)
+[![Version](https://img.shields.io/badge/version-0.9.0-7C3AED.svg?style=for-the-badge)](https://github.com/jh941213/my-claude-code-asset)
 [![License](https://img.shields.io/badge/license-MIT-E87C3E.svg?style=for-the-badge)](LICENSE)
 [![Skills](https://img.shields.io/badge/skills-33-blue.svg?style=for-the-badge)](#-스킬-33개)
 [![Agents](https://img.shields.io/badge/agents-11-green.svg?style=for-the-badge)](#-에이전트-11개)
@@ -290,6 +290,7 @@ CLAUDE.md의 "제안"을 settings.json의 "보장"으로 격상:
 | TTH 태스크 완료 시 typecheck/lint/test | 품질 게이트 | TaskCompleted |
 | 아키텍처 불변성 위반 감지 | 구조 보호 | TaskCompleted |
 | TTH 팀원 유휴 시 남은 태스크 확인 | 유휴 방지 | TeammateIdle |
+| 서브에이전트 완료 시 PRD.md 생성 확인 | 생성 알림 | SubagentStop |
 | AutoDev 스코어 판정 | 빌드/테스트/린트 종합 스코어 | autodev-judge.sh |
 
 ---
@@ -363,7 +364,7 @@ CLAUDE.md의 "제안"을 settings.json의 "보장"으로 격상:
 | 에이전트 | 용도 |
 |----------|------|
 | `langchain-specialist` | LangChain/LangGraph/Deep Agents 프로젝트 구축 전문가 |
-| `prd-planner` | Six Thinking Hats 기반 인사이트 PRD (시장 리서치 + 경쟁 분석 + 5라운드 인터뷰) |
+| `prd-planner` | /prd Phase 3-5 전담 — Six Hats 합성 + 전략적 스코핑 + PRD 문서 작성 (인문학 프레임워크 기반) |
 | `docs-writer` | 코드 변경 감지 → /docs/ 자동 문서 생성 (구현과 병렬 실행) |
 | `planner` | 복잡한 기능 계획 수립 (docs-writer 병렬 실행 포함) |
 | `frontend-developer` | 빅테크 스타일 UI 구현 |
@@ -391,13 +392,13 @@ cp /tmp/my-claude-code-asset-main/agents/*.md ~/.claude/agents/
 | 커맨드 | 용도 |
 |--------|------|
 | `/tth [설명]` | TTH 멀티 에이전트 사일로 (Toss + Tesla + Ralph Loop) |
-| `/prd [아이디어]` | Six Thinking Hats 기반 인사이트 PRD 생성 |
+| `/prd [아이디어]` | Aletheia v2 — 복잡도 게이트 + 인문학 프레임워크 적응적 인터뷰 + 수렴 보드 기반 PRD 생성 |
 | `/docs [유형]` | 코드 변경 기반 자동 문서 생성 |
 
 ### PRD → SPEC → 구현 파이프라인
 
 ```
-/prd [아이디어]  → PRD.md (무엇을, 왜 — Six Hats 인사이트)
+/prd [아이디어]  → PRD.md (무엇을, 왜 — Aletheia v2 인사이트)
 /spec            → SPEC.md (어떻게 — 기술 상세)
 /tth             → 멀티 에이전트 사일로로 자율 구현 (또는 /plan → 수동 구현)
 구현 → /review → /verify → /docs
@@ -476,6 +477,32 @@ curl -fsSL https://raw.githubusercontent.com/jh941213/my-codex-cli-asset/main/in
 ---
 
 ## 📋 Changelog
+
+<details>
+<summary><b>v0.9.0 (2026-03-16) — /prd v2: Aletheia 엔진 흡수</b></summary>
+
+**/prd v2 전면 재작성**
+- Aletheia 엔진 흡수: 수렴 보드(6차원 진행 추적) + 복잡도 게이트(Low/Mid/High)
+- 인문학 프레임워크 5가지 원칙 (비트겐슈타인, 데카르트, 소크라테스, 조하리, 가다머)
+- Phase 1 리서치 + Phase 2 R1 병렬 실행으로 시간 단축
+- Graceful Exit: 중간 이탈 시 PRD.partial.md 저장 후 이어서 진행 가능
+- Gemini CLI 교차 검증 추가 (Tavily/Exa와 병행)
+
+**prd-planner 에이전트 역할 재정의**
+- "모든 것을 하는 에이전트" → "Phase 3-5 전담 (합성 + 스코핑 + PRD 작성)"
+- 메인 세션 컨텍스트 보호를 위한 위임 구조
+
+**Hooks 추가**
+- `SubagentStop` — 서브에이전트 완료 시 PRD.md 생성 확인
+
+**settings.json 변경**
+- `Bash(gemini:*)` permission 추가
+- `SubagentStop` hook 추가
+
+**삭제**
+- `commands/aletheia.md` — /prd v2에 완전 흡수
+
+</details>
 
 <details>
 <summary><b>v0.8.0 (2026-03-11) — AutoDev 자율 실험 루프</b></summary>
