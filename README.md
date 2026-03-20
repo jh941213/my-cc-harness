@@ -1,5 +1,7 @@
 <div align="center">
 
+**🌐 [English](README_EN.md) | 한국어**
+
 # Claude Code Power Pack
 
 <img src="assets/banner.png" alt="Claude Code Power Pack" width="720" />
