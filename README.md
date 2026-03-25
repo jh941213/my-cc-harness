@@ -243,14 +243,6 @@ Phase 5: HANDOFF.md + TeamDelete
 
 > **요구사항**: `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` 환경변수 필요 (settings.json에 포함됨)
 
-### claude-peers 통합
-
-TTH 멀티 에이전트 워크플로우에서 팀원 간 실시간 소통을 위해 claude-peers MCP를 활용:
-
-- `set_summary`: 팀원별 작업 상태 실시간 공유
-- `send_message`: 스토리 완료 알림, 블로커 통보
-- `list_peers`: 팀원 상태 모니터링, 충돌 감지
-
 ---
 
 ## 🔬 AutoDev 자율 실험 루프

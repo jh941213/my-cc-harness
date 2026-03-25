@@ -154,27 +154,6 @@ docs/
 ⚡ Ralph Loop 프로토콜을 반드시 따를 것 (아래 참조)
 ```
 
-### 2-5. claude-peers 활성화
-
-멀티 터미널 작업 시 팀원 간 실시간 소통을 위해 claude-peers를 활용한다.
-
-**사티아가 팀 스폰 직후 수행:**
-1. `set_summary`로 자신의 역할 선언: "TTH PO — [프로젝트명] 조율 중"
-2. 각 팀원에게 스폰 프롬프트에 peers 사용 지시 포함
-
-**팀원 peers 프로토콜:**
-```
-1. 스폰 직후: set_summary("[역할] — [담당 스토리] 작업 중")
-2. 스토리 완료 시: send_message(사티아_id, "S{N} 완료")
-3. 블로커 발생 시: send_message(관련_팀원_id, "S{N}에서 [인터페이스] 필요")
-4. 파일 충돌 감지 시: list_peers(scope="repo") → send_message(충돌_팀원, "경고: [파일] 수정 중")
-```
-
-**사티아의 peers 모니터링:**
-- 주기적으로 `list_peers(scope="repo")`로 팀원 상태 확인
-- 팀원 summary가 오래 변경 안 되면 → 컨텍스트 오염 의심 → 개입
-- docs-writer에게 `send_message`로 수동 트리거 가능
-
 ---
 
 ## Phase 3: Ralph Loop 실행
