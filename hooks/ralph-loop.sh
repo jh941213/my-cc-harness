@@ -96,10 +96,44 @@ if [ -f "$AUDIT_FILE" ]; then
   echo "[$(date -u +%Y-%m-%dT%H:%M:%S)] ralph-loop ITERATION ${NEW_ITER}/${MAX_ITER}" >> "$AUDIT_FILE"
 fi
 
+# docs 큐 확인 — 대기 중인 docs 동기화가 있으면 프롬프트에 포함
+DOCS_QUEUE_DIR="${CWD}/.docs-queue"
+DOCS_INSTRUCTION=""
+if [ -d "$DOCS_QUEUE_DIR" ]; then
+  PENDING_COUNT=$(find "$DOCS_QUEUE_DIR" -name "*.json" 2>/dev/null | wc -l | tr -d ' ')
+  if [ "$PENDING_COUNT" -gt "0" ]; then
+    # 변경 파일 목록 수집
+    CHANGED=$(python3 -c "
+import json, glob, os
+files = set()
+for f in glob.glob('${DOCS_QUEUE_DIR}/*.json'):
+    try:
+        data = json.load(open(f))
+        files.update(data.get('changed_files', []))
+    except: pass
+print(', '.join(sorted(files)[:20]))
+" 2>/dev/null || echo "")
+
+    if [ -n "$CHANGED" ]; then
+      DOCS_INSTRUCTION="
+
+⚠️ [docs-writer 트리거] ${PENDING_COUNT}개 스토리 완료됨. 변경 파일: ${CHANGED}
+→ docs-writer 서브에이전트를 스폰하여 docs/ 동기화:
+  Agent(subagent_type=\"general-purpose\", name=\"docs-writer\", run_in_background=true,
+    prompt=\"~/.claude/agents/docs-writer.md를 읽고 따라라. 변경 파일: ${CHANGED}. git diff로 변경사항 분석 후 docs/ARCHITECTURE.md, ADR 업데이트. 완료 후 .docs-queue/ 파일 삭제.\")"
+    fi
+
+    # AUDIT.log에 docs 트리거 기록
+    if [ -f "$AUDIT_FILE" ]; then
+      echo "[$(date -u +%Y-%m-%dT%H:%M:%S)] docs-writer TRIGGER pending=${PENDING_COUNT}" >> "$AUDIT_FILE"
+    fi
+  fi
+fi
+
 # 연속 프롬프트 주입
 CONTINUATION="[Ralph Loop 반복 ${NEW_ITER}/${MAX_ITER}] ${PROMPT}
 
-진행 상황을 확인하고 다음 항목을 처리하세요.
+진행 상황을 확인하고 다음 항목을 처리하세요.${DOCS_INSTRUCTION}
 모든 항목이 완료되면 반드시 <promise>${COMPLETION}</promise>를 출력하세요."
 
 # JSON escape

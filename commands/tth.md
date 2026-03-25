@@ -154,19 +154,87 @@ docs/
 ⚡ Ralph Loop 프로토콜을 반드시 따를 것 (아래 참조)
 ```
 
+### 2-5. claude-peers 활성화
+
+멀티 터미널 작업 시 팀원 간 실시간 소통을 위해 claude-peers를 활용한다.
+
+**사티아가 팀 스폰 직후 수행:**
+1. `set_summary`로 자신의 역할 선언: "TTH PO — [프로젝트명] 조율 중"
+2. 각 팀원에게 스폰 프롬프트에 peers 사용 지시 포함
+
+**팀원 peers 프로토콜:**
+```
+1. 스폰 직후: set_summary("[역할] — [담당 스토리] 작업 중")
+2. 스토리 완료 시: send_message(사티아_id, "S{N} 완료")
+3. 블로커 발생 시: send_message(관련_팀원_id, "S{N}에서 [인터페이스] 필요")
+4. 파일 충돌 감지 시: list_peers(scope="repo") → send_message(충돌_팀원, "경고: [파일] 수정 중")
+```
+
+**사티아의 peers 모니터링:**
+- 주기적으로 `list_peers(scope="repo")`로 팀원 상태 확인
+- 팀원 summary가 오래 변경 안 되면 → 컨텍스트 오염 의심 → 개입
+- docs-writer에게 `send_message`로 수동 트리거 가능
+
 ---
 
 ## Phase 3: Ralph Loop 실행
 
-### docs-writer 백그라운드 스폰
+### Stop Hook 연동
 
-Ralph Loop 시작과 동시에 docs-writer를 백그라운드 서브에이전트로 스폰:
+TTH는 `~/.claude/hooks/ralph-loop.sh` Stop Hook과 연동한다.
+사티아가 Phase 2 완료 후 `.ralph-loop/state.json`을 초기화:
+
+```bash
+mkdir -p .ralph-loop
+cat > .ralph-loop/state.json << 'STATE'
+{
+  "active": true,
+  "iteration": 0,
+  "max_iterations": 100,
+  "prompt": "TTH 사일로: 다음 미완료 스토리를 처리하라. progress.txt를 읽고 시작.",
+  "completion_promise": "DONE",
+  "started_at": "{ISO시간}",
+  "status": "running"
+}
+STATE
 ```
-Agent(subagent_type="general-purpose",
-      name="docs-writer",
-      prompt="docs-writer 역할. git diff를 기반으로 docs/ 폴더 문서를 점진적으로 업데이트. progress.txt를 모니터링하고 아키텍처 변경이 감지되면 docs/ARCHITECTURE.md를 동기화한다. 새로운 ADR이 필요하면 docs/design-docs/에 기록한다.",
-      run_in_background=true)
+
+Stop Hook이 세션 종료 시 자동으로 다음 반복을 시작한다.
+모든 스토리가 완료되면 `<promise>DONE</promise>`을 출력하여 루프를 종료한다.
+
+### docs-writer 자동 동기화 (Hook 기반)
+
+docs-writer는 **스토리 완료마다 자동 트리거**된다. 수동 스폰 불필요.
+
+**동작 흐름:**
 ```
+팀원이 스토리 완료 (git commit + TaskUpdate)
+  ↓ TaskCompleted hook 발동
+  ↓ verify-task-quality.sh → 품질 게이트 통과
+  ↓ docs-sync.sh → .docs-queue/에 변경 파일 기록
+  ↓
+ralph-loop.sh 다음 반복 시
+  ↓ .docs-queue/ 감지
+  ↓ inject_prompt에 docs-writer 트리거 포함
+  ↓
+사티아가 docs-writer 서브에이전트 스폰:
+  Agent(subagent_type="general-purpose",
+        name="docs-writer",
+        run_in_background=true,
+        prompt="~/.claude/agents/docs-writer.md를 읽고 따라라.
+               변경 파일: [큐에서 수집된 파일 목록].
+               git diff로 변경사항 분석 후 docs/ 업데이트.
+               완료 후 .docs-queue/ 파일 삭제.")
+```
+
+**수동 트리거** (peers 활용):
+```
+사티아 → send_message(docs_writer_id, "docs/ 즉시 동기화 필요: ARCHITECTURE.md")
+```
+
+**관련 hook 파일:**
+- `~/.claude/hooks/docs-sync.sh` — TaskCompleted 시 .docs-queue에 기록
+- `~/.claude/hooks/ralph-loop.sh` — 다음 반복 시 큐 감지 → inject_prompt에 포함
 
 ### Ralph Loop 프로토콜 (모든 팀원 공통)
 
@@ -181,6 +249,7 @@ LOOP (스토리당 최대 3회 반복):
 │
 ├─ PASS →
 │   ├─ 스토리를 passes: true로 마킹 (TaskUpdate)
+│   ├─ git commit -m "[tth] S{N}: {스토리 제목}"
 │   ├─ progress.txt에 발견한 패턴 추가
 │   ├─ 다음 스토리로 이동
 │   └─ 모든 스토리 완료 → 사티아에게 보고
@@ -194,6 +263,19 @@ LOOP (스토리당 최대 3회 반복):
         "이 스토리를 완료할 수 없습니다.
          시도한 것: [목록]
          제안: [대안]"
+```
+
+### 루프 수동 제어
+
+```bash
+# 루프 일시 중지
+python3 -c "import json; s=json.load(open('.ralph-loop/state.json')); s['active']=False; json.dump(s,open('.ralph-loop/state.json','w'))"
+
+# 상태 확인
+cat .ralph-loop/state.json
+
+# 루프 재개
+python3 -c "import json; s=json.load(open('.ralph-loop/state.json')); s['active']=True; json.dump(s,open('.ralph-loop/state.json','w'))"
 ```
 
 ### Backpressure 메커니즘 (Ralph 핵심)
@@ -283,7 +365,15 @@ LOOP (스토리당 최대 3회 반복):
 2. **docs-writer**: 최종 docs/ 동기화 (ARCHITECTURE.md, ADR 반영)
 3. **사티아**: docs-writer에게 `shutdown_request` 전송하여 종료
 
-### 5-1. HANDOFF.md 작성
+### 5-1. Ralph Loop 종료
+
+```bash
+# .ralph-loop/state.json 비활성화 (이미 <promise>DONE</promise>으로 자동 종료됨)
+# 수동 종료가 필요한 경우:
+python3 -c "import json; s=json.load(open('.ralph-loop/state.json')); s['active']=False; s['status']='completed'; json.dump(s,open('.ralph-loop/state.json','w'))"
+```
+
+### 5-2. HANDOFF.md 작성
 
 1. **HANDOFF.md** 작성:
    ```markdown

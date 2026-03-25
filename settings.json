@@ -188,6 +188,12 @@
             "statusMessage": "품질 게이트 검증 중...",
             "timeout": 120,
             "type": "command"
+          },
+          {
+            "command": "bash ~/.claude/hooks/docs-sync.sh",
+            "statusMessage": "docs 동기화 큐 기록 중...",
+            "timeout": 10,
+            "type": "command"
           }
         ]
       }
@@ -259,6 +265,5 @@
       "WebSearch",
       "WebFetch"
     ]
-  },
-  "skipDangerousModePermissionPrompt": true
+  }
 }
