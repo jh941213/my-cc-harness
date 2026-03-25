@@ -20,7 +20,7 @@
 
 ---
 
-**33개 스킬** | **11개 에이전트** | **5개 조건부 Rules** | **Hooks 보장 시스템** | **TTH 멀티 에이전트** | **AutoDev 자율 실험**
+**33개 스킬** | **11개 에이전트** | **5개 조건부 Rules** | **Hooks 보장 시스템 (7개)** | **TTH 멀티 에이전트** | **AutoDev 자율 실험**
 
 </div>
 
@@ -78,7 +78,7 @@ https://github.com/jh941213/my-claude-code-asset 저장소의 agents/, rules/, c
 | Rules (5개) | ❌ | ✅ |
 | Commands (3개) | ❌ | ✅ |
 | TTH Team Roles (6개) | ❌ | ✅ |
-| TTH Hooks (2개) | ❌ | ✅ |
+| Hooks (7개) | ❌ | ✅ |
 | CLAUDE.md | ❌ | ✅ |
 | settings.json | ❌ | ✅ |
 
@@ -231,7 +231,10 @@ Phase 5: HANDOFF.md + TeamDelete
 │   ├── verify-task-quality.sh ← TaskCompleted 품질 게이트
 │   ├── check-architecture.sh  ← 아키텍처 불변성 체크
 │   ├── check-remaining-tasks.sh ← TeammateIdle 유휴 방지
-│   └── autodev-judge.sh       ← AutoDev 스코어 판정
+│   ├── autodev-judge.sh       ← AutoDev 스코어 판정
+│   ├── ralph-loop.sh          ← Stop 자율 루프 (completion promise 감지)
+│   ├── notchi-hook.sh         ← 다중 이벤트 → Notchi 앱 연동
+│   └── reset-home-memory.sh   ← SessionStart 홈 디렉토리 메모리 초기화
 └── skills/
     ├── autodev/SKILL.md       ← 자율 실험 루프
     └── autodev-parallel/SKILL.md ← 병렬 워크트리 오케스트레이터
@@ -343,6 +346,8 @@ main
 
 CLAUDE.md의 "제안"을 settings.json의 "보장"으로 격상:
 
+### 보호 규칙 Hook (기존)
+
 | 규칙 | 방식 | Hook 유형 |
 |------|------|-----------|
 | main/master push 금지 | 물리적 차단 | PreToolUse |
@@ -355,6 +360,36 @@ CLAUDE.md의 "제안"을 settings.json의 "보장"으로 격상:
 | TTH 팀원 유휴 시 남은 태스크 확인 | 유휴 방지 | TeammateIdle |
 | 서브에이전트 완료 시 PRD.md 생성 확인 | 생성 알림 | SubagentStop |
 | AutoDev 스코어 판정 | 빌드/테스트/린트 종합 스코어 | autodev-judge.sh |
+
+### Hook 스크립트 (7개)
+
+| 파일 | 이벤트 | 설명 |
+|------|--------|------|
+| `verify-task-quality.sh` | TaskCompleted | TTH 태스크 완료 시 typecheck/lint/test 품질 게이트 |
+| `check-architecture.sh` | TaskCompleted | 아키텍처 불변성 위반 감지 |
+| `check-remaining-tasks.sh` | TeammateIdle | TTH 팀원 유휴 시 남은 태스크 확인 |
+| `autodev-judge.sh` | AutoDev | 빌드/테스트/린트 종합 스코어 판정 |
+| `ralph-loop.sh` | Stop | Ralph Loop 자율 루프 — .ralph-loop/state.json이 active면 자동으로 다음 반복 시작, completion promise 감지 시 종료 |
+| `notchi-hook.sh` | 다중 이벤트 | Notchi 앱 연동 — Claude Code 이벤트를 Unix 소켓으로 전달하여 상태 모니터링 |
+| `reset-home-memory.sh` | SessionStart | 홈 디렉토리 세션 시 메모리 초기화 — ~에서 시작할 때 메모리 파일을 기본 템플릿으로 리셋 |
+
+### settings.json Hook 이벤트 매핑
+
+settings.json에서 다음 이벤트에 hook이 등록되어 있습니다:
+
+| 이벤트 | 등록된 Hook |
+|--------|------------|
+| **Stop** | `ralph-loop.sh` (자율 루프), `notchi-hook.sh` |
+| **SessionStart** | `reset-home-memory.sh` (메모리 초기화), `notchi-hook.sh` |
+| **SessionEnd** | `notchi-hook.sh` |
+| **PreCompact** | `notchi-hook.sh` (auto/manual) |
+| **PermissionRequest** | `notchi-hook.sh` |
+| **UserPromptSubmit** | `notchi-hook.sh` |
+| **PreToolUse** | git push 차단 hooks, `notchi-hook.sh` |
+| **PostToolUse** | prettier 자동 포맷, git commit 검증, `notchi-hook.sh` |
+| **SubagentStop** | PRD.md 생성 확인, `notchi-hook.sh` |
+| **TaskCompleted** | `verify-task-quality.sh` |
+| **TeammateIdle** | `check-remaining-tasks.sh` |
 
 ---
 
@@ -577,6 +612,7 @@ curl -fsSL https://raw.githubusercontent.com/jh941213/my-codex-cli-asset/main/in
 - Skills: 31 → 33 (+autodev, +autodev-parallel)
 - Agents: 10 → 11 (+langchain-specialist)
 - Hooks: 3 → 4 (+autodev-judge.sh)
+- Hooks: 4 → 7 (+ralph-loop.sh, +notchi-hook.sh, +reset-home-memory.sh) — v0.10.0에서 추가
 
 </details>
 
