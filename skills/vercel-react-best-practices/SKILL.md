@@ -107,20 +107,47 @@ Reference these guidelines when:
 
 ## How to Use
 
-Read individual rule files for detailed explanations and code examples:
+이 스킬의 규칙은 위 Quick Reference에 요약되어 있습니다. 각 규칙의 핵심 패턴:
 
+### 주요 규칙 상세
+
+#### async-parallel (CRITICAL)
+```typescript
+// BAD: 순차 실행
+const users = await getUsers();
+const posts = await getPosts();
+
+// GOOD: 병렬 실행
+const [users, posts] = await Promise.all([getUsers(), getPosts()]);
 ```
-rules/async-parallel.md
-rules/bundle-barrel-imports.md
-rules/_sections.md
+
+#### bundle-barrel-imports (CRITICAL)
+```typescript
+// BAD: 배럴 파일에서 import (트리쉐이킹 실패)
+import { Button } from '@/components';
+
+// GOOD: 직접 import
+import { Button } from '@/components/ui/button';
 ```
 
-Each rule file contains:
-- Brief explanation of why it matters
-- Incorrect code example with explanation
-- Correct code example with explanation
-- Additional context and references
+#### rerender-memo (MEDIUM)
+```typescript
+// BAD: 부모 리렌더링 시 매번 재계산
+function Parent() {
+  const [count, setCount] = useState(0);
+  return <><ExpensiveList /><button onClick={() => setCount(c+1)} /></>;
+}
 
-## Full Compiled Document
+// GOOD: memo로 격리
+const ExpensiveList = React.memo(function ExpensiveList() { ... });
+```
 
-For the complete guide with all rules expanded: `AGENTS.md`
+#### server-cache-react (HIGH)
+```typescript
+// React.cache()로 요청 단위 중복 제거
+const getUser = React.cache(async (id: string) => {
+  return await db.user.findUnique({ where: { id } });
+});
+```
+
+코드 작성/리뷰 시 위 Priority 테이블의 CRITICAL → HIGH 순서로 적용합니다.

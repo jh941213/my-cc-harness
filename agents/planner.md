@@ -1,7 +1,7 @@
 ---
 name: planner
 description: 복잡한 기능 구현이나 리팩토링을 위한 전문 계획 수립 에이전트. 기능 구현, 아키텍처 변경, 복잡한 리팩토링 요청 시 자동 활성화.
-tools: Read, Grep, Glob
+tools: Read, Write, Edit, Grep, Glob
 model: opus
 ---
 

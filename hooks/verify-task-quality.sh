@@ -52,6 +52,28 @@ if [ -f "package.json" ]; then
       ERRORS+=("npm test 실패")
     fi
   fi
+
+  # 커버리지 게이트 (coverage-summary.json 존재 시)
+  if [ -f "coverage/coverage-summary.json" ]; then
+    echo "🔍 커버리지 검증 중..."
+    COVERAGE_PCT=$(python3 -c "import json; d=json.load(open('coverage/coverage-summary.json')); print(int(d.get('total',{}).get('lines',{}).get('pct',0)))" 2>/dev/null || echo "0")
+    if [ "$COVERAGE_PCT" -lt 80 ]; then
+      ERRORS+=("커버리지 ${COVERAGE_PCT}% < 80% 임계값")
+    else
+      echo "  커버리지: ${COVERAGE_PCT}%"
+    fi
+  fi
+
+  # 보안 스캔 (npm audit)
+  echo "🔍 보안 취약점 스캔 중..."
+  AUDIT_OUTPUT=$(npm audit --audit-level=high 2>&1) || true
+  if echo "$AUDIT_OUTPUT" | grep -qE "[0-9]+ critical"; then
+    CRIT_COUNT=$(echo "$AUDIT_OUTPUT" | grep -oE '[0-9]+ critical' | grep -oE '[0-9]+' || echo "0")
+    CRIT_COUNT=${CRIT_COUNT:-0}
+    if [ "$CRIT_COUNT" -gt 0 ]; then
+      ERRORS+=("보안: critical 취약점 ${CRIT_COUNT}건 발견")
+    fi
+  fi
 fi
 
 # Python 프로젝트 감지

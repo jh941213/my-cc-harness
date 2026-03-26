@@ -1,227 +1,10 @@
 {
-  "enabledPlugins": {
-    "mgrep@Mixedbread-Grep": true
-  },
   "env": {
     "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
     "CLAUDE_CODE_TEAMMATE_MODE": "tmux"
   },
-  "hooks": {
-    "PermissionRequest": [
-      {
-        "hooks": [
-          {
-            "command": "~/.claude/hooks/notchi-hook.sh",
-            "type": "command"
-          }
-        ],
-        "matcher": "*"
-      }
-    ],
-    "PostToolUse": [
-      {
-        "hooks": [
-          {
-            "command": "if echo \"$CLAUDE_FILE_PATH\" | grep -qE '\\.(ts|tsx|js|jsx)$'; then if command -v prettier &>/dev/null; then prettier --write \"$CLAUDE_FILE_PATH\" 2>/dev/null; fi; fi; exit 0",
-            "type": "command"
-          }
-        ],
-        "matcher": "Write"
-      },
-      {
-        "hooks": [
-          {
-            "command": "if echo \"$CLAUDE_FILE_PATH\" | grep -qE '\\.(ts|tsx|js|jsx)$'; then if command -v prettier &>/dev/null; then prettier --write \"$CLAUDE_FILE_PATH\" 2>/dev/null; fi; fi; exit 0",
-            "type": "command"
-          }
-        ],
-        "matcher": "Edit"
-      },
-      {
-        "hooks": [
-          {
-            "command": "bash -c 'STAGED=$(git diff --cached --name-only); if echo \"$STAGED\" | grep -qE \"\\.env\"; then echo \"BLOCKED: .env 파일 커밋 금지\" && exit 1; fi; if git diff --cached | grep -qiE \"(console\\.log|console\\.warn|console\\.debug)\"; then echo \"WARNING: console.log가 포함되어 있습니다. 제거하세요.\" && exit 1; fi; exit 0'",
-            "type": "command"
-          }
-        ],
-        "matcher": "Bash(git commit*)"
-      },
-      {
-        "hooks": [
-          {
-            "command": "~/.claude/hooks/notchi-hook.sh",
-            "type": "command"
-          }
-        ],
-        "matcher": "*"
-      }
-    ],
-    "PreCompact": [
-      {
-        "hooks": [
-          {
-            "command": "~/.claude/hooks/notchi-hook.sh",
-            "type": "command"
-          }
-        ],
-        "matcher": "auto"
-      },
-      {
-        "hooks": [
-          {
-            "command": "~/.claude/hooks/notchi-hook.sh",
-            "type": "command"
-          }
-        ],
-        "matcher": "manual"
-      }
-    ],
-    "PreToolUse": [
-      {
-        "hooks": [
-          {
-            "command": "echo 'BLOCKED: main 브랜치에 직접 push 금지. feature 브랜치를 사용하세요.' && exit 1",
-            "type": "command"
-          }
-        ],
-        "matcher": "Bash(git push * main*)"
-      },
-      {
-        "hooks": [
-          {
-            "command": "echo 'BLOCKED: master 브랜치에 직접 push 금지. feature 브랜치를 사용하세요.' && exit 1",
-            "type": "command"
-          }
-        ],
-        "matcher": "Bash(git push * master*)"
-      },
-      {
-        "hooks": [
-          {
-            "command": "echo 'BLOCKED: force push 금지. 사용자에게 확인을 요청하세요.' && exit 1",
-            "type": "command"
-          }
-        ],
-        "matcher": "Bash(git push --force*)"
-      },
-      {
-        "hooks": [
-          {
-            "command": "~/.claude/hooks/notchi-hook.sh",
-            "type": "command"
-          }
-        ],
-        "matcher": "*"
-      }
-    ],
-    "SessionEnd": [
-      {
-        "hooks": [
-          {
-            "command": "~/.claude/hooks/notchi-hook.sh",
-            "type": "command"
-          }
-        ]
-      }
-    ],
-    "SessionStart": [
-      {
-        "hooks": [
-          {
-            "command": "~/.claude/hooks/reset-home-memory.sh",
-            "type": "command"
-          }
-        ]
-      },
-      {
-        "hooks": [
-          {
-            "command": "~/.claude/hooks/notchi-hook.sh",
-            "type": "command"
-          }
-        ]
-      }
-    ],
-    "Stop": [
-      {
-        "hooks": [
-          {
-            "command": "~/.claude/hooks/ralph-loop.sh",
-            "timeout": 30,
-            "type": "command"
-          }
-        ]
-      },
-      {
-        "hooks": [
-          {
-            "command": "~/.claude/hooks/notchi-hook.sh",
-            "type": "command"
-          }
-        ]
-      }
-    ],
-    "SubagentStop": [
-      {
-        "hooks": [
-          {
-            "command": "bash -c 'if [ -f PRD.md ]; then echo \"PRD.md 생성 완료\"; fi; exit 0'",
-            "statusMessage": "서브에이전트 완료 확인 중...",
-            "type": "command"
-          }
-        ]
-      },
-      {
-        "hooks": [
-          {
-            "command": "~/.claude/hooks/notchi-hook.sh",
-            "type": "command"
-          }
-        ]
-      }
-    ],
-    "TaskCompleted": [
-      {
-        "hooks": [
-          {
-            "command": "bash ~/.claude/hooks/verify-task-quality.sh",
-            "statusMessage": "품질 게이트 검증 중...",
-            "timeout": 120,
-            "type": "command"
-          },
-          {
-            "command": "bash ~/.claude/hooks/docs-sync.sh",
-            "statusMessage": "docs 동기화 큐 기록 중...",
-            "timeout": 10,
-            "type": "command"
-          }
-        ]
-      }
-    ],
-    "TeammateIdle": [
-      {
-        "hooks": [
-          {
-            "command": "bash ~/.claude/hooks/check-remaining-tasks.sh",
-            "statusMessage": "남은 태스크 확인 중...",
-            "type": "command"
-          }
-        ]
-      }
-    ],
-    "UserPromptSubmit": [
-      {
-        "hooks": [
-          {
-            "command": "~/.claude/hooks/notchi-hook.sh",
-            "type": "command"
-          }
-        ]
-      }
-    ]
-  },
-  "language": "한국어",
   "permissions": {
+    "defaultMode": "bypassPermissions",
     "allow": [
       "Bash(git status:*)",
       "Bash(git diff:*)",
@@ -265,5 +48,211 @@
       "WebSearch",
       "WebFetch"
     ]
-  }
+  },
+  "hooks": {
+    "PermissionRequest": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/notchi-hook.sh"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if echo \"$CLAUDE_FILE_PATH\" | grep -qE '\\.(ts|tsx|js|jsx)$'; then if command -v prettier &>/dev/null; then prettier --write \"$CLAUDE_FILE_PATH\" 2>/dev/null; fi; fi; exit 0"
+          }
+        ]
+      },
+      {
+        "matcher": "Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if echo \"$CLAUDE_FILE_PATH\" | grep -qE '\\.(ts|tsx|js|jsx)$'; then if command -v prettier &>/dev/null; then prettier --write \"$CLAUDE_FILE_PATH\" 2>/dev/null; fi; fi; exit 0"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash(git commit*)",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'STAGED=$(git diff --cached --name-only); if echo \"$STAGED\" | grep -qE \"\\.env\"; then echo \"BLOCKED: .env 파일 커밋 금지\" && exit 1; fi; if git diff --cached | grep -qiE \"(console\\.log|console\\.warn|console\\.debug)\"; then echo \"WARNING: console.log가 포함되어 있습니다. 제거하세요.\" && exit 1; fi; exit 0'"
+          }
+        ]
+      },
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/notchi-hook.sh"
+          }
+        ]
+      }
+    ],
+    "PreCompact": [
+      {
+        "matcher": "auto",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/notchi-hook.sh"
+          }
+        ]
+      },
+      {
+        "matcher": "manual",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/notchi-hook.sh"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+{
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/notchi-hook.sh"
+          }
+        ]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/notchi-hook.sh"
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/reset-home-memory.sh"
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/notchi-hook.sh"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/ralph-loop.sh",
+            "timeout": 30
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/notchi-hook.sh"
+          }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'if [ -f PRD.md ]; then echo \"PRD.md 생성 완료\"; fi; exit 0'",
+            "statusMessage": "서브에이전트 완료 확인 중..."
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/notchi-hook.sh"
+          }
+        ]
+      }
+    ],
+    "TaskCompleted": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/verify-task-quality.sh",
+            "timeout": 120,
+            "statusMessage": "품질 게이트 검증 중..."
+          },
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/docs-sync.sh",
+            "timeout": 10,
+            "statusMessage": "docs 동기화 큐 기록 중..."
+          }
+        ]
+      }
+    ],
+    "TeammateIdle": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/check-remaining-tasks.sh",
+            "statusMessage": "남은 태스크 확인 중..."
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/notchi-hook.sh"
+          }
+        ]
+      }
+    ]
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "bunx -y ccstatusline@latest",
+    "padding": 0
+  },
+  "enabledPlugins": {
+    "mgrep@Mixedbread-Grep": true
+  },
+  "extraKnownMarketplaces": {
+    "anthropic-agent-skills": {
+      "source": {
+        "source": "github",
+        "repo": "anthropics/skills"
+      }
+    }
+  },
+  "language": "한국어",
+  "skipDangerousModePermissionPrompt": true,
+  "autoDreamEnabled": true
 }

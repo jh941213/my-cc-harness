@@ -51,6 +51,17 @@ model: opus
 - 큰 번들 사이즈
 - N+1 쿼리
 
+## Blast-Radius 분석 (code-review-graph 연동)
+
+`code-review-graph` MCP 서버가 활성화된 프로젝트에서는 구조적 영향 분석을 우선 실행:
+
+1. **영향 범위 파악**: `get_impact_radius_tool` → 변경된 노드의 2-hop 영향 범위 확인
+2. **미테스트 감지**: `query_graph_tool(pattern="tests_for")` → 테스트 없는 변경 함수 식별
+3. **호출자 분석**: `query_graph_tool(pattern="callers_of")` → "이 변경이 누구를 깨뜨리나?"
+4. **상속 영향**: 상속/구현 변경 시 리스코프 치환 원칙 위반 여부 확인
+
+MCP 도구 미사용 시 기존 git diff 기반 리뷰로 폴백.
+
 ## 리뷰 출력 형식
 
 ```

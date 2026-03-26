@@ -52,6 +52,95 @@ cat .env.example
 - 🟡 **중간**: 계획된 수정 (잠재적 위험)
 - 🟢 **낮음**: 개선 권장 (모범 사례)
 
+## OWASP Top 10 체크리스트
+
+| # | 취약점 | 검사 방법 |
+|---|--------|----------|
+| A01 | 접근 제어 실패 | 권한 없는 API 엔드포인트 접근, IDOR 패턴 |
+| A02 | 암호화 실패 | 평문 비밀번호, 약한 해시(MD5/SHA1), HTTP 전송 |
+| A03 | 인젝션 | SQL/NoSQL/OS/LDAP 인젝션, XSS |
+| A04 | 안전하지 않은 설계 | 비즈니스 로직 결함, rate limiting 부재 |
+| A05 | 보안 설정 오류 | 디폴트 자격증명, 불필요한 기능 활성화 |
+| A06 | 취약한 컴포넌트 | `npm audit`, 알려진 CVE |
+| A07 | 인증 실패 | 브루트포스 방어, 세션 고정, 약한 비밀번호 정책 |
+| A08 | 데이터 무결성 실패 | 서명 미검증, 안전하지 않은 역직렬화 |
+| A09 | 로깅/모니터링 실패 | 보안 이벤트 미기록, 알림 부재 |
+| A10 | SSRF | 사용자 입력 URL 검증, 내부 네트워크 접근 |
+
+## 검사 명령어
+
+```bash
+# npm 취약점 검사
+npm audit
+
+# 하드코딩된 시크릿 검색
+grep -rn "api_key\|password\|secret\|token" --include="*.ts" --include="*.js" --include="*.py"
+
+# .env 파일 검사
+cat .env.example
+
+# 의존성 라이선스 확인
+npx license-checker --summary
+```
+
+## 코드 패턴별 취약점 예시
+
+### 인젝션 (A03)
+```typescript
+// BAD: SQL 인젝션
+db.query(`SELECT * FROM users WHERE id = ${userId}`);
+// GOOD: 파라미터화된 쿼리
+db.query('SELECT * FROM users WHERE id = $1', [userId]);
+
+// BAD: XSS
+element.innerHTML = userInput;
+// GOOD: 텍스트 삽입
+element.textContent = userInput;
+
+// BAD: 명령어 인젝션
+exec(`ls ${userPath}`);
+// GOOD: 인자 배열
+execFile('ls', [userPath]);
+```
+
+### 접근 제어 (A01)
+```typescript
+// BAD: IDOR — 사용자 ID를 URL에서 직접 사용
+app.get('/api/users/:id', (req, res) => {
+  return db.getUser(req.params.id); // 누구나 다른 사용자 데이터 접근 가능
+});
+// GOOD: 인증된 사용자 확인
+app.get('/api/users/:id', authMiddleware, (req, res) => {
+  if (req.user.id !== req.params.id && !req.user.isAdmin) return res.status(403);
+  return db.getUser(req.params.id);
+});
+```
+
+### 암호화 (A02)
+```typescript
+// BAD: 약한 해시
+const hash = crypto.createHash('md5').update(password).digest('hex');
+// GOOD: bcrypt
+const hash = await bcrypt.hash(password, 12);
+```
+
+## Code-Reviewer와의 역할 구분
+
+| 영역 | Code-Reviewer | Security-Reviewer (이 에이전트) |
+|------|--------------|-------------------------------|
+| console.log/시크릿 하드코딩 | O (기본 위생) | 심층 분석 |
+| SQL/XSS/인젝션 | 표면적 검출 | **패턴 분석 + 수정 코드 제시** |
+| 인증/권한 로직 | 리뷰 시 언급 | **공격 시나리오 기반 분석** |
+| 의존성 CVE | npm audit 언급 | **CVE 영향도 평가 + 대안 제시** |
+| 비즈니스 로직 취약점 | 범위 외 | **IDOR, race condition 등 분석** |
+
+## 보안 등급
+
+- 🔴 **심각**: 즉시 수정 필요 (데이터 유출, 원격 코드 실행)
+- 🟠 **높음**: 빠른 수정 필요 (권한 상승, 인증 우회)
+- 🟡 **중간**: 계획된 수정 (정보 노출, 약한 설정)
+- 🟢 **낮음**: 개선 권장 (모범 사례 미준수)
+
 ## 출력 형식
 
 ```markdown
@@ -59,11 +148,12 @@ cat .env.example
 
 ## 발견된 취약점
 
-### 🔴 [심각] SQL 인젝션
+### 🔴 [심각] SQL 인젝션 (OWASP A03)
 - **파일**: src/api/users.ts:45
 - **코드**: `query("SELECT * FROM users WHERE id = " + userId)`
-- **위험**: 공격자가 DB 전체 접근 가능
+- **공격 시나리오**: `userId = "1; DROP TABLE users"` 입력 시 테이블 삭제
 - **수정**: 파라미터화된 쿼리 사용
+- **수정 코드**: `query("SELECT * FROM users WHERE id = $1", [userId])`
 
 ## 권장사항
 1. [권장사항 1]

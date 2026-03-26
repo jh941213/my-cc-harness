@@ -1,202 +1,185 @@
 ---
 name: autodev
 description: >
-  자율 코드 실험 루프. AI 에이전트가 코드를 수정하고, 검증하고, keep/discard를 반복하며 자율적으로 개선한다.
-  Karpathy의 autoresearch 패턴을 일반 소프트웨어 개발에 적용.
-  트리거: "autodev", "자율 개발", "자율 실험", "밤새 돌려", "실험 루프", "자동 최적화"
+  Ralph Loop 기반 자율 개발 루프. Stop Hook이 세션 종료를 가로채어 PRD 항목을 하나씩 완료하며 자동 커밋한다.
+  트리거: "autodev", "자율 개발", "밤새 돌려", "랄프 루프", "ralph loop", "자동 개발"
   안티-트리거: "직접 구현해", "한번만 해", "수동"
 user-invocable: true
 disable-model-invocation: false
 allowed-tools: Read, Write, Edit, Bash, Grep, Glob, Agent
 ---
 
-# AutoDeveloper — 자율 코드 실험 루프
+# AutoDev — Ralph Loop 자율 개발
 
-autoresearch 패턴: 코드 수정 → 검증 → keep/discard → 반복.
-사람이 자는 동안 에이전트가 수십 번의 실험을 자율적으로 수행한다.
+Stop Hook 기반 자율 개발 루프. PRD/체크리스트의 항목을 하나씩 완료하고 자동 커밋한다.
+밤새 돌려놓으면 출근 시 PR이 올라와 있다.
+
+## 핵심 원리
+
+```
+세션 시작 → PRD 읽기 → 다음 항목 처리 → 커밋 → 세션 종료
+                                                    ↓
+                                            Stop Hook 감지
+                                                    ↓
+                                        완료? → Yes → 종료
+                                          ↓ No
+                                   inject_prompt → 새 세션 시작
+                                                    ↓
+                                              PRD 읽기 → ...
+```
 
 ## Phase 0: 설정 수집
 
-사용자에게 다음을 확인한다 (빠진 것만 질문):
+사용자에게 확인 (빠진 것만 질문):
 
 ```yaml
-goal: "무엇을 달성할 것인가"      # 예: "API 응답시간 50% 단축"
-scope: ["수정 가능한 파일 패턴"]    # 예: ["src/api/**", "src/utils/**"]
-metric: "판정 명령어"              # 예: "npm test" 또는 "npm run bench"
-budget: 20                        # 최대 실험 횟수 (기본 20)
-mode: "single"                    # single | parallel (기본 single)
+goal: "무엇을 달성할 것인가"           # 예: "PRD.md의 모든 항목 완료"
+prd: "PRD 또는 체크리스트 파일 경로"    # 예: "PRD.md" 또는 "tasks/todo.md"
+scope: ["수정 가능한 파일 패턴"]        # 예: ["src/**", "tests/**"]
+verify: "검증 명령어"                  # 예: "npm test" (자동 감지 가능)
+max_iterations: 100                   # 최대 반복 수 (기본 100)
+completion_promise: "DONE"            # 완료 시그널 (기본 "DONE")
+mode: "continue"                      # continue | reset (기본 continue)
 ```
 
-### metric 자동 감지
+### verify 자동 감지
 
-사용자가 metric을 안 줬으면 프로젝트를 분석해서 자동 설정:
-1. `package.json` → `npm test` 또는 `vitest run` 또는 `jest`
+사용자가 verify를 안 줬으면:
+1. `package.json` → `npm test` 또는 `vitest run`
 2. `pyproject.toml` → `pytest`
 3. `Makefile` → `make test`
-4. 벤치마크 스크립트 존재 시 → 해당 명령어 제안
+4. 없으면 → `echo "no verify command"`
 
-## Phase 1: 베이스라인 수립
-
-실험 시작 전 현재 상태를 기록한다:
+## Phase 1: 루프 초기화
 
 ```bash
-# 1. 현재 브랜치에서 autodev 브랜치 생성
+# 1. autodev 브랜치 생성
 git checkout -b autodev/$(date +%Y%m%d-%H%M)
 
-# 2. 베이스라인 검증 실행
-{metric_command} > .autodev/baseline.log 2>&1
+# 2. .ralph-loop/ 상태 디렉토리 생성
+mkdir -p .ralph-loop
 
-# 3. 베이스라인 스코어 추출
-bash ~/.claude/hooks/autodev-judge.sh
+# 3. 상태 파일 초기화
+cat > .ralph-loop/state.json << 'STATE'
+{
+  "active": true,
+  "iteration": 0,
+  "max_iterations": {max_iterations},
+  "prompt": "{goal}",
+  "completion_promise": "{completion_promise}",
+  "prd_path": "{prd}",
+  "verify_command": "{verify}",
+  "started_at": "{ISO시간}",
+  "status": "running"
+}
+STATE
 
-# 4. results.tsv 초기화
-echo -e "experiment\tcommit\tscore\tstatus\tdescription" > .autodev/results.tsv
+# 4. .gitignore에 .ralph-loop/ 추가
+echo ".ralph-loop/" >> .gitignore
+
+# 5. 베이스라인 검증
+{verify} 2>&1 | tee .ralph-loop/baseline.log
 ```
 
-### .autodev/ 디렉토리 구조
+## Phase 2: 반복 실행 (매 세션)
+
+각 세션(반복)에서 수행하는 절차:
 
 ```
-.autodev/
-  results.tsv      # 실험 결과 로그 (autoresearch의 results.tsv)
-  baseline.log     # 베이스라인 실행 로그
-  run.log          # 현재 실험 실행 로그
-  ideas.md         # 시도할 아이디어 목록
-```
+1. READ PRD
+   - {prd} 파일을 읽는다
+   - 미완료 항목([ ]) 중 첫 번째를 선택
 
-`.gitignore`에 `.autodev/`를 추가한다.
+2. PLAN
+   - 선택한 항목을 구현하기 위한 최소 변경 계획
+   - scope 내 파일만 수정 가능
 
-## Phase 2: 아이디어 생성
+3. IMPLEMENT
+   - 계획대로 코드 수정
+   - scope 밖 파일 절대 수정 금지
 
-scope 내 파일들을 읽고 goal에 맞는 개선 아이디어 목록을 만든다.
+4. VERIFY
+   - {verify} 실행
+   - 실패 시 build-fix 1회 시도
+   - 2회 실패 시 변경 롤백 (git checkout -- .)
 
-`.autodev/ideas.md`에 기록:
-
-```markdown
-# 실험 아이디어
-
-## 시도 대기
-- [ ] 아이디어 1: 설명
-- [ ] 아이디어 2: 설명
-...
-
-## 완료
-- [x] 아이디어 N: 설명 → keep (score: 85)
-- [x] 아이디어 M: 설명 → discard (score: 40)
-```
-
-아이디어가 바닥나면:
-1. 기존 keep된 변경들을 조합해본다
-2. scope 파일을 다시 읽고 새 각도를 찾는다
-3. keep된 코드를 simplify 해본다
-
-## Phase 3: 실험 루프 (LOOP)
-
-**NEVER STOP**: budget 소진 전까지 절대 멈추지 않는다. 질문하지 않는다.
-
-```
-LOOP (experiment = 1 to budget):
-
-  1. SNAPSHOT
-     git_snapshot=$(git rev-parse HEAD)
-
-  2. MODIFY
-     - ideas.md에서 다음 아이디어 선택
-     - scope 내 파일만 수정
-     - scope 밖 파일 수정 금지
-
-  3. COMMIT
+5. COMMIT
+   - 성공 시:
      git add -A
-     git commit -m "[autodev] exp-{N}: {description}"
+     git commit -m "[autodev] {항목 요약}"
+   - PRD에서 해당 항목을 [x]로 체크
 
-  4. VERIFY
-     {metric_command} > .autodev/run.log 2>&1
-     EXIT_CODE=$?
-
-  5. SCORE
-     bash ~/.claude/hooks/autodev-judge.sh
-     SCORE=$(cat .autodev-score)
-
-  6. JUDGE
-     if SCORE == -999:
-       # CRASH — 복구 시도
-       build-fix skill 1회 적용
-       재실행 → 여전히 실패 시 DISCARD
-     elif SCORE > BEST_SCORE:
-       # KEEP — 브랜치 전진
-       BEST_SCORE = SCORE
-       STATUS = "keep"
-     else:
-       # DISCARD — 롤백
-       git reset --hard $git_snapshot
-       STATUS = "discard"
-
-  7. LOG
-     results.tsv에 한 줄 추가:
-     {experiment}\t{commit}\t{SCORE}\t{STATUS}\t{description}
-
-     ideas.md 업데이트 (체크 표시 + 결과)
-
-  8. CONTINUE
-     다음 아이디어로 진행
+6. CHECK COMPLETION
+   - PRD에 미완료 항목이 남아있는가?
+   - Yes → 세션 자연 종료 (Stop Hook이 다음 반복 시작)
+   - No → 모든 항목 완료!
+     <promise>{completion_promise}</promise> 출력
+     → Stop Hook이 감지하고 루프 종료
 ```
 
-## 판정 함수 (score 계산)
+## Phase 3: 완료 보고
 
-`~/.claude/hooks/autodev-judge.sh`가 스코어를 계산한다.
-스코어 기준:
-
-| 조건 | 점수 |
-|------|------|
-| 빌드 실패 | -999 (즉시 discard) |
-| 기존 테스트 깨짐 | -999 (즉시 discard) |
-| 테스트 전체 통과 | +100 |
-| 새 테스트 통과 수 | +10/개 |
-| 타입 에러 0개 | +50 |
-| 린트 에러 0개 | +20 |
-| 성능 개선 (있으면) | +200 |
-| 코드 줄 수 감소 | +0.1/줄 (단순함 보너스) |
-
-## Phase 4: 완료 보고
-
-budget 소진 또는 goal 달성 시:
+루프 종료 시 (완료 또는 max_iterations 도달):
 
 ```markdown
-# AutoDev 실험 보고서
+# AutoDev 완료 보고서
 
 ## 요약
-- 총 실험: {N}회
-- Keep: {K}회 / Discard: {D}회 / Crash: {C}회
-- 베이스라인 스코어: {baseline}
-- 최종 스코어: {best}
-- 개선율: {improvement}%
+- 총 반복: {N}회
+- 완료 항목: {K}/{total}
+- 베이스라인 → 최종: 검증 통과
+- 상태: {completed | max_iterations_reached}
 
-## Keep된 실험들
-| # | 설명 | 스코어 변화 |
-|---|------|-----------|
-| 3 | 캐시 레이어 추가 | 45 → 85 |
-| 7 | 쿼리 배칭 | 85 → 120 |
+## 완료된 항목
+| # | 항목 | 커밋 |
+|---|------|------|
+| 1 | API 엔드포인트 구현 | abc1234 |
+| 2 | 인증 추가 | def5678 |
 
-## 최종 브랜치
-autodev/{tag} — main에 머지 준비 완료
+## 미완료 항목 (있으면)
+- [ ] 항목 N: 이유
 
-## 상세 로그
-.autodev/results.tsv 참조
+## 브랜치
+autodev/{tag} — main 머지 준비 완료
 ```
 
 ## 안전장치
 
 1. **scope 밖 수정 금지**: scope에 명시된 파일/디렉토리만 수정
-2. **기존 테스트 보호**: 기존 테스트가 깨지면 무조건 discard
-3. **crash 복구 제한**: build-fix 1회만 시도. 2회 이상 실패 시 포기
-4. **git 안전**: 모든 실험은 autodev/ 브랜치에서만. main 절대 안 건드림
-5. **.autodev/ 추적 안함**: .gitignore에 추가
+2. **기존 테스트 보호**: verify 실패 시 변경 롤백
+3. **crash 복구 제한**: build-fix 1회만. 2회 실패 시 해당 항목 스킵
+4. **git 안전**: autodev/ 브랜치에서만 작업. main 절대 안 건드림
+5. **max_iterations**: 무한 루프 방지 (기본 100)
+6. **비용 인식**: 각 반복은 토큰 비용 발생. 반복 수를 합리적으로 설정
+
+## Stop Hook 동작
+
+`~/.claude/hooks/ralph-loop.sh`가 세션 종료 시 실행:
+
+- `.ralph-loop/state.json`의 `active`가 `true`이면 다음 반복 시작
+- 트랜스크립트에서 `<promise>DONE</promise>` 감지 시 루프 종료
+- `iteration >= max_iterations` 시 루프 종료
+- 상태가 없거나 `active: false`이면 아무 동작 없음
+
+## 수동 제어
+
+```bash
+# 루프 중지
+python3 -c "import json; s=json.load(open('.ralph-loop/state.json')); s['active']=False; json.dump(s,open('.ralph-loop/state.json','w'))"
+
+# 상태 확인
+cat .ralph-loop/state.json
+
+# 루프 재개
+python3 -c "import json; s=json.load(open('.ralph-loop/state.json')); s['active']=True; json.dump(s,open('.ralph-loop/state.json','w'))"
+```
 
 ## 기존 스킬 활용
 
 | 상황 | 사용 스킬 |
 |------|----------|
 | 빌드 실패 시 복구 | `build-fix` |
-| keep 후 코드 정리 | `simplify` |
-| 테스트 기반 실험 | `tdd` |
-| 실험 아이디어 생성 | `plan` (planner agent) |
+| 커밋 후 코드 정리 | `simplify` |
+| 테스트 기반 구현 | `tdd` |
+| 항목 구현 계획 | `plan` |
 | 최종 검증 | `verify` |
