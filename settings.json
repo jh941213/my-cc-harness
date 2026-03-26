@@ -177,12 +177,25 @@
         ]
       }
     ],
+    "SubagentStart": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/subagent-tracker.sh",
+            "timeout": 5,
+            "statusMessage": "에이전트 스폰 추적 중..."
+          }
+        ]
+      }
+    ],
     "SubagentStop": [
       {
         "hooks": [
           {
             "type": "command",
-            "command": "bash -c 'if [ -f PRD.md ]; then echo \"PRD.md 생성 완료\"; fi; exit 0'",
+            "command": "bash -c 'if [ -d prd ] || [ -f PRD.md ]; then echo \"PRD 생성 완료\"; fi; if [ -f .active-agents ]; then AGENT=\"${CLAUDE_SUBAGENT_NAME:-unknown}\"; grep -v \"$AGENT\" .active-agents > .active-agents.tmp 2>/dev/null && mv .active-agents.tmp .active-agents || true; fi; exit 0'",
             "statusMessage": "서브에이전트 완료 확인 중..."
           }
         ]
@@ -231,6 +244,68 @@
           {
             "type": "command",
             "command": "~/.claude/hooks/notchi-hook.sh"
+          }
+        ]
+      }
+    ],
+    "PostToolUseFailure": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/failure-tracker.sh",
+            "timeout": 5,
+            "statusMessage": "실패 패턴 추적 중..."
+          }
+        ]
+      }
+    ],
+    "PostCompact": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/post-compact-guard.sh",
+            "timeout": 5,
+            "statusMessage": "컨텍스트 복구 안내 중..."
+          }
+        ]
+      }
+    ],
+    "ConfigChange": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/config-change-guard.sh",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "WorktreeCreate": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/worktree-tracker.sh",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "WorktreeRemove": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/worktree-tracker.sh",
+            "timeout": 5
           }
         ]
       }

@@ -436,18 +436,23 @@ CLAUDE.md의 "제안"을 settings.json의 "보장"으로 격상:
 | 서브에이전트 완료 시 PRD.md 생성 확인 | 생성 알림 | SubagentStop |
 | AutoDev 스코어 판정 | 빌드/테스트/린트 종합 스코어 | autodev-judge.sh |
 
-### Hook 스크립트 (8개)
+### Hook 스크립트 (13개)
 
 | 파일 | 이벤트 | 설명 |
 |------|--------|------|
-| `verify-task-quality.sh` | TaskCompleted | TTH 태스크 완료 시 typecheck/lint/test 품질 게이트 |
+| `verify-task-quality.sh` | TaskCompleted | TTH 태스크 완료 시 typecheck/lint/test/coverage/security 품질 게이트 |
 | `check-architecture.sh` | TaskCompleted | 아키텍처 불변성 위반 감지 |
 | `check-remaining-tasks.sh` | TeammateIdle | TTH 팀원 유휴 시 남은 태스크 확인 |
-| `autodev-judge.sh` | AutoDev | 빌드/테스트/린트 종합 스코어 판정 |
-| `ralph-loop.sh` | Stop | Ralph Loop 자율 반복 — .ralph-loop/state.json 기반, 스토리 완료까지 자동 반복. docs 큐 감지하여 docs-writer 트리거 포함 |
-| `notchi-hook.sh` | 다중 이벤트 | Notchi 앱 연동 — Claude Code 이벤트를 Unix 소켓으로 전달하여 상태 모니터링 |
-| `reset-home-memory.sh` | SessionStart | 홈 디렉토리 메모리 초기화 — ~ 에서 시작 시 메모리 파일을 기본 템플릿으로 리셋 |
-| `docs-sync.sh` | TaskCompleted | docs 자동 동기화 — TTH 스토리 완료 시 변경 파일을 .docs-queue에 기록, ralph-loop과 연동 |
+| `autodev-judge.sh` | AutoDev | 빌드/테스트/린트 종합 스코어 판정 + AI 슬롭 감지 |
+| `ralph-loop.sh` | Stop | Ralph Loop 자율 반복 — .ralph-loop/state.json 기반, 스토리 완료까지 자동 반복 |
+| `notchi-hook.sh` | 다중 이벤트 | Notchi 앱 연동 — Claude Code 이벤트를 Unix 소켓으로 전달 |
+| `reset-home-memory.sh` | SessionStart | 홈 디렉토리 메모리 초기화 |
+| `docs-sync.sh` | TaskCompleted | docs 자동 동기화 — 변경 파일을 .docs-queue에 기록 |
+| `failure-tracker.sh` | **PostToolUseFailure** | 도구 실패 패턴 추적 → progress.txt 자동 기록, 3회 연속 실패 시 에스컬레이션 |
+| `subagent-tracker.sh` | **SubagentStart** | 서브에이전트 스폰 추적 → AUDIT.log 기록, 동시 에이전트 수 모니터링 |
+| `post-compact-guard.sh` | **PostCompact** | 컨텍스트 압축 후 CHECKPOINT/progress/AUDIT/prd 존재 알림 |
+| `config-change-guard.sh` | **ConfigChange** | 캐시 보존 규칙 위반 감지 (CLAUDE.md/rules/agents 변경 경고) |
+| `worktree-tracker.sh` | **WorktreeCreate/Remove** | 워크트리 라이프사이클 추적 → AUDIT.log + 고아 워크트리 정리 |
 
 ### settings.json Hook 이벤트 매핑
 
@@ -459,13 +464,19 @@ settings.json에서 다음 이벤트에 hook이 등록되어 있습니다:
 | **SessionStart** | `reset-home-memory.sh` (메모리 초기화), `notchi-hook.sh` |
 | **SessionEnd** | `notchi-hook.sh` |
 | **PreCompact** | `notchi-hook.sh` (auto/manual) |
+| **PostCompact** | `post-compact-guard.sh` (컨텍스트 복구 안내) |
 | **PermissionRequest** | `notchi-hook.sh` |
 | **UserPromptSubmit** | `notchi-hook.sh` |
-| **PreToolUse** | git push 차단 hooks, `notchi-hook.sh` |
+| **PreToolUse** | `notchi-hook.sh` |
 | **PostToolUse** | prettier 자동 포맷, git commit 검증, `notchi-hook.sh` |
-| **SubagentStop** | PRD.md 생성 확인, `notchi-hook.sh` |
+| **PostToolUseFailure** | `failure-tracker.sh` (실패 패턴 추적 + 에스컬레이션) |
+| **SubagentStart** | `subagent-tracker.sh` (에이전트 스폰 추적) |
+| **SubagentStop** | prd/ 생성 확인, 에이전트 카운터 정리, `notchi-hook.sh` |
 | **TaskCompleted** | `verify-task-quality.sh`, `docs-sync.sh` |
 | **TeammateIdle** | `check-remaining-tasks.sh` |
+| **ConfigChange** | `config-change-guard.sh` (캐시 보존 규칙 위반 경고) |
+| **WorktreeCreate** | `worktree-tracker.sh` (워크트리 생성 추적) |
+| **WorktreeRemove** | `worktree-tracker.sh` (워크트리 제거 + 정리) |
 
 ---
 
