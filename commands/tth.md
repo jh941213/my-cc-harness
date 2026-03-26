@@ -340,9 +340,22 @@ python3 -c "import json; s=json.load(open('.ralph-loop/state.json')); s['active'
 
 ## Phase 4: 통합 & Eval
 
-모든 스토리가 `passes: true`가 된 후, 5단계 Eval 파이프라인 실행:
+모든 스토리가 `passes: true`가 된 후, **복잡도에 따라 Eval 파이프라인 수준을 결정**한다.
 
-### 4-1. 하드 게이트 (자동, 차단)
+> **Anthropic 인사이트**: "Evaluator는 고정 yes/no가 아니다. 모델이 혼자 잘 할 수 있는 범위의 작업이면 불필요하다." (Opus 4.6에서는 스프린트 분해 없이 2시간+ 일관 작업 가능)
+
+### 복잡도별 Eval 수준
+
+| 복잡도 | 판단 기준 | Eval 수준 | 실행 단계 |
+|--------|----------|-----------|----------|
+| **Low** | 스토리 3개 이하, 단일 도메인 (백엔드만 or 프론트만) | **Light** | 4-1 하드 게이트만 |
+| **Mid** | 스토리 4-8개, 또는 풀스택이지만 단순 CRUD | **Standard** | 4-1 + 4-2 머스크 + 4-4 슬롭 정리 |
+| **High** | 스토리 9개+, 복잡한 비즈니스 로직, AI 기능 포함 | **Full** | 4-1 ~ 4-5 전체 파이프라인 |
+
+사티아가 Phase 2의 스토리 수 + 프로젝트 유형으로 복잡도를 판단한다.
+`/prd`로 시작한 경우 prd/ 내 복잡도 게이트 결과를 그대로 활용.
+
+### 4-1. 하드 게이트 (자동, 차단) — 모든 복잡도
 ```bash
 # 전체 verify 실행
 npx tsc --noEmit          # typecheck
@@ -353,7 +366,9 @@ npm audit --audit-level=high  # security
 ```
 실패 항목 → 담당 팀원에게 수정 요청 (Ralph Loop 재진입)
 
-### 4-2. 머스크 평가 (독립 Evaluator)
+**Low 복잡도**: 하드 게이트 통과 시 Phase 5로 직행. 머스크 Eval 스킵.
+
+### 4-2. 머스크 평가 (독립 Evaluator) — Mid/High
 Generator(구현자)와 **분리된 머스크(Evaluator)**를 스폰:
 ```
 Agent(subagent_type="evaluator",
@@ -366,20 +381,20 @@ Agent(subagent_type="evaluator",
 - CONDITIONAL → 특정 항목 수정 후 재평가 (최대 3회)
 - FAIL → Phase 3로 회귀
 
-### 4-3. 베조스 E2E 검증
+### 4-3. 베조스 E2E 검증 — High만
 베조스가 앱을 직접 구동하고 핵심 사용자 플로우 검증:
 - e2e-agent-browser로 스냅샷 기반 테스트
 - 핵심 경로 네비게이션, 폼 입력, 에러 상태
 - 발견된 이슈 → "?" 프로토콜로 담당자 전달
 
-### 4-4. AI 슬롭 정리
+### 4-4. AI 슬롭 정리 — Mid/High
 머스크의 "Step 2 삭제" 피드백 기반으로 AI 특유의 패턴 정리:
 - 불필요한 주석 삭제 ("이 함수는 X를 합니다")
 - 과도한 추상화 인라인화
 - 장황한 에러 메시지 단순화
 - 정리 후 regression 테스트 재실행
 
-### 4-5. QUALITY_SCORE.md 자동 생성
+### 4-5. QUALITY_SCORE.md 자동 생성 — Mid/High
 ```markdown
 # Quality Score — [프로젝트명]
 
