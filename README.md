@@ -6,11 +6,11 @@
 
 <img src="assets/banner.png" alt="Claude Code Power Pack" width="720" />
 
-[![Version](https://img.shields.io/badge/version-0.9.0-7C3AED.svg?style=for-the-badge)](https://github.com/jh941213/my-claude-code-asset)
+[![Version](https://img.shields.io/badge/version-1.0.0-7C3AED.svg?style=for-the-badge)](https://github.com/jh941213/my-claude-code-asset)
 [![License](https://img.shields.io/badge/license-MIT-E87C3E.svg?style=for-the-badge)](LICENSE)
-[![Skills](https://img.shields.io/badge/skills-33-blue.svg?style=for-the-badge)](#-스킬-33개)
-[![Agents](https://img.shields.io/badge/agents-11-green.svg?style=for-the-badge)](#-에이전트-11개)
-[![PRD](https://img.shields.io/badge/PRD-Aletheia_v2-9333ea.svg?style=for-the-badge)](#-prd-aletheia-v2)
+[![Skills](https://img.shields.io/badge/skills-35-blue.svg?style=for-the-badge)](#-스킬-35개)
+[![Agents](https://img.shields.io/badge/agents-12-green.svg?style=for-the-badge)](#-에이전트-12개)
+[![PRD](https://img.shields.io/badge/PRD-Aletheia_v3-9333ea.svg?style=for-the-badge)](#-prd-aletheia-v3)
 [![TTH](https://img.shields.io/badge/TTH-Multi--Agent-ff6b35.svg?style=for-the-badge)](#-tth-멀티-에이전트-사일로)
 [![AutoDev](https://img.shields.io/badge/AutoDev-Autonomous-00d4aa.svg?style=for-the-badge)](#-autodev-자율-실험-루프)
 
@@ -20,7 +20,7 @@
 
 ---
 
-**33개 스킬** | **11개 에이전트** | **5개 조건부 Rules** | **Hooks 보장 시스템 (8개)** | **TTH 멀티 에이전트** | **AutoDev 자율 실험**
+**35개 스킬** | **12개 에이전트** | **5개 조건부 Rules** | **Hooks 보장 시스템 (8개)** | **TTH 멀티 에이전트 (M7)** | **AutoDev 자율 실험**
 
 </div>
 
@@ -29,13 +29,14 @@
 ## 목차
 
 - [설치](#-설치)
-- [PRD Aletheia v2](#-prd-aletheia-v2)
+- [PRD Aletheia v3](#-prd-aletheia-v3)
 - [TTH 멀티 에이전트 사일로](#-tth-멀티-에이전트-사일로)
+- [Musk Evaluator](#-musk-evaluator--독립-평가-시스템)
 - [AutoDev 자율 실험 루프](#-autodev-자율-실험-루프)
 - [CLAUDE.md 최적화 철학](#-claudemd-최적화-철학)
 - [Hooks 보장 시스템](#-hooks-보장-시스템)
-- [스킬 (33개)](#-스킬-33개)
-- [에이전트 (11개)](#-에이전트-11개)
+- [스킬 (35개)](#-스킬-35개)
+- [에이전트 (12개)](#-에이전트-12개)
 - [Commands (3개)](#-commands-3개)
 - [Rules (5개)](#-rules-5개-조건부-로드)
 - [Boris Cherny 팁](#-boris-cherny-팁)
@@ -73,56 +74,76 @@ https://github.com/jh941213/my-claude-code-asset 저장소의 agents/, rules/, c
 
 | 항목 | 플러그인 설치 | 전체 설정 |
 |------|:---:|:---:|
-| Skills (33개) | ✅ | ✅ |
-| Agents (11개) | ❌ | ✅ |
+| Skills (35개) | ✅ | ✅ |
+| Agents (12개) | ❌ | ✅ |
 | Rules (5개) | ❌ | ✅ |
 | Commands (3개) | ❌ | ✅ |
-| TTH Team Roles (6개) | ❌ | ✅ |
+| TTH Team Roles (7개) | ❌ | ✅ |
 | Hooks (8개) | ❌ | ✅ |
 | CLAUDE.md | ❌ | ✅ |
 | settings.json | ❌ | ✅ |
 
 ---
 
-## 📋 PRD Aletheia v2
+## 📋 PRD Aletheia v3
 
 <div align="center">
-<img src="assets/tth-banner.png" alt="PRD Aletheia v2" width="720" />
+<img src="assets/prd-banner.png" alt="PRD Aletheia v3" width="720" />
 </div>
 
-> **인문학 프레임워크 + Six Thinking Hats + 수렴 보드 = 인사이트 중심 PRD**
+> **CPS 세계관 정렬 + 인문학 프레임워크 + Six Thinking Hats = prd/ 디렉토리 8개 파일 자동 생성**
 
-`/prd "아이디어"` 한 줄로 복잡도 적응적 인터뷰부터 PRD 문서 생성까지 자동화합니다.
+`/prd "아이디어"` 한 줄로 CPS(Context-Problem-Solution) 정렬부터 PRD + SPEC 문서 생성까지 통합 자동화합니다.
 
 ```
 /prd "개발자를 위한 AI 코드 리뷰 SaaS"
 ```
 
-### 핵심 혁신
+### v3 핵심 혁신
 
 | 요소 | 설명 |
 |------|------|
+| **CPS (Context-Problem-Solution)** | PRD 위의 메타 프레임워크 — 세계관 정렬 → 문제 정의 → 솔루션 방향 설정 |
+| **prd/ 디렉토리 구조** | 단일 PRD.md → 8개 파일 분리 (CPS, PRD, MARKET, USERS, FEATURES, RISKS, SPEC, APPENDIX) |
+| **PRD + SPEC 통합** | `/prd` 하나로 "무엇을, 왜" + "어떻게" 까지 한 번에 생성 → 바로 `/tth` 연결 |
 | **복잡도 게이트** | Low/Mid/High 자동 판정 → 프로세스 적응 (2~5라운드) |
 | **수렴 보드** | 6차원 진행 추적 (🔴→🟡→🟢) — 용어, 구조, 깊이, 일관성, 견고성, 시장 |
 | **인문학 프레임워크** | 비트겐슈타인(용어정렬) + 데카르트(방법적 회의) + 소크라테스(모순탐지) + 조하리(맹점) + 가다머(정합성) |
-| **Graceful Exit** | 언제든 중간 이탈 → PRD.partial.md 저장 → 다음 세션 이어서 진행 |
 
 ### 파이프라인
 
 ```
 Phase 0: 복잡도 판정 + 수렴 보드 초기화
     ↓
+Phase 0.5: CPS (Context-Problem-Solution) 세계관 정렬
+    ↓
 Phase 1 (bg) ──┐  시장 리서치 서브에이전트 (Tavily/Exa/Gemini CLI)
 Phase 2 R1 ────┘  용어 정렬 + W6H 구조 스캔 (병렬)
     ↓
 Phase 2 R2-5: 적응적 인터뷰 (리서치 합류)
     ↓
-Phase 3-5: prd-planner 서브에이전트에 위임
+Phase 3: 기술 심층 인터뷰 → SPEC 초안 동시 생성
+    ↓
+Phase 4-6: prd-planner 서브에이전트에 위임
     ├── Six Hats 합성 + 차별화 전략
     ├── MVP 경계선 + 위험 분석
-    └── PRD.md 작성 (수렴 보드 부록 포함)
+    └── prd/ 디렉토리 8개 파일 작성
     ↓
-Phase 6: 자가 검증 → /spec 연결
+Phase 7: 자가 검증 (8개 파일 완전성 체크)
+```
+
+### 출력 구조: `prd/` 디렉토리
+
+```
+prd/
+├── CPS.md          ← Context-Problem-Solution 세계관 정렬
+├── PRD.md          ← 핵심 제품 요구사항
+├── MARKET.md       ← 시장 분석 + 경쟁사
+├── USERS.md        ← 사용자 페르소나 + 여정
+├── FEATURES.md     ← 기능 목록 + 우선순위
+├── RISKS.md        ← 위험 분석 + 완화 전략
+├── SPEC.md         ← 기술 명세 (아키텍처 + API + DB)
+└── APPENDIX.md     ← 수렴 보드 + 인터뷰 로그
 ```
 
 ### 복잡도별 적응
@@ -133,12 +154,11 @@ Phase 6: 자가 검증 → /spec 연결
 | **Mid** | 새 모듈, 라이브러리 | 서브에이전트 1개 | 3라운드 |
 | **High** | SaaS, 플랫폼 | 서브에이전트 3개 병렬 | 5라운드 |
 
-### PRD → SPEC → 구현
+### PRD → 구현 (원커맨드 플로우)
 
 ```
-/prd [아이디어]  → PRD.md (무엇을, 왜)
-/spec            → SPEC.md (어떻게 — 기술 상세)
-/tth             → 멀티 에이전트로 자율 구현
+/prd [아이디어]  → prd/ 디렉토리 (CPS + PRD + SPEC 통합 생성)
+/tth             → prd/ 자동 읽기 → 멀티 에이전트로 자율 구현
 ```
 
 ---
@@ -175,6 +195,7 @@ Phase 6: 자가 검증 → /spec 연결
 | Frontend | **저커버그** (Mark Zuckerberg) | Move Fast, 프로덕트 중심 |
 | Backend | **젠슨** (Jensen Huang) | Intellectual Honesty, 기술적 깊이 |
 | QA | **베조스** (Jeff Bezos) | Customer Obsession, "?" 이메일 |
+| **Evaluator** | **머스크** (Elon Musk) | 5-Step Engineering, 무자비한 품질 심판 |
 
 ### Long-Horizon 실행 패턴
 
@@ -191,7 +212,7 @@ Phase 6: 자가 검증 → /spec 연결
 ```
 Phase 0: 사티아 활성화 (PO 모드)
     ↓
-Phase 1: 요구사항 의심 (Musk Step 1)
+Phase 1: 요구사항 의심 (Musk Step 1) — prd/ 자동 읽기
     ↓
 Phase 2: 동적 팀 선발 + 스토리 분해 + CHECKPOINT.md 생성
     ↓
@@ -199,9 +220,18 @@ Phase 3: Ralph Loop 병렬 실행
          (자체 검증 → pass/fail → 재시도 → 학습 누적)
          마일스톤마다 AUDIT.log 기록
     ↓
-Phase 4: 통합 & 리뷰 (베조스 마일스톤 게이트 검증)
+Phase 4: 5-Step Eval Pipeline ⭐ NEW
+    ├── 4-1: Hard Gates (typecheck/lint/test/coverage/security)
+    ├── 4-2: 머스크 독립 평가 (100점 채점 + PASS/FAIL)
+    ├── 4-3: 베조스 E2E 검증
+    ├── 4-4: AI 슬롭 정리 (불필요한 주석/추상화 제거)
+    └── 4-5: QUALITY_SCORE.md 자동 생성
     ↓
-Phase 5: HANDOFF.md + TeamDelete
+    ├── PASS (85+) → Phase 5
+    ├── CONDITIONAL (65-84) → 수정 후 재평가
+    └── FAIL (0-64) → Phase 3 Ralph Loop 재진입
+    ↓
+Phase 5: HANDOFF.md + TeamDelete + prd/SPEC.md 마일스톤 갱신
 ```
 
 ### 프로젝트 유형별 자동 팀 선발
@@ -226,7 +256,8 @@ Phase 5: HANDOFF.md + TeamDelete
 │   ├── tim-cook.md           ← 디자이너 (Sonnet)
 │   ├── zuckerberg.md         ← 프론트엔드 (Sonnet)
 │   ├── jensen.md             ← 백엔드 (Sonnet)
-│   └── bezos.md              ← QA (Sonnet) — 마일스톤 게이트 최종 검증
+│   ├── bezos.md              ← QA (Sonnet) — 마일스톤 게이트 최종 검증
+│   └── musk.md               ← Evaluator (Opus) — 독립 평가 + PASS/FAIL 판정
 ├── hooks/
 │   ├── verify-task-quality.sh ← TaskCompleted 품질 게이트
 │   ├── check-architecture.sh  ← 아키텍처 불변성 체크
@@ -242,6 +273,49 @@ Phase 5: HANDOFF.md + TeamDelete
 ```
 
 > **요구사항**: `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` 환경변수 필요 (settings.json에 포함됨)
+
+---
+
+## 🚀 Musk Evaluator — 독립 평가 시스템
+
+<div align="center">
+<img src="assets/eval-banner.png" alt="Musk Evaluator" width="720" />
+</div>
+
+> **Generator-Evaluator 분리 원칙: 구현자가 자신의 코드를 평가하면 문제를 과소평가한다.**
+
+머스크(Elon Musk) 페르소나의 독립 평가자가 코드 산출물을 4축 100점 만점으로 채점합니다.
+
+```
+/eval
+```
+
+### 5-Step Engineering Process 기반 평가
+
+| Step | 평가 축 | 배점 | 핵심 질문 |
+|------|---------|------|-----------|
+| Step 1 (의심) | 기능 정확성 | 40점 | "진짜 동작하나? 테스트 통과하나?" |
+| Step 2 (삭제) | 독창성 — AI 슬롭 감지 | 20점 | "이 코드가 없어도 되지 않나?" |
+| Step 3 (단순화) | 코드 품질 | 25점 | "더 단순할 수 없나?" |
+| Step 4+5 (가속/자동화) | 사용성 & 보안 | 15점 | "안전하고 빠른가?" |
+
+### 판정 기준
+
+| 총점 | 판정 | 머스크 반응 | 액션 |
+|------|------|------------|------|
+| 85-100 | ✅ PASS | "Ship it." | 배포 승인 |
+| 65-84 | ⚠️ CONDITIONAL | "이것만 고쳐." | 수정 후 재평가 (1회) |
+| 0-64 | ❌ FAIL | "처음부터 다시 해." | Ralph Loop 재진입 |
+
+### AI 슬롭 감지 항목
+
+불필요한 주석(`// 이 함수는 X를 합니다`), 과도한 추상화(한 번만 쓰이는 헬퍼), 사용하지 않는 import, 과도한 try-catch, 장황한 에러 메시지 등 **AI가 만든 전형적 패턴**을 자동 감지하고 삭제를 지시합니다.
+
+### Generator-Evaluator 분리 규칙
+
+- 머스크는 **코드를 직접 수정하지 않는다** (Read/Grep/Bash만 사용)
+- 구현자의 설명이 아닌 **실행 결과**만 판단 근거
+- FAIL 시 **구체적 수정 지시서** 전달 (파일:라인 + 기대값 vs 실제값)
 
 ---
 
@@ -395,7 +469,7 @@ settings.json에서 다음 이벤트에 hook이 등록되어 있습니다:
 
 ---
 
-## 🛠 스킬 (33개)
+## 🛠 스킬 (35개)
 
 ### 자율 실험 스킬 (2개)
 
@@ -404,7 +478,7 @@ settings.json에서 다음 이벤트에 hook이 등록되어 있습니다:
 | `/ccpp:autodev` | 자율 코드 실험 루프 (autoresearch 패턴) |
 | `/ccpp:autodev-parallel` | 병렬 워크트리 실험 오케스트레이터 |
 
-### 워크플로우 스킬 (15개)
+### 워크플로우 스킬 (17개)
 
 | 스킬 | 용도 |
 |------|------|
@@ -423,6 +497,8 @@ settings.json에서 다음 이벤트에 hook이 등록되어 있습니다:
 | `/ccpp:compact-guide` | 컨텍스트 관리 가이드 |
 | `/ccpp:techdebt` | 기술 부채 정리 |
 | `/ccpp:harness-diagnostics` | TTH 하네스 진단 및 디버깅 |
+| `/ccpp:eval` | 머스크 독립 평가 — 4축 100점 채점 + PASS/FAIL 판정 |
+| `/ccpp:harness-audit` | 하네스 건강도 진단 — 8차원 점수 + S~D 등급 |
 
 ### 기술 스킬 (10개)
 
@@ -457,22 +533,23 @@ settings.json에서 다음 이벤트에 hook이 등록되어 있습니다:
 
 ---
 
-## 🤖 에이전트 (11개)
+## 🤖 에이전트 (12개)
 
 > 에이전트는 플러그인으로 설치되지 않습니다. `~/.claude/agents/`에 직접 복사하세요.
 
 | 에이전트 | 용도 |
 |----------|------|
+| `evaluator` | **머스크 독립 평가자** — 4축 100점 채점, AI 슬롭 감지, PASS/FAIL 판정 |
 | `langchain-specialist` | LangChain/LangGraph/Deep Agents 프로젝트 구축 전문가 |
-| `prd-planner` | /prd Phase 3-5 전담 — Six Hats 합성 + 전략적 스코핑 + PRD 문서 작성 (인문학 프레임워크 기반) |
+| `prd-planner` | /prd Phase 4-6 전담 — Six Hats 합성 + 전략적 스코핑 + prd/ 디렉토리 8개 파일 생성 |
 | `docs-writer` | 코드 변경 감지 → /docs/ 자동 문서 생성 (구현과 병렬 실행) |
 | `planner` | 복잡한 기능 계획 수립 (docs-writer 병렬 실행 포함) |
 | `frontend-developer` | 빅테크 스타일 UI 구현 |
 | `stitch-developer` | Stitch MCP 기반 UI/웹사이트 생성 |
 | `junior-mentor` | 주니어 학습 하네스 - 코드 + EXPLANATION.md 생성 |
-| `code-reviewer` | 코드 품질/보안 리뷰 |
+| `code-reviewer` | 코드 품질/보안 리뷰 + Blast-Radius 구조적 영향 분석 |
 | `architect` | 시스템 아키텍처 설계 |
-| `security-reviewer` | 보안 취약점 분석 |
+| `security-reviewer` | 보안 취약점 분석 (OWASP Top 10 체크리스트) |
 | `tdd-guide` | TDD 방식 안내 |
 
 <details>
@@ -492,7 +569,7 @@ cp /tmp/my-claude-code-asset-main/agents/*.md ~/.claude/agents/
 | 커맨드 | 용도 |
 |--------|------|
 | `/tth [설명]` | TTH 멀티 에이전트 사일로 (Toss + Tesla + Ralph Loop) |
-| `/prd [아이디어]` | Aletheia v2 — 복잡도 게이트 + 인문학 프레임워크 적응적 인터뷰 + 수렴 보드 기반 PRD 생성 |
+| `/prd [아이디어]` | Aletheia v3 — CPS 정렬 + 인문학 프레임워크 + prd/ 디렉토리 8개 파일 통합 생성 (PRD + SPEC) |
 | `/docs [유형]` | 코드 변경 기반 자동 문서 생성 |
 
 ---
@@ -540,11 +617,11 @@ cp /tmp/my-claude-code-asset-main/agents/*.md ~/.claude/agents/
 
 | | Claude Code Power Pack | Codex CLI Power Pack |
 |---|:---:|:---:|
-| **Skills** | 33개 (`/ccpp:skill`) | 33개 (`$skill`) |
-| **Agents** | 11개 (서브에이전트) | AGENTS.md 통합 |
+| **Skills** | 35개 (`/ccpp:skill`) | 33개 (`$skill`) |
+| **Agents** | 12개 (서브에이전트) | AGENTS.md 통합 |
 | **Rules** | 5개 (YAML 조건부 로드) | AGENTS.md 통합 |
 | **Hooks** | settings.json 물리 차단 | config.toml |
-| **PRD** | Six Thinking Hats | Six Thinking Hats |
+| **PRD** | Aletheia v3 (CPS + prd/) | Six Thinking Hats |
 | **자동 문서** | docs-writer 병렬 실행 | $docs |
 | **모델** | Claude Opus 4.6 | GPT-5.3 Codex |
 
@@ -568,6 +645,50 @@ curl -fsSL https://raw.githubusercontent.com/jh941213/my-codex-cli-asset/main/in
 ---
 
 ## 📋 Changelog
+
+<details open>
+<summary><b>v1.0.0 (2026-03-26) — Musk Evaluator + CPS + Eval Pipeline</b></summary>
+
+**Musk Evaluator (Generator-Evaluator 분리)**
+- 머스크 페르소나 독립 평가자 에이전트 신규 (`agents/evaluator.md`)
+- 5-Step Engineering Process 기반 4축 100점 채점 (기능40 + 독창성20 + 품질25 + 보안15)
+- PASS(85+)/CONDITIONAL(65-84)/FAIL(0-64) 판정 → FAIL 시 Ralph Loop 재진입
+- AI 슬롭 감지 (불필요한 주석, 과도한 추상화, 사용하지 않는 import 등)
+- `team-roles/musk.md` 신규 — M7 팀 완성 (6명 → 7명)
+
+**PRD Aletheia v3 (CPS + prd/ 디렉토리)**
+- Phase 0.5: CPS (Context-Problem-Solution) 세계관 정렬 프레임워크 추가
+- 단일 PRD.md → prd/ 디렉토리 8개 파일 분리 (CPS, PRD, MARKET, USERS, FEATURES, RISKS, SPEC, APPENDIX)
+- /prd + /spec 통합 — 한 커맨드로 PRD + SPEC 동시 생성
+- prd-planner 에이전트 출력 형식 변경 (8개 파일 디렉토리)
+
+**TTH Phase 4 — 5-Step Eval Pipeline**
+- 4-1: Hard Gates (typecheck/lint/test/coverage 80%+/security)
+- 4-2: 머스크 독립 평가 (evaluator 에이전트 스폰)
+- 4-3: 베조스 E2E 검증
+- 4-4: AI 슬롭 정리
+- 4-5: QUALITY_SCORE.md 자동 생성
+- Phase 1: prd/ 디렉토리 자동 읽기 지원
+
+**새로운 스킬 (2개)**
+- `/eval` — 머스크 독립 평가 스킬 (4축 채점 + pass@k 멱등성 테스트)
+- `/harness-audit` — 하네스 건강도 진단 (8차원 점수, S~D 등급)
+
+**에이전트 강화**
+- `code-reviewer` — Blast-Radius 구조적 영향 분석 추가 (code-review-graph MCP 연동)
+- `security-reviewer` — OWASP Top 10 체크리스트 + 공격 시나리오 추가
+- `architect`, `planner`, `tdd-guide` — Write/Edit 도구 권한 추가
+
+**Hooks 강화**
+- `verify-task-quality.sh` — 커버리지 80% 게이트 + 보안 스캔 추가
+- `autodev-judge.sh` — 커버리지 보너스 + 보안 패널티 + AI 슬롭 감지 패널티
+
+**변경사항**
+- Skills: 33 → 35 (+eval, +harness-audit)
+- Agents: 11 → 12 (+evaluator)
+- Team Roles: 6 → 7 (+musk)
+
+</details>
 
 <details>
 <summary><b>v0.9.0 (2026-03-16) — /prd v2: Aletheia 엔진 흡수</b></summary>
