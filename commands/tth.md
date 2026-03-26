@@ -20,15 +20,20 @@ Growth Mindset으로 팀을 이끌되, 결과에 집중한다.
 
 ---
 
-## Phase 1: 요구사항 질문 (Musk Step 1 — 요구사항 의심)
+## Phase 1: 요구사항 파악 (Musk Step 1 — 요구사항 의심)
 
-사용자에게 AskUserQuestion으로 핵심 질문 2-3개를 한다:
+**prd/ 디렉토리가 존재하면** (`/prd`로 이미 기획 완료):
+1. `prd/CPS.md` → 세계관 확인
+2. `prd/FEATURES.md` → 기능 목록 + 인수 조건
+3. `prd/SPEC.md` → 기술 스택 + 마일스톤
+4. 사용자에게 "prd/ 기반으로 진행합니다. 추가 조정 사항이 있나요?" 확인
+5. 조정 없으면 Phase 2로 즉시 진행
 
-1. **스코프 확인**: "이 중에서 가장 중요한 것은 무엇인가요? 반드시 포함해야 할 것과 없어도 되는 것을 구분해주세요."
-2. **기술 스택 확인**: "사용할 기술 스택이 정해져 있나요? (예: Next.js, FastAPI 등) 없다면 제가 프로젝트에 맞게 선택하겠습니다."
-3. **성공 기준**: "완성되었을 때 어떤 모습이어야 하나요? 가장 중요한 사용자 시나리오 1-2개를 알려주세요."
-
-사용자 답변을 기반으로 요구사항을 정리한다.
+**prd/ 디렉토리가 없으면** (직접 요구사항 수집):
+1. **스코프 확인**: "가장 중요한 것은? 반드시 포함할 것과 없어도 되는 것을 구분해주세요."
+2. **기술 스택 확인**: "사용할 기술 스택이 정해져 있나요?"
+3. **성공 기준**: "완성되었을 때 어떤 모습이어야 하나요?"
+4. 사용자 답변을 기반으로 요구사항 정리
 
 ---
 
@@ -324,15 +329,66 @@ python3 -c "import json; s=json.load(open('.ralph-loop/state.json')); s['active'
 
 ---
 
-## Phase 4: 통합 & 리뷰
+## Phase 4: 통합 & Eval
 
-모든 스토리가 `passes: true`가 된 후:
+모든 스토리가 `passes: true`가 된 후, 5단계 Eval 파이프라인 실행:
 
-1. **전체 verify 실행**: typecheck → lint → test → build
-2. 실패 항목이 있으면 담당 팀원에게 수정 요청 (Ralph Loop 재진입)
-3. 베조스에게 최종 E2E 검증 요청
-4. 사티아가 전체 코드 리뷰 — "스태프 엔지니어가 승인할 수 있는가?"
-5. 통합 실패 시 → **Phase 3로 회귀** (새 스토리 생성, Ralph Loop 재개)
+### 4-1. 하드 게이트 (자동, 차단)
+```bash
+# 전체 verify 실행
+npx tsc --noEmit          # typecheck
+npx eslint . --max-warnings=0  # lint
+npx vitest run --coverage  # test + coverage
+npm run build              # build
+npm audit --audit-level=high  # security
+```
+실패 항목 → 담당 팀원에게 수정 요청 (Ralph Loop 재진입)
+
+### 4-2. 머스크 평가 (독립 Evaluator)
+Generator(구현자)와 **분리된 머스크(Evaluator)**를 스폰:
+```
+Agent(subagent_type="evaluator",
+  prompt="~/.claude/agents/evaluator.md를 읽고 머스크 페르소나를 활성화하라.
+         5-Step으로 프로젝트 평가 (의심→삭제→단순화→가속→자동화).
+         85점 이상 PASS, 65-84 CONDITIONAL, 64 이하 FAIL.
+         결과를 EVAL_REPORT.md에 저장.")
+```
+- PASS → 다음 단계
+- CONDITIONAL → 특정 항목 수정 후 재평가 (최대 3회)
+- FAIL → Phase 3로 회귀
+
+### 4-3. 베조스 E2E 검증
+베조스가 앱을 직접 구동하고 핵심 사용자 플로우 검증:
+- e2e-agent-browser로 스냅샷 기반 테스트
+- 핵심 경로 네비게이션, 폼 입력, 에러 상태
+- 발견된 이슈 → "?" 프로토콜로 담당자 전달
+
+### 4-4. AI 슬롭 정리
+머스크의 "Step 2 삭제" 피드백 기반으로 AI 특유의 패턴 정리:
+- 불필요한 주석 삭제 ("이 함수는 X를 합니다")
+- 과도한 추상화 인라인화
+- 장황한 에러 메시지 단순화
+- 정리 후 regression 테스트 재실행
+
+### 4-5. QUALITY_SCORE.md 자동 생성
+```markdown
+# Quality Score — [프로젝트명]
+
+## 총점: [N]/100
+- 기능 정확성: [N]/40
+- 코드 품질: [N]/25
+- 독창성: [N]/20
+- 사용성 & 보안: [N]/15
+
+## 상세
+- 테스트: [N]개 통과 / 커버리지 [N]%
+- 보안: critical [N] / high [N]
+- AI 슬롭: [N]개 패턴
+- E2E: [PASS/FAIL]
+```
+
+모든 단계 통과 시 → Phase 5 진행.
+통합 실패 시 → **Phase 3로 회귀** (새 스토리 생성, Ralph Loop 재개)
 
 ---
 
@@ -384,7 +440,8 @@ python3 -c "import json; s=json.load(open('.ralph-loop/state.json')); s['active'
 
 2. `tasks/lessons.md`에 이번 세션에서 배운 패턴 추가
 3. progress.txt를 tasks/ 디렉토리로 아카이브
-4. **TeamDelete**로 팀 해산
+4. prd/SPEC.md의 마일스톤을 완료 상태로 업데이트
+5. **TeamDelete**로 팀 해산
 
 ---
 

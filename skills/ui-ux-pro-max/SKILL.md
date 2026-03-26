@@ -86,39 +86,6 @@ Reference these guidelines when:
 - `color-guidance` - Use accessible color palettes
 - `data-table` - Provide table alternative for accessibility
 
-## How to Use
-
-Search specific domains using the CLI tool below.
-
----
-
-## Prerequisites
-
-Check if Python is installed:
-
-```bash
-python3 --version || python --version
-```
-
-If Python is not installed, install it based on user's OS:
-
-**macOS:**
-```bash
-brew install python3
-```
-
-**Ubuntu/Debian:**
-```bash
-sudo apt update && sudo apt install python3
-```
-
-**Windows:**
-```powershell
-winget install Python.Python.3.12
-```
-
----
-
 ## How to Use This Skill
 
 When user requests UI/UX work (design, build, create, implement, review, fix, improve), follow this workflow:
@@ -131,183 +98,53 @@ Extract key information from user request:
 - **Industry**: healthcare, fintech, gaming, education, etc.
 - **Stack**: React, Vue, Next.js, or default to `html-tailwind`
 
-### Step 2: Generate Design System (REQUIRED)
+### Step 2: Design System 생성
 
-**Always start with `--design-system`** to get comprehensive recommendations with reasoning:
+위 Quick Reference와 아래 데이터를 기반으로 디자인 시스템을 직접 구성합니다:
 
-```bash
-python3 skills/ui-ux-pro-max/scripts/search.py "<product_type> <industry> <keywords>" --design-system [-p "Project Name"]
-```
+1. **스타일 선택**: 제품 유형 + 산업에 맞는 스타일 (glassmorphism, minimalism, brutalism 등)
+2. **색상 팔레트**: 산업별 추천 팔레트 매칭
+3. **타이포그래피**: 스타일에 맞는 폰트 페어링 선택
+4. **레이아웃 패턴**: 제품 유형에 맞는 레이아웃 구조
 
-This command:
-1. Searches 5 domains in parallel (product, style, color, landing, typography)
-2. Applies reasoning rules from `ui-reasoning.csv` to select best matches
-3. Returns complete design system: pattern, style, colors, typography, effects
-4. Includes anti-patterns to avoid
+#### 산업별 스타일 매칭
 
-**Example:**
-```bash
-python3 skills/ui-ux-pro-max/scripts/search.py "beauty spa wellness service" --design-system -p "Serenity Spa"
-```
+| 산업 | 추천 스타일 | 색상 톤 | 폰트 성격 |
+|------|------------|---------|----------|
+| SaaS/Tech | Minimalism, Flat Design | Blue/Purple 계열 | Geometric Sans (Inter, Geist) |
+| E-commerce | Clean, Card-based | Warm neutral | Readable (Plus Jakarta Sans) |
+| Healthcare | Soft, Trustworthy | Green/Teal 계열 | Humanist Sans (Source Sans) |
+| Fintech | Professional, Data-rich | Navy/Gold 계열 | Monospace accent (JetBrains Mono) |
+| Beauty/Wellness | Elegant, Soft | Rose/Sage 계열 | Serif accent (Playfair Display) |
+| Gaming | Dark, Vibrant | Neon/Dark 계열 | Display (Orbitron, Rajdhani) |
+| Education | Friendly, Accessible | Bright primary | Rounded (Nunito, Quicksand) |
+| Portfolio | Expressive, Unique | Monochrome + accent | Display mix |
 
-### Step 2b: Persist Design System (Master + Overrides Pattern)
+#### 폰트 페어링 (Google Fonts)
 
-To save the design system for **hierarchical retrieval across sessions**, add `--persist`:
+| 조합 | Heading | Body | 분위기 |
+|------|---------|------|--------|
+| Modern Pro | Inter | Inter | 깔끔, 프로페셔널 |
+| Elegant | Playfair Display | Lato | 고급, 세련 |
+| Friendly | Poppins | Open Sans | 친근, 접근성 |
+| Bold | Montserrat | Roboto | 강렬, 임팩트 |
+| Creative | Space Grotesk | DM Sans | 창의적, 모던 |
+| Luxury | Cormorant Garamond | Raleway | 럭셔리, 우아 |
 
-```bash
-python3 skills/ui-ux-pro-max/scripts/search.py "<query>" --design-system --persist -p "Project Name"
-```
+### Step 3: Stack별 가이드라인 적용
 
-This creates:
-- `design-system/MASTER.md` — Global Source of Truth with all design rules
-- `design-system/pages/` — Folder for page-specific overrides
+| Stack | 핵심 패턴 |
+|-------|----------|
+| html-tailwind | Tailwind utilities, responsive, a11y (DEFAULT) |
+| react | State, hooks, performance, patterns |
+| nextjs | SSR, routing, images, API routes |
+| vue | Composition API, Pinia, Vue Router |
+| svelte | Runes, stores, SvelteKit |
+| shadcn | shadcn/ui 컴포넌트, 테마, 폼, 패턴 |
 
-**With page-specific override:**
-```bash
-python3 skills/ui-ux-pro-max/scripts/search.py "<query>" --design-system --persist -p "Project Name" --page "dashboard"
-```
+### Step 4: 구현 + Pre-Delivery Checklist 검증
 
-This also creates:
-- `design-system/pages/dashboard.md` — Page-specific deviations from Master
-
-**How hierarchical retrieval works:**
-1. When building a specific page (e.g., "Checkout"), first check `design-system/pages/checkout.md`
-2. If the page file exists, its rules **override** the Master file
-3. If not, use `design-system/MASTER.md` exclusively
-
-**Context-aware retrieval prompt:**
-```
-I am building the [Page Name] page. Please read design-system/MASTER.md.
-Also check if design-system/pages/[page-name].md exists.
-If the page file exists, prioritize its rules.
-If not, use the Master rules exclusively.
-Now, generate the code...
-```
-
-### Step 3: Supplement with Detailed Searches (as needed)
-
-After getting the design system, use domain searches to get additional details:
-
-```bash
-python3 skills/ui-ux-pro-max/scripts/search.py "<keyword>" --domain <domain> [-n <max_results>]
-```
-
-**When to use detailed searches:**
-
-| Need | Domain | Example |
-|------|--------|---------|
-| More style options | `style` | `--domain style "glassmorphism dark"` |
-| Chart recommendations | `chart` | `--domain chart "real-time dashboard"` |
-| UX best practices | `ux` | `--domain ux "animation accessibility"` |
-| Alternative fonts | `typography` | `--domain typography "elegant luxury"` |
-| Landing structure | `landing` | `--domain landing "hero social-proof"` |
-
-### Step 4: Stack Guidelines (Default: html-tailwind)
-
-Get implementation-specific best practices. If user doesn't specify a stack, **default to `html-tailwind`**.
-
-```bash
-python3 skills/ui-ux-pro-max/scripts/search.py "<keyword>" --stack html-tailwind
-```
-
-Available stacks: `html-tailwind`, `react`, `nextjs`, `vue`, `svelte`, `swiftui`, `react-native`, `flutter`, `shadcn`, `jetpack-compose`
-
----
-
-## Search Reference
-
-### Available Domains
-
-| Domain | Use For | Example Keywords |
-|--------|---------|------------------|
-| `product` | Product type recommendations | SaaS, e-commerce, portfolio, healthcare, beauty, service |
-| `style` | UI styles, colors, effects | glassmorphism, minimalism, dark mode, brutalism |
-| `typography` | Font pairings, Google Fonts | elegant, playful, professional, modern |
-| `color` | Color palettes by product type | saas, ecommerce, healthcare, beauty, fintech, service |
-| `landing` | Page structure, CTA strategies | hero, hero-centric, testimonial, pricing, social-proof |
-| `chart` | Chart types, library recommendations | trend, comparison, timeline, funnel, pie |
-| `ux` | Best practices, anti-patterns | animation, accessibility, z-index, loading |
-| `react` | React/Next.js performance | waterfall, bundle, suspense, memo, rerender, cache |
-| `web` | Web interface guidelines | aria, focus, keyboard, semantic, virtualize |
-| `prompt` | AI prompts, CSS keywords | (style name) |
-
-### Available Stacks
-
-| Stack | Focus |
-|-------|-------|
-| `html-tailwind` | Tailwind utilities, responsive, a11y (DEFAULT) |
-| `react` | State, hooks, performance, patterns |
-| `nextjs` | SSR, routing, images, API routes |
-| `vue` | Composition API, Pinia, Vue Router |
-| `svelte` | Runes, stores, SvelteKit |
-| `swiftui` | Views, State, Navigation, Animation |
-| `react-native` | Components, Navigation, Lists |
-| `flutter` | Widgets, State, Layout, Theming |
-| `shadcn` | shadcn/ui components, theming, forms, patterns |
-| `jetpack-compose` | Composables, Modifiers, State Hoisting, Recomposition |
-
----
-
-## Example Workflow
-
-**User request:** "Làm landing page cho dịch vụ chăm sóc da chuyên nghiệp"
-
-### Step 1: Analyze Requirements
-- Product type: Beauty/Spa service
-- Style keywords: elegant, professional, soft
-- Industry: Beauty/Wellness
-- Stack: html-tailwind (default)
-
-### Step 2: Generate Design System (REQUIRED)
-
-```bash
-python3 skills/ui-ux-pro-max/scripts/search.py "beauty spa wellness service elegant" --design-system -p "Serenity Spa"
-```
-
-**Output:** Complete design system with pattern, style, colors, typography, effects, and anti-patterns.
-
-### Step 3: Supplement with Detailed Searches (as needed)
-
-```bash
-# Get UX guidelines for animation and accessibility
-python3 skills/ui-ux-pro-max/scripts/search.py "animation accessibility" --domain ux
-
-# Get alternative typography options if needed
-python3 skills/ui-ux-pro-max/scripts/search.py "elegant luxury serif" --domain typography
-```
-
-### Step 4: Stack Guidelines
-
-```bash
-python3 skills/ui-ux-pro-max/scripts/search.py "layout responsive form" --stack html-tailwind
-```
-
-**Then:** Synthesize design system + detailed searches and implement the design.
-
----
-
-## Output Formats
-
-The `--design-system` flag supports two output formats:
-
-```bash
-# ASCII box (default) - best for terminal display
-python3 skills/ui-ux-pro-max/scripts/search.py "fintech crypto" --design-system
-
-# Markdown - best for documentation
-python3 skills/ui-ux-pro-max/scripts/search.py "fintech crypto" --design-system -f markdown
-```
-
----
-
-## Tips for Better Results
-
-1. **Be specific with keywords** - "healthcare SaaS dashboard" > "app"
-2. **Search multiple times** - Different keywords reveal different insights
-3. **Combine domains** - Style + Typography + Color = Complete design system
-4. **Always check UX** - Search "animation", "z-index", "accessibility" for common issues
-5. **Use stack flag** - Get implementation-specific best practices
-6. **Iterate** - If first search doesn't match, try different keywords
+shadcn/ui MCP 도구가 사용 가능하면 컴포넌트 검색 및 예시를 활용합니다.
 
 ---
 

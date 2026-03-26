@@ -165,7 +165,57 @@ if git rev-parse HEAD~1 &>/dev/null; then
 fi
 
 # ─────────────────────────────────────────────
-# 5. 결과 출력
+# 5. 커버리지 & 보안 체크 (보너스/감점)
+# ─────────────────────────────────────────────
+
+# 커버리지 보너스
+if [ -f "coverage/coverage-summary.json" ]; then
+  COV_PCT=$(python3 -c "import json; d=json.load(open('coverage/coverage-summary.json')); print(int(d.get('total',{}).get('lines',{}).get('pct',0)))" 2>/dev/null || echo "0")
+  COV_PCT=${COV_PCT:-0}
+  if [ "$COV_PCT" -ge 90 ]; then
+    SCORE=$((SCORE + 30))
+    log "coverage: ${COV_PCT}% (+30)"
+  elif [ "$COV_PCT" -ge 80 ]; then
+    SCORE=$((SCORE + 15))
+    log "coverage: ${COV_PCT}% (+15)"
+  elif [ "$COV_PCT" -lt 50 ]; then
+    SCORE=$((SCORE - 20))
+    log "coverage: ${COV_PCT}% (-20)"
+  else
+    log "coverage: ${COV_PCT}%"
+  fi
+fi
+
+# 보안 감점
+if [ -f "package.json" ]; then
+  SEC_OUTPUT=$(npm audit --json 2>/dev/null) || true
+  SEC_CRIT=$(echo "$SEC_OUTPUT" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('metadata',{}).get('vulnerabilities',{}).get('critical',0))" 2>/dev/null || echo "0")
+  SEC_HIGH=$(echo "$SEC_OUTPUT" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('metadata',{}).get('vulnerabilities',{}).get('high',0))" 2>/dev/null || echo "0")
+  SEC_CRIT=${SEC_CRIT:-0}
+  SEC_HIGH=${SEC_HIGH:-0}
+  if [ "$SEC_CRIT" -gt 0 ]; then
+    PENALTY=$((SEC_CRIT * 30))
+    SCORE=$((SCORE - PENALTY))
+    log "security: ${SEC_CRIT} critical (-${PENALTY})"
+  fi
+  if [ "$SEC_HIGH" -gt 0 ]; then
+    PENALTY=$((SEC_HIGH * 10))
+    SCORE=$((SCORE - PENALTY))
+    log "security: ${SEC_HIGH} high (-${PENALTY})"
+  fi
+fi
+
+# AI 슬롭 감점
+SLOP_COUNT=$(grep -rnc "// This function\|// This method\|// eslint-disable\|TODO: implement" --include="*.ts" --include="*.tsx" --include="*.js" --include="*.jsx" src/ 2>/dev/null | awk -F: '{s+=$2} END {print s+0}')
+SLOP_COUNT=${SLOP_COUNT:-0}
+if [ "$SLOP_COUNT" -gt 5 ]; then
+  PENALTY=$((SLOP_COUNT * 2))
+  SCORE=$((SCORE - PENALTY))
+  log "ai-slop: ${SLOP_COUNT} patterns (-${PENALTY})"
+fi
+
+# ─────────────────────────────────────────────
+# 6. 결과 출력
 # ─────────────────────────────────────────────
 
 echo "$SCORE" > "$RESULT_FILE"
