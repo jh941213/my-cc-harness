@@ -168,6 +168,22 @@ docs/
 ⚡ Ralph Loop 프로토콜을 반드시 따를 것 (아래 참조)
 ```
 
+### 2-5. 팀원 스폰 후 이름 등록
+
+Agent() 스폰 후 반환된 agentId로 `.ralph-loop/teammates.json`에 이름을 매핑한다.
+(SubagentStart hook은 stdin JSON에서 agent_id만 받고 name은 모르기 때문.)
+
+```python
+# 스폰 후 즉시 실행
+import json
+f = '.ralph-loop/teammates.json'
+data = json.load(open(f))
+data['teammates']['<반환된_agentId>']['name'] = '피차이'  # 실제 이름
+json.dump(data, open(f, 'w'), indent=2, ensure_ascii=False)
+```
+
+이름이 매핑되면 ralph-loop.sh의 inject_prompt에 `⚡ 활성 팀원: 피차이, 젠슨 — SendMessage(to=이름)로 재사용`이 표시된다.
+
 ---
 
 ## Phase 3: Ralph Loop 실행
