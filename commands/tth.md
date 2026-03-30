@@ -23,12 +23,20 @@ Growth Mindset으로 팀을 이끌되, 결과에 집중한다.
 ## Phase 1: 요구사항 파악 (Musk Step 1 — 요구사항 의심)
 
 **prd/ 디렉토리가 존재하면** (`/prd`로 이미 기획 완료):
-1. `prd/CPS.md` → 세계관 확인
-2. `prd/FEATURES.md` → 기능 목록 + 인수 조건
-3. `prd/SPEC.md` → 기술 스택 + 마일스톤
-4. 사용자에게 "prd/ 기반으로 진행합니다. 추가 조정 사항이 있나요?" 확인
-5. 조정 없으면 Phase 2로 즉시 진행
 
+사티아(PO)는 전체 그림을 파악해야 한다. **8개 파일 전부 Read**:
+1. `prd/CPS.md` → 세계관 + 문제 정의 + 솔루션 방향
+2. `prd/PRD.md` → 핵심 제품 요구사항
+3. `prd/MARKET.md` → 시장 분석 + 경쟁사 → 차별화 포인트 파악
+4. `prd/USERS.md` → 사용자 페르소나 + 여정 → UX 스토리 분해에 활용
+5. `prd/FEATURES.md` → 기능 목록 + 우선순위 + 인수 조건
+6. `prd/RISKS.md` → 위험 분석 → 스토리 의존성/블로커 사전 식별
+7. `prd/SPEC.md` → 기술 스택 + 아키텍처 + 마일스톤
+8. `prd/APPENDIX.md` → 수렴 보드 + 인터뷰 로그 (참고용)
+
+읽은 후:
+- 사용자에게 "prd/ 8개 파일 확인 완료. 요약: [1줄 요약]. 추가 조정 사항 있나요?" 확인
+- 조정 없으면 Phase 2로 즉시 진행
 **prd/ 디렉토리가 없으면** (직접 요구사항 수집):
 1. **스코프 확인**: "가장 중요한 것은? 반드시 포함할 것과 없어도 되는 것을 구분해주세요."
 2. **기술 스택 확인**: "사용할 기술 스택이 정해져 있나요?"
@@ -158,6 +166,22 @@ docs/
 
 ⚡ Ralph Loop 프로토콜을 반드시 따를 것 (아래 참조)
 ```
+
+### 2-5. 팀원 스폰 후 이름 등록
+
+Agent() 스폰 후 반환된 agentId로 `.ralph-loop/teammates.json`에 이름을 매핑한다.
+(SubagentStart hook은 stdin JSON에서 agent_id만 받고 name은 모르기 때문.)
+
+```python
+# 스폰 후 즉시 실행
+import json
+f = '.ralph-loop/teammates.json'
+data = json.load(open(f))
+data['teammates']['<반환된_agentId>']['name'] = '피차이'  # 실제 이름
+json.dump(data, open(f, 'w'), indent=2, ensure_ascii=False)
+```
+
+이름이 매핑되면 ralph-loop.sh의 inject_prompt에 `⚡ 활성 팀원: 피차이, 젠슨 — SendMessage(to=이름)로 재사용`이 표시된다.
 
 ---
 
@@ -331,9 +355,22 @@ python3 -c "import json; s=json.load(open('.ralph-loop/state.json')); s['active'
 
 ## Phase 4: 통합 & Eval
 
-모든 스토리가 `passes: true`가 된 후, 5단계 Eval 파이프라인 실행:
+모든 스토리가 `passes: true`가 된 후, **복잡도에 따라 Eval 파이프라인 수준을 결정**한다.
 
-### 4-1. 하드 게이트 (자동, 차단)
+> **Anthropic 인사이트**: "Evaluator는 고정 yes/no가 아니다. 모델이 혼자 잘 할 수 있는 범위의 작업이면 불필요하다." (Opus 4.6에서는 스프린트 분해 없이 2시간+ 일관 작업 가능)
+
+### 복잡도별 Eval 수준
+
+| 복잡도 | 판단 기준 | Eval 수준 | 실행 단계 |
+|--------|----------|-----------|----------|
+| **Low** | 스토리 3개 이하, 단일 도메인 (백엔드만 or 프론트만) | **Light** | 4-1 하드 게이트만 |
+| **Mid** | 스토리 4-8개, 또는 풀스택이지만 단순 CRUD | **Standard** | 4-1 + 4-2 머스크 + 4-4 슬롭 정리 |
+| **High** | 스토리 9개+, 복잡한 비즈니스 로직, AI 기능 포함 | **Full** | 4-1 ~ 4-5 전체 파이프라인 |
+
+사티아가 Phase 2의 스토리 수 + 프로젝트 유형으로 복잡도를 판단한다.
+`/prd`로 시작한 경우 prd/ 내 복잡도 게이트 결과를 그대로 활용.
+
+### 4-1. 하드 게이트 (자동, 차단) — 모든 복잡도
 ```bash
 # 전체 verify 실행
 npx tsc --noEmit          # typecheck
@@ -344,7 +381,9 @@ npm audit --audit-level=high  # security
 ```
 실패 항목 → 담당 팀원에게 수정 요청 (Ralph Loop 재진입)
 
-### 4-2. 머스크 평가 (독립 Evaluator)
+**Low 복잡도**: 하드 게이트 통과 시 Phase 5로 직행. 머스크 Eval 스킵.
+
+### 4-2. 머스크 평가 (독립 Evaluator) — Mid/High
 Generator(구현자)와 **분리된 머스크(Evaluator)**를 스폰:
 ```
 Agent(subagent_type="evaluator",
@@ -357,20 +396,20 @@ Agent(subagent_type="evaluator",
 - CONDITIONAL → 특정 항목 수정 후 재평가 (최대 3회)
 - FAIL → Phase 3로 회귀
 
-### 4-3. 베조스 E2E 검증
+### 4-3. 베조스 E2E 검증 — High만
 베조스가 앱을 직접 구동하고 핵심 사용자 플로우 검증:
 - e2e-agent-browser로 스냅샷 기반 테스트
 - 핵심 경로 네비게이션, 폼 입력, 에러 상태
 - 발견된 이슈 → "?" 프로토콜로 담당자 전달
 
-### 4-4. AI 슬롭 정리
+### 4-4. AI 슬롭 정리 — Mid/High
 머스크의 "Step 2 삭제" 피드백 기반으로 AI 특유의 패턴 정리:
 - 불필요한 주석 삭제 ("이 함수는 X를 합니다")
 - 과도한 추상화 인라인화
 - 장황한 에러 메시지 단순화
 - 정리 후 regression 테스트 재실행
 
-### 4-5. QUALITY_SCORE.md 자동 생성
+### 4-5. QUALITY_SCORE.md 자동 생성 — Mid/High
 ```markdown
 # Quality Score — [프로젝트명]
 

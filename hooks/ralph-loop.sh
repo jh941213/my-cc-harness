@@ -16,9 +16,17 @@ set -uo pipefail
 # stdin에서 hook input 읽기
 INPUT=$(cat)
 
-SESSION_ID=$(echo "$INPUT" | python3 -c "import sys,json; print(json.load(sys.stdin).get('session_id',''))" 2>/dev/null || echo "")
-TRANSCRIPT_PATH=$(echo "$INPUT" | python3 -c "import sys,json; print(json.load(sys.stdin).get('transcript_path',''))" 2>/dev/null || echo "")
-CWD=$(echo "$INPUT" | python3 -c "import sys,json; print(json.load(sys.stdin).get('cwd',''))" 2>/dev/null || echo "$(pwd)")
+HOOK_VARS=$(echo "$INPUT" | python3 -c "
+import sys,json
+d=json.load(sys.stdin)
+print(d.get('session_id',''))
+print(d.get('transcript_path',''))
+print(d.get('cwd',''))
+" 2>/dev/null) || HOOK_VARS=""
+SESSION_ID=$(echo "$HOOK_VARS" | sed -n '1p')
+TRANSCRIPT_PATH=$(echo "$HOOK_VARS" | sed -n '2p')
+CWD=$(echo "$HOOK_VARS" | sed -n '3p')
+CWD="${CWD:-$(pwd)}"
 
 STATE_DIR="${CWD}/.ralph-loop"
 STATE_FILE="${STATE_DIR}/state.json"
@@ -29,19 +37,31 @@ if [ ! -f "$STATE_FILE" ]; then
   exit 0
 fi
 
-# 상태 읽기
-ACTIVE=$(python3 -c "import json; s=json.load(open('${STATE_FILE}')); print(s.get('active', False))" 2>/dev/null || echo "False")
+# 상태를 한 번에 읽기 (환경변수로 경로 전달 — 경로 인젝션 방지)
+STATE_VARS=$(RALPH_STATE_FILE="$STATE_FILE" python3 -c "
+import json, os
+f = os.environ['RALPH_STATE_FILE']
+s = json.load(open(f))
+print(s.get('active', False))
+print(s.get('iteration', 0))
+print(s.get('max_iterations', 100))
+print(s.get('prompt', ''))
+print(s.get('completion_promise', 'DONE'))
+" 2>/dev/null) || {
+  echo '{"decision":"approve"}'
+  exit 0
+}
+
+ACTIVE=$(echo "$STATE_VARS" | sed -n '1p')
+ITERATION=$(echo "$STATE_VARS" | sed -n '2p')
+MAX_ITER=$(echo "$STATE_VARS" | sed -n '3p')
+PROMPT=$(echo "$STATE_VARS" | sed -n '4p')
+COMPLETION=$(echo "$STATE_VARS" | sed -n '5p')
 
 if [ "$ACTIVE" != "True" ]; then
   echo '{"decision":"approve"}'
   exit 0
 fi
-
-# 현재 반복 수와 최대 반복 수
-ITERATION=$(python3 -c "import json; s=json.load(open('${STATE_FILE}')); print(s.get('iteration', 0))" 2>/dev/null || echo "0")
-MAX_ITER=$(python3 -c "import json; s=json.load(open('${STATE_FILE}')); print(s.get('max_iterations', 100))" 2>/dev/null || echo "100")
-PROMPT=$(python3 -c "import json; s=json.load(open('${STATE_FILE}')); print(s.get('prompt', ''))" 2>/dev/null || echo "")
-COMPLETION=$(python3 -c "import json; s=json.load(open('${STATE_FILE}')); print(s.get('completion_promise', 'DONE'))" 2>/dev/null || echo "DONE")
 
 # 완료 프로미스 감지 (트랜스크립트에서)
 PROMISE_FOUND=false
@@ -54,13 +74,14 @@ fi
 # 종료 조건 체크
 if [ "$PROMISE_FOUND" = "true" ]; then
   # 완료 — 상태 비활성화
-  python3 -c "
-import json
-s = json.load(open('${STATE_FILE}'))
+  RALPH_STATE_FILE="$STATE_FILE" python3 -c "
+import json, os, datetime
+f = os.environ['RALPH_STATE_FILE']
+s = json.load(open(f))
 s['active'] = False
-s['completed_at'] = __import__('datetime').datetime.now().isoformat()
+s['completed_at'] = datetime.datetime.now().isoformat()
 s['status'] = 'completed'
-json.dump(s, open('${STATE_FILE}', 'w'), indent=2, ensure_ascii=False)
+json.dump(s, open(f, 'w'), indent=2, ensure_ascii=False)
 " 2>/dev/null
   echo '{"decision":"approve"}'
   exit 0
@@ -68,13 +89,14 @@ fi
 
 if [ "$ITERATION" -ge "$MAX_ITER" ]; then
   # 최대 반복 초과 — 상태 비활성화
-  python3 -c "
-import json
-s = json.load(open('${STATE_FILE}'))
+  RALPH_STATE_FILE="$STATE_FILE" python3 -c "
+import json, os, datetime
+f = os.environ['RALPH_STATE_FILE']
+s = json.load(open(f))
 s['active'] = False
-s['completed_at'] = __import__('datetime').datetime.now().isoformat()
+s['completed_at'] = datetime.datetime.now().isoformat()
 s['status'] = 'max_iterations_reached'
-json.dump(s, open('${STATE_FILE}', 'w'), indent=2, ensure_ascii=False)
+json.dump(s, open(f, 'w'), indent=2, ensure_ascii=False)
 " 2>/dev/null
   echo '{"decision":"approve"}'
   exit 0
@@ -82,12 +104,13 @@ fi
 
 # 반복 증가
 NEW_ITER=$((ITERATION + 1))
-python3 -c "
-import json, datetime
-s = json.load(open('${STATE_FILE}'))
-s['iteration'] = ${NEW_ITER}
+RALPH_STATE_FILE="$STATE_FILE" RALPH_NEW_ITER="$NEW_ITER" python3 -c "
+import json, os, datetime
+f = os.environ['RALPH_STATE_FILE']
+s = json.load(open(f))
+s['iteration'] = int(os.environ['RALPH_NEW_ITER'])
 s['last_iteration_at'] = datetime.datetime.now().isoformat()
-json.dump(s, open('${STATE_FILE}', 'w'), indent=2, ensure_ascii=False)
+json.dump(s, open(f, 'w'), indent=2, ensure_ascii=False)
 " 2>/dev/null
 
 # AUDIT.log에 기록
@@ -102,41 +125,64 @@ DOCS_INSTRUCTION=""
 if [ -d "$DOCS_QUEUE_DIR" ]; then
   PENDING_COUNT=$(find "$DOCS_QUEUE_DIR" -name "*.json" 2>/dev/null | wc -l | tr -d ' ')
   if [ "$PENDING_COUNT" -gt "0" ]; then
-    # 변경 파일 목록 수집
-    CHANGED=$(python3 -c "
+    CHANGED=$(RALPH_DOCS_DIR="$DOCS_QUEUE_DIR" python3 -c "
 import json, glob, os
+d = os.environ['RALPH_DOCS_DIR']
 files = set()
-for f in glob.glob('${DOCS_QUEUE_DIR}/*.json'):
+for f in glob.glob(os.path.join(d, '*.json')):
     try:
         data = json.load(open(f))
         files.update(data.get('changed_files', []))
-    except: pass
+    except (json.JSONDecodeError, OSError): pass
 print(', '.join(sorted(files)[:20]))
 " 2>/dev/null || echo "")
 
     if [ -n "$CHANGED" ]; then
       DOCS_INSTRUCTION="
-
-⚠️ [docs-writer 트리거] ${PENDING_COUNT}개 스토리 완료됨. 변경 파일: ${CHANGED}
-→ docs-writer 서브에이전트를 스폰하여 docs/ 동기화:
-  Agent(subagent_type=\"general-purpose\", name=\"docs-writer\", run_in_background=true,
-    prompt=\"~/.claude/agents/docs-writer.md를 읽고 따라라. 변경 파일: ${CHANGED}. git diff로 변경사항 분석 후 docs/ARCHITECTURE.md, ADR 업데이트. 완료 후 .docs-queue/ 파일 삭제.\")"
+📝 docs 동기화 필요: ${CHANGED} — docs-writer background 스폰."
     fi
 
-    # AUDIT.log에 docs 트리거 기록
     if [ -f "$AUDIT_FILE" ]; then
       echo "[$(date -u +%Y-%m-%dT%H:%M:%S)] docs-writer TRIGGER pending=${PENDING_COUNT}" >> "$AUDIT_FILE"
     fi
   fi
 fi
 
+# 기존 팀원 정보 수집 (tmux 세션 재사용)
+TEAMMATES_FILE="${STATE_DIR}/teammates.json"
+TEAMMATE_INSTRUCTION=""
+if [ -f "$TEAMMATES_FILE" ]; then
+  TEAMMATE_INFO=$(RALPH_TEAMMATES="$TEAMMATES_FILE" python3 -c "
+import json, os
+try:
+    f = os.environ['RALPH_TEAMMATES']
+    data = json.load(open(f))
+    running = {k: v for k,v in data.get('teammates',{}).items() if v.get('status')=='running'}
+    if running:
+        # name 필드가 있으면 이름 사용, 없으면 agent_id 사용
+        labels = [v.get('name', k) for k,v in running.items()]
+        names = ', '.join(labels)
+        print(f'\n⚡ 활성 팀원: {names} — SendMessage(to=이름)로 재사용. 새 Agent() 금지.')
+    else:
+        print('')
+except (json.JSONDecodeError, OSError, KeyError):
+    print('')
+" 2>/dev/null || echo "")
+  TEAMMATE_INSTRUCTION="$TEAMMATE_INFO"
+fi
+
 # 연속 프롬프트 주입
-CONTINUATION="[Ralph Loop 반복 ${NEW_ITER}/${MAX_ITER}] ${PROMPT}
+CONTINUATION="[Ralph Loop ${NEW_ITER}/${MAX_ITER}] ${PROMPT}${TEAMMATE_INSTRUCTION}${DOCS_INSTRUCTION}
+완료 시 <promise>${COMPLETION}</promise> 출력."
 
-진행 상황을 확인하고 다음 항목을 처리하세요.${DOCS_INSTRUCTION}
-모든 항목이 완료되면 반드시 <promise>${COMPLETION}</promise>를 출력하세요."
-
-# JSON escape
-ESCAPED_PROMPT=$(python3 -c "import json; print(json.dumps('${CONTINUATION}'))" 2>/dev/null || echo "\"Continue\"")
+# JSON escape — temp file로 안전하게 처리
+PROMPT_TMP="${STATE_DIR}/.inject_prompt.tmp"
+printf '%s' "$CONTINUATION" > "$PROMPT_TMP"
+ESCAPED_PROMPT=$(RALPH_TMP="$PROMPT_TMP" python3 -c "
+import json, os
+with open(os.environ['RALPH_TMP']) as f:
+    print(json.dumps(f.read()))
+" 2>/dev/null || echo "\"Continue\"")
+rm -f "$PROMPT_TMP"
 
 echo "{\"decision\":\"block\",\"reason\":\"Ralph Loop 계속\",\"inject_prompt\":${ESCAPED_PROMPT}}"

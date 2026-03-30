@@ -2,7 +2,7 @@
 
 **🌐 [English](README_EN.md) | 한국어**
 
-# Claude Code Power Pack
+# MY Claude Code harness
 
 <img src="assets/banner.png" alt="Claude Code Power Pack" width="720" />
 

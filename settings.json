@@ -1,7 +1,9 @@
 {
   "env": {
     "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
-    "CLAUDE_CODE_TEAMMATE_MODE": "tmux"
+    "CLAUDE_CODE_TEAMMATE_MODE": "tmux",
+    "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "75",
+    "CLAUDE_CODE_AUTO_COMPACT_WINDOW": "200000"
   },
   "permissions": {
     "defaultMode": "bypassPermissions",
@@ -192,10 +194,12 @@
     ],
     "SubagentStop": [
       {
+        "matcher": "*",
         "hooks": [
           {
             "type": "command",
-            "command": "bash -c 'if [ -d prd ] || [ -f PRD.md ]; then echo \"PRD 생성 완료\"; fi; if [ -f .active-agents ]; then AGENT=\"${CLAUDE_SUBAGENT_NAME:-unknown}\"; grep -v \"$AGENT\" .active-agents > .active-agents.tmp 2>/dev/null && mv .active-agents.tmp .active-agents || true; fi; exit 0'",
+            "command": "~/.claude/hooks/subagent-stop-tracker.sh",
+            "timeout": 5,
             "statusMessage": "서브에이전트 완료 확인 중..."
           }
         ]
