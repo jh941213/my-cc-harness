@@ -37,7 +37,7 @@
 - [Hooks 보장 시스템](#-hooks-보장-시스템)
 - [스킬 (35개)](#-스킬-35개)
 - [에이전트 (12개)](#-에이전트-12개)
-- [Commands (3개)](#-commands-3개)
+- [Commands (7개)](#-commands-7개)
 - [Rules (5개)](#-rules-5개-조건부-로드)
 - [Boris Cherny 팁](#-boris-cherny-팁)
 - [Codex CLI 버전](#-codex-cli-버전)
@@ -77,7 +77,7 @@ https://github.com/jh941213/my-claude-code-asset 저장소의 agents/, rules/, c
 | Skills (35개) | ✅ | ✅ |
 | Agents (12개) | ❌ | ✅ |
 | Rules (5개) | ❌ | ✅ |
-| Commands (3개) | ❌ | ✅ |
+| Commands (7개) | ❌ | ✅ |
 | TTH Team Roles (7개) | ❌ | ✅ |
 | Hooks (8개) | ❌ | ✅ |
 | CLAUDE.md | ❌ | ✅ |
@@ -575,13 +575,17 @@ cp /tmp/my-claude-code-asset-main/agents/*.md ~/.claude/agents/
 
 ---
 
-## 📝 Commands (3개)
+## 📝 Commands (7개)
 
 | 커맨드 | 용도 |
 |--------|------|
 | `/tth [설명]` | TTH 멀티 에이전트 사일로 (Toss + Tesla + Ralph Loop) |
 | `/prd [아이디어]` | Aletheia v3 — CPS 정렬 + 인문학 프레임워크 + prd/ 디렉토리 8개 파일 통합 생성 (PRD + SPEC) |
 | `/docs [유형]` | 코드 변경 기반 자동 문서 생성 |
+| `/verify [단계]` | 코드 검증 파이프라인 (typecheck → lint → test → build → security) |
+| `/e2e-verify [피처]` | agent-browser 기반 E2E 브라우저 테스트 (스냅샷+ref 시스템) |
+| `/simplify [경로]` | AI 슬롭 제거 + 코드 단순화 (머스크 5-Step 삭제/단순화) |
+| `/full-verify` | verify + e2e-verify + simplify 통합 파이프라인 (병렬 오케스트레이션) |
 
 ---
 

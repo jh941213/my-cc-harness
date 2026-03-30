@@ -6,11 +6,11 @@
 
 <img src="assets/banner.png" alt="Claude Code Power Pack" width="720" />
 
-[![Version](https://img.shields.io/badge/version-0.9.0-7C3AED.svg?style=for-the-badge)](https://github.com/jh941213/my-claude-code-asset)
+[![Version](https://img.shields.io/badge/version-1.0.0-7C3AED.svg?style=for-the-badge)](https://github.com/jh941213/my-claude-code-asset)
 [![License](https://img.shields.io/badge/license-MIT-E87C3E.svg?style=for-the-badge)](LICENSE)
-[![Skills](https://img.shields.io/badge/skills-33-blue.svg?style=for-the-badge)](#-skills-33)
-[![Agents](https://img.shields.io/badge/agents-11-green.svg?style=for-the-badge)](#-agents-11)
-[![PRD](https://img.shields.io/badge/PRD-Aletheia_v2-9333ea.svg?style=for-the-badge)](#-prd-aletheia-v2)
+[![Skills](https://img.shields.io/badge/skills-35-blue.svg?style=for-the-badge)](#-skills-35)
+[![Agents](https://img.shields.io/badge/agents-12-green.svg?style=for-the-badge)](#-agents-12)
+[![PRD](https://img.shields.io/badge/PRD-Aletheia_v3-9333ea.svg?style=for-the-badge)](#-prd-aletheia-v3)
 [![TTH](https://img.shields.io/badge/TTH-Multi--Agent-ff6b35.svg?style=for-the-badge)](#-tth-multi-agent-silo)
 [![AutoDev](https://img.shields.io/badge/AutoDev-Autonomous-00d4aa.svg?style=for-the-badge)](#-autodev-autonomous-experiment-loop)
 
@@ -20,7 +20,7 @@
 
 ---
 
-**33 Skills** | **11 Agents** | **5 Conditional Rules** | **Hooks Guarantee System** | **TTH Multi-Agent** | **AutoDev Autonomous Experiments**
+**35 Skills** | **12 Agents** | **5 Conditional Rules** | **Hooks Guarantee System (13)** | **TTH Multi-Agent (M7)** | **AutoDev Autonomous Experiments**
 
 </div>
 
@@ -36,7 +36,7 @@
 - [Hooks Guarantee System](#-hooks-guarantee-system)
 - [Skills (33)](#-skills-33)
 - [Agents (11)](#-agents-11)
-- [Commands (3)](#-commands-3)
+- [Commands (7)](#-commands-7)
 - [Rules (5)](#-rules-5-conditional-loading)
 - [Boris Cherny Tips](#-boris-cherny-tips)
 - [Codex CLI Version](#-codex-cli-version)
@@ -76,7 +76,7 @@ https://github.com/jh941213/my-claude-code-asset to my ~/.claude/ folder
 | Skills (33) | ✅ | ✅ |
 | Agents (11) | ❌ | ✅ |
 | Rules (5) | ❌ | ✅ |
-| Commands (3) | ❌ | ✅ |
+| Commands (7) | ❌ | ✅ |
 | TTH Team Roles (6) | ❌ | ✅ |
 | TTH Hooks (2) | ❌ | ✅ |
 | CLAUDE.md | ❌ | ✅ |
@@ -450,13 +450,17 @@ cp /tmp/my-claude-code-asset-main/agents/*.md ~/.claude/agents/
 
 ---
 
-## 📝 Commands (3)
+## 📝 Commands (7)
 
 | Command | Purpose |
 |---------|---------|
 | `/tth [description]` | TTH multi-agent silo (Toss + Tesla + Ralph Loop) |
-| `/prd [idea]` | Aletheia v2 — complexity gate + humanities framework adaptive interview + convergence board-based PRD generation |
+| `/prd [idea]` | Aletheia v3 — CPS alignment + humanities framework + prd/ directory 8-file integrated generation (PRD + SPEC) |
 | `/docs [type]` | Auto documentation generation based on code changes |
+| `/verify [step]` | Code verification pipeline (typecheck -> lint -> test -> build -> security) |
+| `/e2e-verify [feature]` | agent-browser based E2E browser testing (snapshot+ref system) |
+| `/simplify [path]` | AI slop removal + code simplification (Musk 5-Step delete/simplify) |
+| `/full-verify` | verify + e2e-verify + simplify integrated pipeline (parallel orchestration) |
 
 ---
 

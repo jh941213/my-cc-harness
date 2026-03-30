@@ -1,3 +1,5 @@
+# Auto Documentation — docs-writer
+
 Analyzes code changes in the current project and auto-generates documentation in the /docs/ folder.
 
 Input: $ARGUMENTS
@@ -57,5 +59,5 @@ This way, documentation is completed around the same time as the implementation.
 - Only modify the /docs/ folder (never modify source code)
 - If existing documentation exists, update rather than overwrite (prefer Edit)
 - Descriptions in English, code/variable names kept as-is
-- Omit what is obvious from reading the code -- document "why" and "when"
+- Omit what is obvious from reading the code — document "why" and "when"
 - Do not create documentation files for empty types
