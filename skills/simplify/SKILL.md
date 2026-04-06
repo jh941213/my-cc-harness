@@ -55,6 +55,15 @@ const namesByType = (type: string) => data.filter(d => d.type === type).map(d =>
 
 **주의**: 2회 반복은 추출하지 않음. 3회부터 고려.
 
+## Step 2.5: 중복 코드 탐지
+```bash
+# jscpd — copy-paste 감지 (3줄 이상 중복)
+npx jscpd src/ --min-lines 3 --reporters console 2>/dev/null | head -30
+
+# ast-grep — 구조적 패턴 탐지
+sg --pattern 'console.log($$$)' --lang ts 2>/dev/null | head -10
+```
+
 ## Step 3: 검증
 
 수정 후 반드시 확인:
@@ -73,7 +82,21 @@ npm test                                # 테스트 통과
 - [ ] 사용하지 않는 import 제거
 - [ ] any 타입 제거
 
+## 절대 단순화하지 않을 것 (NEVER)
+- NEVER 에러 핸들링 제거 — try/catch, 유효성 검사는 의도적 코드
+- NEVER 생성된/벤더 파일 수정 — node_modules, generated, vendor 디렉토리
+- NEVER 설정 파일 단순화 — tsconfig, eslint, webpack 등은 건드리지 않음
+- NEVER 관련 없는 함수 병합 — 비슷해 보여도 도메인이 다르면 분리 유지
+- NEVER 테스트 코드 단순화 — 테스트의 명시성은 의도적. DRY 적용 금지
+- NEVER 타입 정의 제거 — 중복처럼 보여도 타입 안전성 유지
+
+## 범위 결정
+- 사용자가 특정 파일 지정 시 → 해당 파일만
+- 지정 없으면 → `git diff --name-only HEAD~1` (최근 커밋 변경 파일)
+- 변경 범위 밖 코드는 절대 수정하지 않음
+
 ## 원칙
 - 동작은 변경하지 않음 (리팩토링만)
 - 3줄 비슷한 코드 > 조기 추상화
 - 과도한 최적화 지양
+- 수정 전 `git stash` 또는 현재 상태 확인 → 수정 후 검증 → 실패 시 원복

@@ -6,7 +6,7 @@
 
 <img src="assets/banner.png" alt="Claude Code Power Pack" width="720" />
 
-[![Version](https://img.shields.io/badge/version-1.0.0-7C3AED.svg?style=for-the-badge)](https://github.com/jh941213/my-claude-code-asset)
+[![Version](https://img.shields.io/badge/version-1.1.0-7C3AED.svg?style=for-the-badge)](https://github.com/jh941213/my-claude-code-asset)
 [![License](https://img.shields.io/badge/license-MIT-E87C3E.svg?style=for-the-badge)](LICENSE)
 [![Skills](https://img.shields.io/badge/skills-35-blue.svg?style=for-the-badge)](#-스킬-35개)
 [![Agents](https://img.shields.io/badge/agents-12-green.svg?style=for-the-badge)](#-에이전트-12개)
@@ -47,6 +47,24 @@
 ---
 
 ## 🚀 설치
+
+### 사전 요구사항: CLI 도구 설치
+
+스킬과 에이전트가 자동 분석에 활용하는 CLI 도구들입니다:
+
+```bash
+brew install ast-grep difftastic gitleaks scc
+```
+
+| 도구 | 용도 | 사용처 |
+|------|------|--------|
+| **ast-grep** (`sg`) | AST 기반 코드 검색/패턴 매칭 | verify, review, simplify, evaluator, code-reviewer |
+| **difftastic** (`difft`) | AST 기반 구조적 diff (포매팅 노이즈 제거) | review, code-reviewer |
+| **gitleaks** | 800+ 패턴 시크릿 스캔 | verify, review, evaluator, security-reviewer |
+| **scc** | 코드 통계 + 복잡도 분석 | evaluator, code-reviewer |
+
+> **Note**: 도구 미설치 시 해당 검사를 건너뜁니다 (폴백 동작).
+> `npx` 기반 도구 (`madge`, `knip`, `jscpd`)는 자동 설치됩니다.
 
 ### 방법 1: 원클릭 전체 설치 (권장)
 
@@ -309,7 +327,7 @@ Phase 5: HANDOFF.md + TeamDelete + prd/SPEC.md 마일스톤 갱신
 
 ### AI 슬롭 감지 항목
 
-불필요한 주석(`// 이 함수는 X를 합니다`), 과도한 추상화(한 번만 쓰이는 헬퍼), 사용하지 않는 import, 과도한 try-catch, 장황한 에러 메시지 등 **AI가 만든 전형적 패턴**을 자동 감지하고 삭제를 지시합니다.
+ast-grep(`sg`)으로 AST 기반 정밀 탐지: `console.log($$)`, `$A as any`, 불필요한 주석, 과도한 추상화, 사용하지 않는 import 등 **AI가 만든 전형적 패턴**을 자동 감지하고 삭제를 지시합니다.
 
 ### Generator-Evaluator 분리 규칙
 
@@ -497,18 +515,18 @@ settings.json에서 다음 이벤트에 hook이 등록되어 있습니다:
 | `/ccpp:spec` | SPEC 기반 개발 - 심층 인터뷰로 명세서 작성 |
 | `/ccpp:spec-verify` | 명세서 기반 구현 검증 |
 | `/ccpp:frontend` | 빅테크 스타일 UI 개발 |
-| `/ccpp:verify` | 테스트, 린트, 빌드 검증 |
+| `/ccpp:verify` | 테스트, 린트, 빌드 + 순환참조/데드코드/시크릿/AI슬롭 검증 |
 | `/ccpp:e2e-verify` | 피처 기반 E2E 테스트 검증 |
 | `/ccpp:commit-push-pr` | 커밋 → 푸시 → PR |
-| `/ccpp:review` | 코드 리뷰 |
-| `/ccpp:simplify` | 코드 단순화 |
+| `/ccpp:review` | 코드 리뷰 (difftastic 구조적 diff + gitleaks + ast-grep) |
+| `/ccpp:simplify` | 코드 단순화 (jscpd 중복 탐지 + ast-grep) |
 | `/ccpp:tdd` | 테스트 주도 개발 |
 | `/ccpp:build-fix` | 빌드 에러 수정 |
 | `/ccpp:handoff` | HANDOFF.md 세션 인계 |
 | `/ccpp:compact-guide` | 컨텍스트 관리 가이드 |
 | `/ccpp:techdebt` | 기술 부채 정리 |
 | `/ccpp:harness-diagnostics` | TTH 하네스 진단 및 디버깅 |
-| `/ccpp:eval` | 머스크 독립 평가 — 4축 100점 채점 + PASS/FAIL 판정 |
+| `/ccpp:eval` | 머스크 독립 평가 — ast-grep/gitleaks/scc 자동 스캔 + 4축 100점 채점 |
 | `/ccpp:harness-audit` | 하네스 건강도 진단 — 8차원 점수 + S~D 등급 |
 
 ### 기술 스킬 (10개)
@@ -550,7 +568,7 @@ settings.json에서 다음 이벤트에 hook이 등록되어 있습니다:
 
 | 에이전트 | 용도 |
 |----------|------|
-| `evaluator` | **머스크 독립 평가자** — 4축 100점 채점, AI 슬롭 감지, PASS/FAIL 판정 |
+| `evaluator` | **머스크 독립 평가자** — gitleaks/madge/knip/ast-grep/scc 자동 스캔 + 4축 100점 채점 |
 | `langchain-specialist` | LangChain/LangGraph/Deep Agents 프로젝트 구축 전문가 |
 | `prd-planner` | /prd Phase 4-6 전담 — Six Hats 합성 + 전략적 스코핑 + prd/ 디렉토리 8개 파일 생성 |
 | `docs-writer` | 코드 변경 감지 → /docs/ 자동 문서 생성 (구현과 병렬 실행) |
@@ -558,9 +576,9 @@ settings.json에서 다음 이벤트에 hook이 등록되어 있습니다:
 | `frontend-developer` | 빅테크 스타일 UI 구현 |
 | `stitch-developer` | Stitch MCP 기반 UI/웹사이트 생성 |
 | `junior-mentor` | 주니어 학습 하네스 - 코드 + EXPLANATION.md 생성 |
-| `code-reviewer` | 코드 품질/보안 리뷰 + Blast-Radius 구조적 영향 분석 |
+| `code-reviewer` | 코드 품질/보안 리뷰 — difftastic diff + gitleaks + ast-grep + scc + Blast-Radius 분석 |
 | `architect` | 시스템 아키텍처 설계 |
-| `security-reviewer` | 보안 취약점 분석 (OWASP Top 10 체크리스트) |
+| `security-reviewer` | 보안 취약점 분석 — gitleaks 자동 스캔 + ast-grep 보안 패턴 + OWASP Top 10 |
 | `tdd-guide` | TDD 방식 안내 |
 
 <details>
@@ -658,6 +676,36 @@ curl -fsSL https://raw.githubusercontent.com/jh941213/my-codex-cli-asset/main/in
 ## 📋 Changelog
 
 <details open>
+<summary><b>v1.1.0 (2026-04-04) — CLI 도구 통합: AST 기반 분석 + 시크릿 스캔</b></summary>
+
+**CLI 도구 통합 (brew install)**
+- **ast-grep** (`sg`): regex 기반 `grep` → AST 기반 구조적 코드 검색으로 대체. `console.log($$)`, `$A as any`, `eval($$)` 등 정확한 패턴 매칭
+- **difftastic** (`difft`): `git diff` → AST 기반 구조적 diff로 대체. 포매팅 노이즈 제거, 로직 변경만 표시
+- **gitleaks**: 수동 `grep 'password|secret'` → 800+ 패턴 자동 시크릿 스캔으로 대체
+- **scc**: `wc -l` → 코드 통계 + 복잡도 분석으로 대체
+
+**npx 기반 도구 (자동 설치)**
+- **madge**: 순환참조 자동 탐지 (`npx madge --circular`)
+- **knip**: 데드코드/미사용 export/의존성 탐지
+- **jscpd**: 복사-붙여넣기 중복 코드 탐지
+
+**스킬 강화 (3개)**
+- `/verify` — 4개 검사 추가: 순환참조(madge), 데드코드(knip), 시크릿(gitleaks), AI슬롭(ast-grep)
+- `/review` — difftastic 구조적 diff + gitleaks + ast-grep + madge + scc 자동 분석 통합
+- `/simplify` — jscpd 중복 탐지 + ast-grep 패턴 분석 추가
+
+**에이전트 강화 (3개)**
+- `evaluator` — grep 기반 슬롭 감지 → ast-grep/gitleaks/madge/knip/scc 자동 스캔으로 전면 교체
+- `code-reviewer` — difftastic diff + gitleaks 보안 스캔 + ast-grep 품질 분석 + scc 복잡도 통합
+- `security-reviewer` — `grep -r` → gitleaks 자동 스캔 + ast-grep 보안 패턴(`eval($$)`, `innerHTML`, `exec($$)`) 추가
+
+**settings.json 확장**
+- allow 리스트: 34 → 97 규칙 (sg, difft, gitleaks, scc, delta, sd 등 CLI 도구 + 기본 셸 명령어)
+- bypassPermissions 모드에서 모든 통합 도구가 권한 프롬프트 없이 실행
+
+</details>
+
+<details>
 <summary><b>v1.0.0 (2026-03-26) — Musk Evaluator + CPS + Eval Pipeline</b></summary>
 
 **Musk Evaluator (Generator-Evaluator 분리)**

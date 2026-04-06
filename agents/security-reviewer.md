@@ -35,11 +35,11 @@ model: opus
 ## 검사 명령어
 
 ```bash
+# 시크릿 탐지 — gitleaks (grep 대체, 800+ 패턴, 오탐 적음)
+gitleaks detect --source . --no-git -v 2>&1
+
 # npm 취약점 검사
 npm audit
-
-# 하드코딩된 시크릿 검색
-grep -r "api_key\|password\|secret" --include="*.ts" --include="*.js"
 
 # .env 파일 검사
 cat .env.example
@@ -70,11 +70,16 @@ cat .env.example
 ## 검사 명령어
 
 ```bash
+# 시크릿 탐지 — gitleaks (grep 대체, 800+ 패턴, 오탐 적음)
+gitleaks detect --source . --no-git -v 2>&1
+
 # npm 취약점 검사
 npm audit
 
-# 하드코딩된 시크릿 검색
-grep -rn "api_key\|password\|secret\|token" --include="*.ts" --include="*.js" --include="*.py"
+# AST 기반 보안 패턴 탐지 — ast-grep
+sg --pattern 'eval($$$)' --lang ts 2>/dev/null
+sg --pattern 'innerHTML = $$$' --lang ts 2>/dev/null
+sg --pattern 'exec($$$)' --lang ts 2>/dev/null
 
 # .env 파일 검사
 cat .env.example
