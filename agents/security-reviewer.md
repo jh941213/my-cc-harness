@@ -88,6 +88,44 @@ cat .env.example
 npx license-checker --summary
 ```
 
+## SAST 기반 입력 경로 추출 (Semgrep 연동)
+
+> 출처: 토스 Security Research — "SAST를 취약점을 찾는 데 쓰지 않고, AI가 반드시 검토해야 하는 모든 후보군을 추출하는 보조 도구로 사용"
+
+**핵심 아이디어**: AI가 취약점을 못 찾는 이유는 이해 못 해서가 아니라, 그 코드를 **"못 봤기"** 때문.
+
+### Semgrep 설치 확인
+```bash
+which semgrep || echo "semgrep 미설치 — pip install semgrep 또는 brew install semgrep"
+```
+
+### 사용법 (semgrep 설치 시)
+1. Untrusted Input 경로 전수 추출 (취약점 찾기가 아님):
+```bash
+semgrep scan --config ~/.claude/semgrep-rules/ . --timeout=60 --sarif --output semgrep-output.sarif
+```
+
+2. SARIF → 경량 JSONL 변환 (컨텍스트 절약):
+```bash
+python3 ~/.claude/scripts/sarif-to-jsonl.py semgrep-output.sarif > candidates.jsonl
+```
+
+3. Discovery 단계: candidates.jsonl을 보고 가능성 높은 경로만 선별
+4. Analysis 단계: 선별된 경로만 MCP/Read로 깊게 분석
+
+### Discovery → Analysis 2단계 분석
+
+semgrep 없이도 이 패턴은 적용 가능:
+
+**Discovery (가볍게)**: 코드 스니펫만 보고 취약점 가능성 판단. 소스코드 깊이 참조하지 않음.
+- 미탐보다 과탐이 낫다 — 가능성 있으면 include
+- MCP/Read 사용 최소화 (토큰 절약)
+
+**Analysis (깊게)**: Discovery가 선별한 경로만 Read/Grep으로 실제 분석.
+- 데이터 흐름 추적 (Source → Sink)
+- 공격 시나리오 작성
+- 수정 코드 제시
+
 ## 코드 패턴별 취약점 예시
 
 ### 인젝션 (A03)
