@@ -1,0 +1,59 @@
+# TypeScript/Express — Untrusted Input 경로 전수 추출
+# 취약점을 찾는 게 아니라 AI가 검토해야 할 모든 후보군을 추출
+# 출처: 토스 Security Research 패턴
+rules:
+  - id: ts-express-anycall-taint
+    languages: [typescript, javascript]
+    severity: INFO
+    message: "Untrusted input flows into a call"
+    mode: taint
+
+    pattern-sources:
+      # req.params
+      - patterns:
+          - pattern: req.params.$FIELD
+      - patterns:
+          - pattern: req.params
+
+      # req.query
+      - patterns:
+          - pattern: req.query.$FIELD
+      - patterns:
+          - pattern: req.query
+
+      # req.body
+      - patterns:
+          - pattern: req.body.$FIELD
+      - patterns:
+          - pattern: req.body
+
+      # req.headers
+      - patterns:
+          - pattern: req.headers.$FIELD
+      - patterns:
+          - pattern: req.headers
+
+      # req.cookies
+      - patterns:
+          - pattern: req.cookies.$FIELD
+
+    pattern-sinks:
+      - pattern: $F(...)
+      - pattern: $OBJ.$M(...)
+
+  - id: ts-nextjs-anycall-taint
+    languages: [typescript, javascript]
+    severity: INFO
+    message: "Untrusted input from Next.js API route"
+    mode: taint
+
+    pattern-sources:
+      # Next.js App Router
+      - patterns:
+          - pattern: request.json()
+      - patterns:
+          - pattern: request.nextUrl.searchParams.$M(...)
+
+    pattern-sinks:
+      - pattern: $F(...)
+      - pattern: $OBJ.$M(...)

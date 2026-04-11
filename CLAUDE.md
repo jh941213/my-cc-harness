@@ -37,6 +37,19 @@
 - run_in_background: true → 결과 즉시 불필요한 작업
 - 피처 내용이 겹치지 않으면 무조건 병렬
 
+### 교차 모델 검증
+- **같은 모델이 만든 것을 같은 모델이 검증하지 않는다**
+- 3단계 이상 계획 → 반드시 Codex에 계획 검토 요청
+- 코드 작성(Claude) → 검증(Codex) → 재검증(Claude) → 최종 검증(Codex)
+- eval은 반드시 별도 세션 또는 별도 모델에서 실행
+- 상세: `~/.claude/rules/cross-model-verification.md`
+
+### 실행 계획 영속화
+- 계획은 대화 세션에만 남으면 안 됨 — **파일로 반드시 저장**
+- 저장 위치: `{project}/docs/execute-plans/[날짜]-[기능명].md`
+- 템플릿: `~/.claude/templates/execute-plan.md.template`
+- 회고 섹션 포함: 계획 대비 실제, drift 발생 여부, 개선점
+
 ### 완료 전 검증
 - 작동을 증명하지 않고는 절대 완료 표시하지 않기
 - 자문: **"스태프 엔지니어가 이걸 승인할까?"**
@@ -86,8 +99,7 @@
 ## 컨텍스트 관리
 
 **컨텍스트는 신선한 우유. 시간이 지나면 상한다.**
-- 토큰 80-100k 넘기 전에 리셋
-- 3-5개 작업마다 /compact
+- 토큰 150k 넘기 전에 /compact
 - /compact 3번 후 /clear
 
 ### 캐시 보존 규칙
@@ -100,11 +112,14 @@
 
 **기본 WebSearch/WebFetch 사용 금지 (deny 설정됨)**
 
-### 우선순위
-1. 로컬 코드 검색 → mgrep
-2. 웹 일반 검색 → Tavily MCP
-3. 코드 스니펫/예제 검색 → Exa MCP
-4. 라이브러리 문서 → Context7 MCP
+### 로컬 코드 검색
+- 정확한 문자열/함수명/변수명/정규식 → **built-in Grep, Glob** (빠르고 정확)
+- "이 코드베이스에서 인증 로직 어디있어?" 같은 시맨틱 탐색 → **mgrep**
+
+### 외부 검색
+1. 웹 일반 검색 → Tavily MCP
+2. 코드 스니펫/예제 검색 → Exa MCP
+3. 라이브러리 문서 → Context7 MCP
 
 ## 커밋 메시지 형식
 ```
@@ -129,7 +144,10 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 
 | 카테고리 | 위치 | 설명 |
 |----------|------|------|
-| 코딩 규칙 | `~/.claude/rules/` | coding-style, security, testing, performance, git-workflow |
+| 코딩 규칙 | `~/.claude/rules/` | coding-style, security, testing, performance, git-workflow, drift-control, cross-model-verification, tool-overlap |
+| 템플릿 | `~/.claude/templates/` | CHECKPOINT.md, AUDIT.log, execute-plan.md 템플릿 |
+| 보안 분석 | `~/.claude/semgrep-rules/` | SAST 입력 경로 추출용 taint 룰 (ts-express, py-fastapi) |
+| 스크립트 | `~/.claude/scripts/` | sarif-to-jsonl.py (SAST 결과 경량화) |
 | 에이전트 역할 | `~/.claude/agents/` | code-reviewer, architect, planner 등 |
 | 스킬 워크플로우 | `~/.claude/skills/` | plan, spec, verify, frontend, harness-diagnostics 등 |
 | TTH 팀 역할 | `~/.claude/team-roles/` | satya, pichai, jensen, tim-cook, zuckerberg, bezos |
