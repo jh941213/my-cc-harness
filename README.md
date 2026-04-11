@@ -6,7 +6,7 @@
 
 <img src="assets/banner.png" alt="Claude Code Power Pack" width="720" />
 
-[![Version](https://img.shields.io/badge/version-1.1.0-7C3AED.svg?style=for-the-badge)](https://github.com/jh941213/my-claude-code-asset)
+[![Version](https://img.shields.io/badge/version-1.2.0-7C3AED.svg?style=for-the-badge)](https://github.com/jh941213/my-claude-code-asset)
 [![License](https://img.shields.io/badge/license-MIT-E87C3E.svg?style=for-the-badge)](LICENSE)
 [![Skills](https://img.shields.io/badge/skills-35-blue.svg?style=for-the-badge)](#-스킬-35개)
 [![Agents](https://img.shields.io/badge/agents-12-green.svg?style=for-the-badge)](#-에이전트-12개)
@@ -16,11 +16,11 @@
 
 **실무에서 바로 쓸 수 있는 Claude Code 최적 에이전트 하네스**
 
-`Skills` `Agents` `Hooks` `Rules` `Commands` `TTH` 올인원
+`Skills` `Agents` `Hooks` `Rules` `Commands` `TTH` `SAST` `MCP` 올인원
 
 ---
 
-**35개 스킬** | **12개 에이전트** | **5개 조건부 Rules** | **Hooks 보장 시스템 (8개)** | **TTH 멀티 에이전트 (M7)** | **AutoDev 자율 실험**
+**35개 스킬** | **12개 에이전트** | **8개 조건부 Rules** | **Hooks 보장 시스템 (8개)** | **TTH 멀티 에이전트 (M7)** | **AutoDev 자율 실험** | **보안 도구체인 (SAST + MCP)**
 
 </div>
 
@@ -38,7 +38,9 @@
 - [스킬 (35개)](#-스킬-35개)
 - [에이전트 (12개)](#-에이전트-12개)
 - [Commands (3개)](#-commands-3개)
-- [Rules (5개)](#-rules-5개-조건부-로드)
+- [Rules (8개)](#-rules-8개-조건부-로드)
+- [보안 도구체인](#-보안-도구체인-sast--mcp)
+- [템플릿](#-템플릿-3개)
 - [Boris Cherny 팁](#-boris-cherny-팁)
 - [Codex CLI 버전](#-codex-cli-버전)
 - [참고 자료](#-참고-자료)
@@ -94,10 +96,14 @@ https://github.com/jh941213/my-claude-code-asset 저장소의 agents/, rules/, c
 |------|:---:|:---:|
 | Skills (35개) | ✅ | ✅ |
 | Agents (12개) | ❌ | ✅ |
-| Rules (5개) | ❌ | ✅ |
+| Rules (8개) | ❌ | ✅ |
 | Commands (3개) | ❌ | ✅ |
 | TTH Team Roles (7개) | ❌ | ✅ |
 | Hooks (8개) | ❌ | ✅ |
+| Semgrep Rules (2개) | ❌ | ✅ |
+| Scripts (1개) | ❌ | ✅ |
+| MCP Servers (1개) | ❌ | ✅ |
+| Templates (3개) | ❌ | ✅ |
 | CLAUDE.md | ❌ | ✅ |
 | settings.json | ❌ | ✅ |
 
@@ -578,7 +584,7 @@ settings.json에서 다음 이벤트에 hook이 등록되어 있습니다:
 | `junior-mentor` | 주니어 학습 하네스 - 코드 + EXPLANATION.md 생성 |
 | `code-reviewer` | 코드 품질/보안 리뷰 — difftastic diff + gitleaks + ast-grep + scc + Blast-Radius 분석 |
 | `architect` | 시스템 아키텍처 설계 |
-| `security-reviewer` | 보안 취약점 분석 — gitleaks 자동 스캔 + ast-grep 보안 패턴 + OWASP Top 10 |
+| `security-reviewer` | 보안 취약점 분석 — gitleaks + ast-grep + OWASP Top 10 + **SAST 기반 Discovery→Analysis 2단계 분석** |
 | `tdd-guide` | TDD 방식 안내 |
 
 <details>
@@ -603,7 +609,7 @@ cp /tmp/my-claude-code-asset-main/agents/*.md ~/.claude/agents/
 
 ---
 
-## 📏 Rules (5개, 조건부 로드)
+## 📏 Rules (8개, 조건부 로드)
 
 > YAML frontmatter로 관련 파일 작업 시에만 로드됩니다.
 
@@ -614,6 +620,85 @@ cp /tmp/my-claude-code-asset-main/agents/*.md ~/.claude/agents/
 | `testing.md` | `**/*.test.*`, `**/*.spec.*` | 테스트 원칙, 커버리지 |
 | `performance.md` | `**/*.ts`, `**/*.tsx`, `**/*.py` | 성능 최적화 |
 | `security.md` | `**/*.ts`, `**/*.tsx`, `**/*.py`, `**/*.env*` | 보안 체크리스트 |
+| `cross-model-verification.md` | 모든 파일 | **교차 모델 검증** — Claude 작성 → Codex 검증 루프, 3단계 이상 계획 시 필수 |
+| `drift-control.md` | 모든 파일 | **3축 Drift 측정** — goal/constraint/scope drift + combined 가중평균, 임계값 초과 시 re-plan |
+| `tool-overlap.md` | 모든 파일 | **도구 역할 분리** — Tavily(웹검색), Exa(코드예제), Context7(문서), mgrep(시맨틱) |
+
+---
+
+## 🔐 보안 도구체인 (SAST + MCP)
+
+> **출처: [토스 Security Research](https://toss.tech/article/ai-security-research) — "SAST를 취약점 탐지가 아닌 AI가 검토해야 할 모든 후보군 추출용으로 사용"**
+
+AI가 취약점을 못 찾는 이유는 이해 못 해서가 아니라, 그 코드를 **"못 봤기"** 때문. Semgrep으로 Untrusted Input 경로를 전수 추출하고, AI가 선별→심층 분석하는 2단계 파이프라인.
+
+### Semgrep Taint Rules (2개)
+
+| 파일 | 대상 | Sources |
+|------|------|---------|
+| `semgrep-rules/ts-express-taint.yaml` | TypeScript/Express + Next.js | `req.params`, `req.query`, `req.body`, `req.headers`, `req.cookies`, `request.json()` |
+| `semgrep-rules/py-fastapi-taint.yaml` | Python/FastAPI | Path params, Pydantic body, Query params |
+
+### Discovery → Analysis 파이프라인
+
+```
+1. semgrep scan --config semgrep-rules/ . --sarif   ← Untrusted Input 경로 전수 추출
+    ↓
+2. python3 scripts/sarif-to-jsonl.py output.sarif   ← MB 단위 SARIF → KB 단위 JSONL (연속 라인 병합)
+    ↓
+3. Discovery: JSONL 스니펫만 보고 가능성 판단     ← 미탐보다 과탐이 낫다
+    ↓
+4. Analysis: 선별된 경로만 깊게 분석              ← 데이터 흐름 추적 + 공격 시나리오 + 수정 코드
+```
+
+### SourceCode Browse MCP (프로젝트별 등록)
+
+ctags 인덱싱 + tree-sitter 함수 범위 감지로 AI에게 "Go to Definition / Find References" 능력을 부여합니다.
+
+| MCP 도구 | 용도 |
+|----------|------|
+| `read_definition(symbol)` | 심볼 정의 위치 + tree-sitter로 함수 전체 본문 반환 |
+| `find_references(pattern)` | ripgrep 기반 참조 검색 |
+| `read_source(path, line)` | 지정 라인 주변 소스 코드 |
+| `get_project_structure()` | 프로젝트 디렉터리 구조 |
+
+프로젝트의 `.claude/settings.json`에 등록:
+```json
+{
+  "mcpServers": {
+    "sourcecode-browse": {
+      "type": "stdio",
+      "command": "python3",
+      "args": ["~/.claude/mcp-servers/sourcecode-browse/server.py", "."]
+    }
+  }
+}
+```
+
+### 파일 구조
+
+```
+semgrep-rules/
+├── ts-express-taint.yaml    ← TypeScript/Express + Next.js taint 룰
+└── py-fastapi-taint.yaml    ← Python/FastAPI taint 룰
+scripts/
+└── sarif-to-jsonl.py        ← SARIF → 경량 JSONL 변환기
+mcp-servers/
+└── sourcecode-browse/
+    └── server.py            ← ctags + tree-sitter MCP 서버
+```
+
+---
+
+## 📄 템플릿 (3개)
+
+Long-Horizon 실행 패턴에서 자동 생성되는 파일의 템플릿입니다.
+
+| 템플릿 | 생성 시점 | 용도 |
+|--------|----------|------|
+| `templates/CHECKPOINT.md.template` | /plan, /tth 시작 시 | 마일스톤 정의 + 검증 커맨드 + done-when + **3축 drift 추적** |
+| `templates/AUDIT.log.template` | 첫 마일스톤 시작 시 | append-only 이벤트 스트림 (15개 액션 종류 정의) |
+| `templates/execute-plan.md.template` | /plan 확정 시 | 실행 계획 문서 + **Codex 교차 검토 결과** + 회고 섹션 |
 
 ---
 
@@ -676,6 +761,35 @@ curl -fsSL https://raw.githubusercontent.com/jh941213/my-codex-cli-asset/main/in
 ## 📋 Changelog
 
 <details open>
+<summary><b>v1.2.0 (2026-04-11) — 보안 도구체인 + 교차 모델 검증 + 템플릿</b></summary>
+
+**보안 도구체인 (토스 Security Research 패턴)**
+- **Semgrep Taint Rules**: TypeScript/Express + Next.js (`ts-express-taint.yaml`), Python/FastAPI (`py-fastapi-taint.yaml`) — Untrusted Input 경로 전수 추출용
+- **SARIF → JSONL 변환기** (`scripts/sarif-to-jsonl.py`): MB 단위 SARIF → KB 단위로 경량화, 연속 라인 병합
+- **SourceCode Browse MCP** (`mcp-servers/sourcecode-browse/server.py`): ctags 인덱싱 + tree-sitter 함수 범위 감지 → "Go to Definition" 능력 부여 (프로젝트별 등록)
+
+**Rules 추가 (5 → 8개)**
+- `cross-model-verification.md` — Claude 작성 → Codex 검증 교차 루프, 3단계 이상 계획 시 필수
+- `drift-control.md` — 3축 drift 측정 (goal×50% + constraint×30% + scope×20%), combined > 0.30이면 re-plan
+- `tool-overlap.md` — 도구 역할 분리 (Tavily/Exa/Context7/mgrep), 에러 처리, 결과 컨텍스트 관리
+
+**템플릿 추가 (3개)**
+- `templates/CHECKPOINT.md.template` — drift 필드 포함 마일스톤 템플릿
+- `templates/AUDIT.log.template` — 15개 액션 종류 정의
+- `templates/execute-plan.md.template` — Codex 교차 검토 + 회고 섹션
+
+**CLAUDE.md 업데이트**
+- 교차 모델 검증 섹션 추가 (Claude→Codex→Claude→Codex 루프)
+- 실행 계획 영속화 섹션 추가 (`docs/execute-plans/`에 저장)
+- 검색 도구 역할 분리 (로컬: Grep/Glob/mgrep, 외부: Tavily/Exa/Context7)
+- Knowledge Map 확장 (템플릿, 보안분석, 스크립트 행 추가)
+
+**에이전트 강화**
+- `security-reviewer` — SAST 기반 Discovery→Analysis 2단계 분석 패턴 추가 (semgrep 없이도 적용 가능)
+
+</details>
+
+<details>
 <summary><b>v1.1.0 (2026-04-04) — CLI 도구 통합: AST 기반 분석 + 시크릿 스캔</b></summary>
 
 **CLI 도구 통합 (brew install)**
