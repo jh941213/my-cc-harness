@@ -1,56 +1,59 @@
-현재 프로젝트의 코드 변경사항을 분석하여 /docs/ 폴더에 문서를 자동 생성합니다.
+---
+description: "문서 생성/동기화 라우터 — 코드 문서, 아키텍처 구성도, API 명세, 매뉴얼, 운영 문서, docs CI, 드리프트 sync"
+argument-hint: "[code|arch|api|manual|ops|ci|sync|all]"
+---
+
+프로젝트 문서를 생성/동기화합니다. 코드 레벨 문서부터 아키텍처 구성도, API 명세, 매뉴얼, 운영 문서, docs CI까지.
 
 입력: $ARGUMENTS
 
-## 실행 방식
+## 라우팅
 
-### 인자 없이 호출 시: `/docs`
-- git diff로 최근 변경된 파일 기준으로 문서 생성/업데이트
+| 호출 | 대상 | 실행 방법 |
+|------|------|----------|
+| `/docs` | 최근 변경 기준 코드 문서 갱신 | docs-writer 에이전트 |
+| `/docs code` | 코드 레벨 문서 (api.md, components.md, utils.md, models.md) | docs-writer 에이전트 |
+| `/docs arch` | 아키텍처 구성도 + ARCHITECTURE.md + ADR + ERD | **docs-architecture 스킬** |
+| `/docs api` | API 구성도 + OpenAPI/AsyncAPI 명세 + API CHANGELOG | **docs-interfaces 스킬** |
+| `/docs manual` | 사용자 매뉴얼 (Diátaxis 4분면) | **docs-manuals 스킬** |
+| `/docs ops` | 운영자 매뉴얼 + 런북 + 배포 가이드 + 인시던트 플레이북 | **docs-manuals 스킬** (운영 모드) |
+| `/docs ci` | docs 검증 파이프라인 설치 (링크/OpenAPI/mermaid/신선도) | **docs-ci 스킬** |
+| `/docs sync` | 문서 드리프트 감지 → stale 문서 갱신 | 아래 sync 절차 |
+| `/docs all` | 전체 문서 세트 일괄 생성 | 아래 all 절차 |
 
-### 인자 있을 시: `/docs api`, `/docs components`
-- 특정 유형의 문서만 생성/업데이트
+## `/docs sync` 절차 (문서-코드 동기화)
 
-### 전체 생성: `/docs all`
-- 프로젝트 전체 코드를 분석하여 /docs/ 일괄 생성
+1. `docs/docs.yaml` 존재 확인 — 없으면 docs-ci 스킬로 매니페스트부터 생성
+2. `bash scripts/check-docs-freshness.sh` 실행 (없으면 docs.yaml의 covers vs git log 직접 대조)
+3. stale 문서 목록을 영역별로 분류해 보고
+4. 각 stale 영역을 해당 스킬/에이전트로 갱신:
+   - `docs/ARCHITECTURE.md` → docs-architecture
+   - `docs/api/*` → docs-interfaces
+   - `docs/manuals/*`, `docs/ops/*` → docs-manuals
+   - `docs/*.md` 코드 문서 → docs-writer
+5. 갱신된 문서의 `last_reviewed`를 오늘로 갱신
+6. `.docs-queue/`가 있으면(TTH 모드) 처리 후 큐 파일 삭제
 
-## 실행 프로세스
+## `/docs all` 절차
 
-### Step 1: 변경사항 파악
-
-```bash
-git diff --name-only HEAD~5..HEAD 2>/dev/null
-git diff --name-only
-git diff --name-only --cached
-```
-
-인자가 `all`이면 전체 소스 파일을 대상으로 합니다.
-
-### Step 2: docs-writer 에이전트 실행
-
-docs-writer 에이전트(subagent_type: docs-writer)를 실행하여 문서를 생성합니다.
-
-변경된 파일이 많으면 유형별로 서브에이전트를 **병렬** 실행:
-
-**파일 수가 10개 이하**: 단일 docs-writer 에이전트로 처리
-**파일 수가 10개 초과**: 유형별 병렬 실행
-- Agent A: API 문서 (routes, endpoints)
-- Agent B: 컴포넌트/훅 문서 (components, hooks)
-- Agent C: 유틸/서비스/모델 문서 (utils, services, models)
-
-### Step 3: 결과 확인
-
-생성된 문서 목록을 보여주고, docs/README.md 인덱스를 업데이트합니다.
-
-## 구현 에이전트와 병렬 실행 가이드
-
-planner나 구현 에이전트가 작업할 때, docs-writer를 background로 함께 실행하는 패턴:
+프로젝트 전체를 분석해 문서 세트를 일괄 생성. 독립 영역은 병렬 실행:
 
 ```
-# 구현 Phase에서 이렇게 호출
+Agent A (docs-writer): 코드 레벨 문서
+Agent B (docs-architecture 스킬): ARCHITECTURE.md + 구성도 + ERD
+Agent C (docs-interfaces 스킬): API 명세 + 구성도
+Agent D (docs-manuals 스킬): 매뉴얼 + 운영 문서
+```
+
+완료 후 docs-ci 스킬로 매니페스트 + CI 파이프라인 설치, `docs/README.md` 인덱스 갱신.
+
+## 구현 에이전트와 병렬 실행
+
+구현 작업 중 docs-writer를 background로 함께 실행하는 패턴 (TTH에서는 hook이 자동 트리거):
+
+```
 Agent(subagent_type: "docs-writer", run_in_background: true, prompt: "...")
 ```
-
-이렇게 하면 구현이 끝날 때쯤 문서도 함께 완성됩니다.
 
 ## 중요 규칙
 
@@ -59,3 +62,4 @@ Agent(subagent_type: "docs-writer", run_in_background: true, prompt: "...")
 - 설명은 한국어, 코드/변수명은 원문 유지
 - 코드 읽으면 아는 것은 생략 — "왜"와 "언제"를 문서화
 - 빈 유형은 문서 파일 생성하지 않음
+- 문서를 만들거나 갱신하면 `docs/docs.yaml`의 해당 항목도 갱신

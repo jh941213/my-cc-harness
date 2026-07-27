@@ -48,10 +48,10 @@ In a new session, just reading this file lets you immediately continue the work.
 ```
 
 ## When to Use
-- When context reaches 80-100k tokens
-- After using /compact 3 times
+- Before /clear when switching work topics
+- When context pollution signals appear (repeating mistakes, forgetting earlier decisions)
 - Before taking days off from work
-- In the middle of complex tasks
+- When passing a session mid-way through complex tasks
 
 In a new session, just say "Read HANDOFF.md and continue working."
 

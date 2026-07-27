@@ -1,3 +1,8 @@
+---
+description: "아이디어 → PRD + SPEC 통합 기획 (Aletheia v3). prd/ 디렉토리 8개 파일 생성, /tth로 바로 연결"
+argument-hint: "[아이디어 설명]"
+---
+
 사용자의 아이디어를 분석하여 PRD + SPEC을 한 번에 생성합니다.
 `/tth`로 바로 이어갈 수 있는 완전한 기획 산출물을 만듭니다.
 

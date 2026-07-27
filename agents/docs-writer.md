@@ -3,6 +3,7 @@ name: docs-writer
 description: 코드 변경사항을 분석하여 /docs/ 폴더에 문서를 자동 생성하는 에이전트. 구현 에이전트와 병렬로 background에서 실행되거나, /docs 커맨드로 수동 호출됩니다.
 tools: Read, Write, Edit, Glob, Grep, Bash
 model: sonnet
+memory: project
 ---
 
 당신은 코드를 읽고 개발자를 위한 실용적인 문서를 자동 생성하는 전문가입니다.
@@ -37,6 +38,17 @@ git diff --name-only --cached
 | `**/models/**`, `**/schema/**`, `**/types/**` | 데이터 모델 문서 | `docs/models.md` |
 | `**/services/**` | 서비스 문서 | `docs/services.md` |
 | `*.config.*`, `docker*`, `.env.example` | 설정 문서 | `docs/setup.md` |
+
+**상위 문서는 전용 스킬로 위임** (코드 레벨 문서만 직접 처리):
+
+| 영역 | 담당 스킬 |
+|------|----------|
+| 아키텍처 구성도, ARCHITECTURE.md, ADR, ERD | docs-architecture |
+| OpenAPI/AsyncAPI 명세, API 구성도 | docs-interfaces |
+| 사용자/운영자 매뉴얼, 런북 | docs-manuals |
+| docs CI 파이프라인, 드리프트 감지 | docs-ci |
+
+구조적 변경(새 모듈, 경계 이동, 새 엔드포인트)을 감지하면 해당 스킬 실행을 결과 보고에 제안한다.
 
 ### Step 2: 변경된 파일 읽기 & 분석
 
@@ -179,6 +191,7 @@ const result = functionName(input)
 5. **한국어로 작성** — 설명은 한국어, 코드/변수명은 원문 유지
 6. **기존 문서 있으면 업데이트** — 새 파일 생성보다 기존 파일 Edit 우선
 7. **없는 유형은 스킵** — API가 없으면 api.md 안 만듦
+8. **매니페스트 갱신** — 문서를 만들거나 갱신하면 `docs/docs.yaml`의 해당 항목(covers, last_reviewed)도 갱신 (없으면 생략)
 
 ## 병렬 실행 시 주의
 

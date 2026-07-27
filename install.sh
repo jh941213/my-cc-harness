@@ -37,7 +37,7 @@ TEMP_DIR=$(mktemp -d)
 git clone --depth 1 https://github.com/jh941213/my-claude-code-asset.git "$TEMP_DIR"
 
 # Create ~/.claude directories
-mkdir -p ~/.claude/agents ~/.claude/skills ~/.claude/rules ~/.claude/commands ~/.claude/team-roles ~/.claude/hooks
+mkdir -p ~/.claude/agents ~/.claude/skills ~/.claude/rules ~/.claude/commands ~/.claude/team-roles ~/.claude/hooks ~/.claude/scripts ~/.claude/templates ~/.claude/semgrep-rules
 
 # Determine source suffix
 if [ "$LANG_CHOICE" = "en" ]; then
@@ -78,19 +78,19 @@ fi
 # agents
 if [ -d "$TEMP_DIR/$AGENTS_SRC" ]; then
     cp "$TEMP_DIR/$AGENTS_SRC/"*.md ~/.claude/agents/ 2>/dev/null || true
-    echo "   agents/ (11)"
+    echo "   agents/ (12)"
 fi
 
 # skills
 if [ -d "$TEMP_DIR/$SKILLS_SRC" ]; then
     cp -r "$TEMP_DIR/$SKILLS_SRC/"* ~/.claude/skills/ 2>/dev/null || true
-    echo "   skills/ (33)"
+    echo "   skills/ (39, incl. docs suite)"
 fi
 
 # rules
 if [ -d "$TEMP_DIR/$RULES_SRC" ]; then
     cp "$TEMP_DIR/$RULES_SRC/"*.md ~/.claude/rules/ 2>/dev/null || true
-    echo "   rules/ (5, conditional loading)"
+    echo "   rules/ (8, conditional loading)"
 fi
 
 # commands
@@ -109,7 +109,26 @@ fi
 if [ -d "$TEMP_DIR/hooks" ]; then
     cp "$TEMP_DIR/hooks/"*.sh ~/.claude/hooks/ 2>/dev/null || true
     chmod +x ~/.claude/hooks/*.sh 2>/dev/null || true
-    echo "   hooks/ (4 quality gates)"
+    echo "   hooks/ (14 scripts)"
+fi
+
+# scripts (language-independent)
+if [ -d "$TEMP_DIR/scripts" ]; then
+    cp "$TEMP_DIR/scripts/"* ~/.claude/scripts/ 2>/dev/null || true
+    chmod +x ~/.claude/scripts/*.sh 2>/dev/null || true
+    echo "   scripts/ (sarif-to-jsonl, validate-harness)"
+fi
+
+# templates (language-independent)
+if [ -d "$TEMP_DIR/templates" ]; then
+    cp "$TEMP_DIR/templates/"* ~/.claude/templates/ 2>/dev/null || true
+    echo "   templates/ (3)"
+fi
+
+# semgrep rules (language-independent)
+if [ -d "$TEMP_DIR/semgrep-rules" ]; then
+    cp "$TEMP_DIR/semgrep-rules/"*.yaml ~/.claude/semgrep-rules/ 2>/dev/null || true
+    echo "   semgrep-rules/ (2 taint rules)"
 fi
 
 # Cleanup
@@ -124,19 +143,20 @@ if [ "$LANG_CHOICE" = "en" ]; then
     echo "Installed items:"
     echo "   - CLAUDE.md (paper-based optimized config)"
     echo "   - settings.json (permissions + Hooks guarantee + Agent Teams)"
-    echo "   - agents/ (11 agents)"
-    echo "   - skills/ (33 skills)"
-    echo "   - rules/ (5, YAML conditional loading)"
+    echo "   - agents/ (12 agents)"
+    echo "   - skills/ (39 skills, incl. docs suite)"
+    echo "   - rules/ (8, YAML conditional loading)"
     echo "   - commands/ (3 slash commands)"
-    echo "   - team-roles/ (6 TTH CEO personas)"
-    echo "   - hooks/ (4 quality gates)"
+    echo "   - team-roles/ (7 TTH CEO personas)"
+    echo "   - hooks/ (14 scripts)"
+    echo "   - scripts/ + templates/ + semgrep-rules/"
     echo ""
     echo "TTH Multi-Agent:"
     echo "   /tth [description]  -> M7 CEO team autonomous collaboration (Toss+Tesla+Ralph)"
     echo ""
     echo "Workflows:"
     echo "   /prd [idea]         -> PRD.md (insight-driven planning)"
-    echo "   /docs               -> Auto documentation generation"
+    echo "   /docs [type]        -> Docs router: code|arch|api|manual|ops|ci|sync|all"
     echo "   /plan, /spec, /spec-verify, /frontend, /verify, /e2e-verify"
     echo "   /commit-push-pr, /review, /simplify, /tdd"
     echo "   /build-fix, /handoff, /compact-guide, /techdebt"
@@ -152,12 +172,13 @@ else
     echo "설치된 항목:"
     echo "   - CLAUDE.md (논문 기반 최적화 94줄)"
     echo "   - settings.json (권한 + Hooks 보장 + Agent Teams)"
-    echo "   - agents/ (11개 에이전트)"
-    echo "   - skills/ (33개 스킬)"
-    echo "   - rules/ (5개, YAML 조건부 로드)"
+    echo "   - agents/ (12개 에이전트)"
+    echo "   - skills/ (39개 스킬, docs 스위트 포함)"
+    echo "   - rules/ (8개, YAML 조건부 로드)"
     echo "   - commands/ (3개 슬래시 커맨드)"
-    echo "   - team-roles/ (6개 TTH CEO 페르소나)"
-    echo "   - hooks/ (4개 품질 게이트)"
+    echo "   - team-roles/ (7개 TTH CEO 페르소나)"
+    echo "   - hooks/ (14개 스크립트)"
+    echo "   - scripts/ + templates/ + semgrep-rules/"
     echo ""
     echo "TTH 멀티 에이전트:"
     echo "   /tth [설명]      -> M7 CEO 팀이 자율 협업 (Toss+Tesla+Ralph)"

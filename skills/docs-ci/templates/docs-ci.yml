@@ -1,0 +1,82 @@
+# docs-ci.yml — 문서 검증 파이프라인 템플릿
+# 프로젝트에 존재하는 문서 유형에 맞는 잡만 골라서 .github/workflows/docs-ci.yml로 설치
+name: Docs CI
+
+on:
+  pull_request:
+    paths: ["docs/**", "**/*.md", "src/**"]
+  push:
+    branches: [main]
+
+jobs:
+  links:
+    name: 링크 체크
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: lychee
+        uses: lycheeverse/lychee-action@v2
+        with:
+          args: --no-progress --include-fragments 'docs/**/*.md' '*.md'
+          fail: true
+        continue-on-error: true # 외부 링크 플레이크 대비 — 내부 전용으로 좁히면 false로
+
+  openapi:
+    name: OpenAPI lint + breaking
+    runs-on: ubuntu-latest
+    if: ${{ hashFiles('docs/api/openapi.yaml') != '' }}
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - name: Lint
+        run: npx --yes @redocly/cli lint docs/api/openapi.yaml
+      - name: Breaking changes vs base
+        if: github.event_name == 'pull_request'
+        run: |
+          git show origin/${{ github.base_ref }}:docs/api/openapi.yaml > /tmp/base-openapi.yaml 2>/dev/null || exit 0
+          npx --yes oasdiff breaking /tmp/base-openapi.yaml docs/api/openapi.yaml --fail-on ERR
+
+  mermaid:
+    name: mermaid 문법 검증
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Extract & validate mermaid blocks
+        run: |
+          mkdir -p /tmp/mmd && i=0
+          find docs -name "*.md" -print0 2>/dev/null | while IFS= read -r -d '' f; do
+            awk '/^```mermaid/{flag=1;n++;next}/^```/{flag=0}flag{print > "/tmp/mmd/b_" FILENAME "_" n ".mmd"}' FILENAME="$(basename "$f")" "$f" || true
+          done
+          count=$(find /tmp/mmd -name "*.mmd" 2>/dev/null | wc -l)
+          [ "$count" -eq 0 ] && { echo "mermaid 블록 없음"; exit 0; }
+          npm install -g @mermaid-js/mermaid-cli
+          fail=0
+          for b in /tmp/mmd/*.mmd; do
+            mmdc -i "$b" -o /dev/null || { echo "❌ $b"; fail=1; }
+          done
+          exit $fail
+
+  freshness:
+    name: 문서 신선도
+    runs-on: ubuntu-latest
+    if: ${{ hashFiles('docs/docs.yaml') != '' }}
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - name: Freshness check
+        run: bash scripts/check-docs-freshness.sh docs/docs.yaml
+        continue-on-error: true # stale = 경고. 강제하려면 제거
+
+  doc-touch-policy:
+    name: 코드-문서 동시 변경 정책
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - name: API 코드 변경 시 docs/api 변경 확인
+        run: |
+          CHANGED=$(git diff --name-only origin/${{ github.base_ref }}...HEAD)
+          if echo "$CHANGED" | grep -qE '^(src/api/|src/routes/)' && ! echo "$CHANGED" | grep -q '^docs/api/'; then
+            echo "::warning::API 코드가 변경됐지만 docs/api/ 가 갱신되지 않았습니다. /docs api 실행을 검토하세요."
+          fi

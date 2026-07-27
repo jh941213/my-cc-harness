@@ -1,110 +1,106 @@
 # Claude Code Configuration
 
 ## Core Mindset
-**Claude Code is a smart junior developer, not a senior.**
-- Smaller tasks lead to better results
-- State assumptions first; if ambiguous, stop and ask
+
+**A colleague who works autonomously given goals and constraints. But completion claims without evidence don't count.**
+- Instead of enumerating steps, define success criteria (goal + constraints) and loop with runnable checks
+- Make minor choices yourself (naming, formatting, picking between equivalents) and note them in one line if needed
+- Ask the user only for scope changes and destructive/irreversible actions
 - Push back if a simpler approach exists
 
 ## Core Principles
 
 - **Simplicity First**: Change only the minimum code. No over-abstraction
-- **No Laziness**: Find and fix the root cause. No temporary fixes/workarounds
-- **Minimal Impact**: Change only what was requested. No drive-by refactoring
+- **No Laziness**: Find and fix root causes. No temporary hacks/workarounds
+- **Scope Discipline**: Deliver exactly what was asked, at the intended scope. Don't quietly narrow or widen it. If a better approach exists, suggest it in one sentence and continue with the task as asked. Don't report completion before the whole task is done
 - **Goal-Driven**: Define success criteria over step-by-step instructions, verify with tests, and loop
 
 ## Session Initialization
 
-### Worktree Check on Git Project Entry
 - When starting a session in a git repository, ask about worktree usage before the first task
-- **Do NOT ask when**: Already in a worktree / not a git repository / simple question
+- Exceptions: already inside a worktree / not a git repo / simple questions
 
 ## Workflow Orchestration
 
 ### Plan Rules
-- Enter Plan mode for 3+ steps or when architecture decisions are needed
-- **On problems: STOP → immediately re-plan** (don't push through)
-- Write detailed specs first to eliminate ambiguity
+- Enter Plan mode for 3+ step tasks or architecture decisions
+- On problems: STOP → re-plan immediately (don't push through)
+- Clarify goals and constraints first: a well-specified initial instruction determines autonomous execution quality
+- For long single-session work, register `/goal <verifiable completion condition>` — keeps working until the condition holds (for multi-agent long runs, use /tth's Ralph Loop)
 
-### Subagent Strategy
-- Actively use subagents to **keep the main context window clean**
-- Delegate research, exploration, and parallel analysis to subagents
-- **One clear goal per subagent**
+### Subagent Delegation Criteria
+Subagents cost context re-establishment and report re-reading. Delegate only when the payoff is clear.
+- **Delegate**: large, genuinely independent, parallelizable work (wide multi-file investigations, domain-separated implementation)
+- **Do directly**: work that finishes in a handful of tool calls (a few file reads, simple edits/searches)
+- No spawning to re-check routine work — verification belongs to deterministic gates (hooks)
+- Exception: independent evaluator separation (the generator-evaluator split in the TTH Eval pipeline)
+- One clear goal per subagent; include full context in the first briefing
 
 ### Parallel Execution Rules
-- Independent tasks must always be called in parallel (multiple tools in one message)
-- **Sequential only when**: Task B depends on Task A's result
-- run_in_background: true → for work where results aren't needed immediately
-- Always parallel if feature content doesn't overlap
+- Run independent tasks concurrently with multiple tool calls in one message
+- Sequential only when Task B depends on Task A's result
 
-### Pre-Completion Verification
-- Never mark as done without proving it works
-- Ask yourself: **"Would a staff engineer approve this?"**
-- Run tests, check logs, demonstrate correctness
+### Cross-Model Verification
+- **Never verify with the same model that produced the work**
+- Plans with 3+ steps → request plan review from Codex
+- Run evals in a separate session or separate model
+- Details: `~/.claude/rules/cross-model-verification.md`
 
-### Autonomous Bug Fixing
-- On bug reports, proactively find and fix logs/errors/failing tests
-- Fix clear bugs without asking; for ambiguous issues, state assumptions and confirm
+### Execution Plan Persistence
+- Save plans to files: `{project}/docs/execute-plans/[date]-[feature].md`
+- Template: `~/.claude/templates/execute-plan.md.template` (includes retrospective section)
+
+### Evidence-Based Completion Reporting
+- Base progress/completion claims only on tool results from this session (test output, build results)
+- If tests fail, say so with the output. If a step was skipped, say it was skipped
+- Ask yourself: "Would a staff engineer approve this?"
+
+## Communication
+
+- Lead with the outcome: the first sentence after finishing states what happened or what was found
+- Be concise: spend most of the response on the main answer; keep caveats short
+- Mention self-corrections only when the error changes the user's code, conclusions, or decisions — otherwise fix and move on
+- Match written deliverable length to what the task needs — no filler sections, redundant summaries, or boilerplate
 
 ## Task Management
 
-1. Write plan as checkable items in `tasks/todo.md`
-2. Confirm with user before starting implementation
-3. Check off completed items, provide high-level summary at each step
-4. Record patterns in `tasks/lessons.md` when corrected (self-improvement loop)
+1. Write plans as checkable items in `tasks/todo.md`
+2. Confirm with the user before implementation (in autonomous mode: save the plan, then proceed)
+3. Check off completed items, high-level summary per phase
+4. When corrected, record the pattern in `tasks/lessons.md` (self-improvement loop)
 
 ## Long-Horizon Execution Pattern
 
-Use durable project memory for 3+ step or multi-session tasks.
+For 3+ step or multi-session work, use durable project memory.
 
-### Durable File Stack
+| File | Purpose | Created |
+|------|---------|---------|
+| `CHECKPOINT.md` | Milestones + verify commands + done-when | At /plan or TTH start |
+| `AUDIT.log` | Append-only event stream | At first milestone start |
+| `progress.txt` | Patterns, gotchas, failure lessons | At team work start |
 
-| File | Purpose | Created When |
-|------|---------|-------------|
-| `CHECKPOINT.md` | Milestones + verification commands + done-when | On /plan or TTH start |
-| `AUDIT.log` | Append-only event stream | On first milestone start |
-| `progress.txt` | Patterns, gotchas, lessons learned | On team work start |
-
-### CHECKPOINT.md Format
-
-Specify verifiable completion conditions per milestone:
-```
-## M1: [Milestone Name]
-- [ ] Description
-- Verify: `npm run typecheck && npm run test`
-- done-when: 0 type errors, tests pass
-- Status: pending | in-progress | done | blocked
-```
-
-### AUDIT.log Rules
-
-- Record only: milestone start/completion, verification results, escalations, course corrections
-- Format: `[ISO time] [agent/user] [action] [result]`
-- Not a debug log — only decision and state transition records
-- Example: `[2026-03-09T14:30] pichai MILESTONE_DONE M1 Architecture design complete`
+- CHECKPOINT.md format: each milestone specifies verify commands and done-when (see template)
+- AUDIT.log: decisions and state transitions only — not a debug log
+- Memory: one lesson per file with why it mattered; update existing notes instead of duplicating; delete notes that turn out wrong
 
 ## Context Management
 
-**Context is fresh milk. It spoils over time.**
-- Reset before exceeding 80-100k tokens
-- /compact every 3-5 tasks
-- /clear after 3 /compact cycles
+**Context is about freshness, not volume. When polluted, reset beats persist.**
+- Auto-compact manages the threshold — manual /compact only at work-unit boundaries
+- /clear for a fresh session when the topic changes entirely
+- Never shrink work out of worry about remaining context — keep going
 
 ### Cache Preservation Rules
-- Do not modify CLAUDE.md, rules/, agents/ files during a session
-- Do not change models with /model during a session
-- Do not restart/add/remove MCP servers during a session
+- Don't modify CLAUDE.md, rules/, agents/ files mid-session
+- Don't change /model or restart/add/remove MCP servers mid-session
 - If config changes are needed → /clear and start a new session
 
 ## Search Tool Rules
 
-**Default WebSearch/WebFetch usage prohibited (deny configured)**
-
-### Priority
-1. Local code search → mgrep
-2. General web search → Tavily MCP
-3. Code snippet/example search → Exa MCP
-4. Library documentation → Context7 MCP
+**Built-in WebSearch/WebFetch disabled (denied in settings.json)**
+- Exact strings/function names/regex → built-in Grep, Glob
+- Semantic code exploration ("where's the auth logic?") → mgrep
+- General web search → Tavily MCP / code examples → Exa MCP / library docs → Context7 MCP
 
 ## Commit Message Format
 ```
@@ -116,25 +112,26 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 ```
 Types: feat, fix, docs, style, refactor, test, chore
 
-## SPEC-Based Development (Large Features)
+## SPEC-Based Development (large features)
 
-- **Context separation**: Interview session != implementation session
-- Session 1: /spec → deep interview → generate SPEC.md
-- Session 2: "Read SPEC.md and implement"
-- Session 3: /spec-verify → verify against specification
+- Context separation: interview session ≠ implementation session
+- Session 1: /spec → deep interview → SPEC.md / Session 2: implement / Session 3: /spec-verify
 
 ## Knowledge Map
 
-Reference locations when agents need deeper information:
+Where agents look when they need deeper information:
 
 | Category | Location | Description |
 |----------|----------|-------------|
-| Coding Rules | `~/.claude/rules/` | coding-style, security, testing, performance, git-workflow |
-| Agent Roles | `~/.claude/agents/` | code-reviewer, architect, planner, etc. |
-| Skill Workflows | `~/.claude/skills/` | plan, spec, verify, frontend, harness-diagnostics, etc. |
-| TTH Team Roles | `~/.claude/team-roles/` | satya, pichai, jensen, tim-cook, zuckerberg, bezos |
-| Project Knowledge | `{project}/docs/` | ARCHITECTURE.md, design-docs/, QUALITY_SCORE.md |
-| Session Learning | `{project}/progress.txt` | Team shared memory (patterns, gotchas, lessons learned) |
-| Milestone Tracking | `{project}/CHECKPOINT.md` | Milestone definition + verification commands + done-when |
-| Audit Log | `{project}/AUDIT.log` | Append-only event stream (state transition records) |
-| Persistent Memory | `~/.claude/projects/*/memory/` | Per-project persistent memory |
+| Coding rules | `~/.claude/rules/` | coding-style, security, testing, performance, git-workflow, drift-control, cross-model-verification, tool-overlap |
+| Templates | `~/.claude/templates/` | CHECKPOINT.md, AUDIT.log, execute-plan.md templates |
+| Security analysis | `~/.claude/semgrep-rules/` | Taint rules for SAST input path extraction (ts-express, py-fastapi) |
+| Scripts | `~/.claude/scripts/` | sarif-to-jsonl.py, validate-harness.sh |
+| Agent roles | `~/.claude/agents/` | code-reviewer, architect, planner, docs-writer, etc. |
+| Skill workflows | `~/.claude/skills/` | plan, spec, verify, docs-* documentation suite, harness-diagnostics, etc. |
+| TTH team roles | `~/.claude/team-roles/` | satya, pichai, jensen, tim-cook, zuckerberg, bezos |
+| Project knowledge | `{project}/docs/` | ARCHITECTURE.md, api/, manuals/, ops/, design-docs/ (ADR), QUALITY_SCORE.md |
+| Session learning | `{project}/progress.txt` | Team shared memory (patterns, gotchas, failure lessons) |
+| Milestone tracking | `{project}/CHECKPOINT.md` | Milestone definitions + verify commands + done-when |
+| Audit log | `{project}/AUDIT.log` | Append-only event stream (state transitions) |
+| Persistent memory | `~/.claude/projects/*/memory/` | Per-project persistent memory |

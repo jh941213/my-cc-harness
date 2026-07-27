@@ -11,9 +11,9 @@ allowed-tools: Read, Bash, Grep, Glob
 
 # 코드 리뷰 (Codex + Claude 듀얼 리뷰)
 
-현재 브랜치의 변경사항을 Codex(GPT-5.4)와 Claude 두 관점에서 리뷰합니다.
+현재 브랜치의 변경사항을 Codex(설치된 최신 모델)와 Claude 두 관점에서 리뷰합니다.
 
-## Step 0: Codex 리뷰 (1차 — GPT-5.4)
+## Step 0: Codex 리뷰 (1차)
 
 Codex 플러그인으로 1차 리뷰를 실행한다:
 
@@ -123,7 +123,7 @@ GIT_EXTERNAL_DIFF=difft git diff ${BASE}...HEAD 2>/dev/null || git diff ${BASE}.
 최종 보고서에 다음 섹션을 추가:
 
 ```markdown
-## Codex (GPT-5.4) 리뷰 결과
+## Codex 리뷰 결과
 [Codex가 발견한 이슈 요약]
 
 ## Claude 추가 발견
