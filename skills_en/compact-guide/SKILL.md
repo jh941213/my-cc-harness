@@ -7,12 +7,21 @@ user-invocable: true
 
 # Context Management Guide
 
-Context is like fresh milk. It goes bad over time.
+Context is like fresh milk. **The problem is freshness, not volume** — polluted context deserves a reset.
 
-## Core Rules
-- Reset before exceeding 80-100k tokens
-- Clean up context every 3-5 tasks
-- /clear after 3 /compact operations
+## Core Principles (the 1M-context era)
+
+- Don't count remaining tokens — **auto-compact manages the threshold**
+- Manual intervention is **signal-based**, not number-based:
+
+| Signal | Action |
+|--------|--------|
+| A work unit (milestone/story) just finished | /compact — start the next unit clean |
+| The work topic changes entirely | /handoff → /clear — new session |
+| Repeating the same mistakes, forgetting earlier decisions, illogical replies | Pollution signal — /handoff → /clear (compact doesn't wash pollution out) |
+| Right after long exploration/log output | Consider /compact before the next task |
+
+- Never shrink or rush work out of worry about remaining context — keep going
 
 ## Commands
 
@@ -31,17 +40,13 @@ Context is like fresh milk. It goes bad over time.
 ```
 Start work
     |
-Complete 3-5 tasks
+Work unit completed (milestone/story)
     |
-/compact (token compression)
+/compact (clean up at the boundary)
     |
-Complete 3-5 tasks
+… repeat …
     |
-/compact
-    |
-Complete 3-5 tasks
-    |
-/compact
+Topic switch or pollution signal
     |
 /handoff (generate HANDOFF.md)
     |
@@ -50,23 +55,19 @@ Complete 3-5 tasks
 Read HANDOFF.md in new session
 ```
 
-## Warning
-You can use up to 200k tokens, but quality degrades beyond 80-100k!
-
 ## Context Management from a Cache Perspective
 
-### Why /compact Is Advantageous
+### Why /compact is advantageous
 - System prompt + tool definition prefix cache is preserved
 - Only conversation messages are summarized, so cache hits are possible every turn
 - Significantly lower cost than /clear
 
-### Hidden Cost of /clear
+### Hidden cost of /clear
 - Invalidates the entire prefix cache (system prompt + tools + CLAUDE.md + rules/ all recomputed)
 - Additional tokens generated when loading HANDOFF.md
 - Cache warmup needed from the next API call
 
-### Compaction Timing Guide
-- 50-70k tokens: First /compact (do it early while there's room)
-- 80-100k tokens: Second /compact or prepare /handoff
-- If still above 80k after /compact: /handoff -> /clear -> new session
-- Do not compact above 150k (risk of insufficient buffer)
+### Decision rule
+- **On cost alone**: /compact > /clear
+- **When quality wobbles**: /clear is the answer — summarizing polluted context summarizes the pollution too
+- For long autonomous runs (TTH/autodev), leave it to auto-compact and don't intervene

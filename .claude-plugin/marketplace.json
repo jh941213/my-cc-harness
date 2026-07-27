@@ -6,17 +6,26 @@
     "email": ""
   },
   "metadata": {
-    "description": "Boris Cherny 팁 + 논문 기반 최적화 올인원 플러그인",
-    "version": "0.5.0"
+    "description": "Boris Cherny 팁 + 논문 기반 최적화 올인원 플러그인 (Opus 5 세대)",
+    "version": "1.1.0"
   },
   "plugins": [
     {
       "name": "ccpp",
       "source": "./",
-      "description": "워크플로우 16개 + 기술 스킬 10개 + E2E/Stitch 5개 + 이미지 1개 + 에이전트 10개 올인원",
-      "version": "0.5.0",
+      "description": "워크플로우 19개 + docs 스위트 4개 + 기술 스킬 10개 + E2E/Stitch 5개 + 이미지 1개 + 에이전트 12개 + 커맨드 3개 + hooks 보장 시스템 올인원",
+      "version": "1.1.0",
       "category": "productivity",
-      "tags": ["boris-cherny", "skills-sh", "all-in-one", "workflow", "react", "fastapi"]
+      "tags": [
+        "boris-cherny",
+        "skills-sh",
+        "all-in-one",
+        "workflow",
+        "docs",
+        "react",
+        "fastapi",
+        "opus-5"
+      ]
     }
   ]
 }

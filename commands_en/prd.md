@@ -1,3 +1,8 @@
+---
+description: "Idea → integrated PRD + SPEC planning (Aletheia v3). Generates 8 files under prd/, flows straight into /tth"
+argument-hint: "[idea description]"
+---
+
 Analyzes the user's idea with a focus on insights and generates a PRD.
 Technical details are covered in the subsequent `/spec`.
 

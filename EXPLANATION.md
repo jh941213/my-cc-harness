@@ -13,7 +13,7 @@
 - **Agents** = 시리/빅스비 같은 전문 비서 (특정 분야 전문가)
 - **Rules** = 스마트폰 설정 (이렇게 동작해야 해! 라는 규칙)
 
-이 저장소는 Claude Code에 **29개의 앱(스킬)**, **8명의 전문 비서(에이전트)**, **5개의 규칙**을 한 번에 설치해주는 **올인원 패키지**예요!
+이 저장소는 Claude Code에 **39개의 앱(스킬)**, **12명의 전문 비서(에이전트)**, **8개의 규칙**을 한 번에 설치해주는 **올인원 패키지**예요!
 
 ---
 
@@ -188,14 +188,16 @@ rules/
 ### 실수 1: 플러그인 vs 전체 설정 혼동
 
 ```bash
-# ❌ 플러그인만 설치하면 agents, rules는 안 깔려요!
+# ✅ 플러그인 설치로 skills + commands + agents + hooks까지 설치돼요 (v0.6.0+)
 claude plugin install ccpp@my-claude-code-asset
 
-# ✅ agents, rules도 필요하면 따로 복사해야 해요
+# ✅ rules, team-roles, templates, settings.json까지 전부 원하면 install.sh
 curl -fsSL https://raw.githubusercontent.com/.../install.sh | bash
 ```
 
-**왜?** Claude Code 플러그인 시스템은 현재 `skills`만 지원해요. agents와 rules는 수동으로 `~/.claude/` 폴더에 복사해야 해요.
+**왜?** 현행 Claude Code 플러그인 시스템은 skills/commands/agents/hooks를 모두 배포할 수 있어요. 다만 rules, team-roles, templates, settings.json(권한/env)은 플러그인 범위 밖이라 전체 하네스를 원하면 install.sh를 쓰세요.
+
+**⚠️ 중복 주의**: install.sh로 settings.json에 hooks를 이미 등록했다면, 플러그인 설치 시 같은 hook이 두 번 실행될 수 있어요. 한쪽만 사용하세요 (플러그인 설치 후 `claude plugin disable ccpp` 또는 settings.json의 해당 hook 제거).
 
 ### 실수 2: 명령어 오타
 
@@ -259,9 +261,9 @@ Claude Code에서 `/`를 입력하고 `ccpp`를 쳐보세요. 사용 가능한 �
 
 | 항목 | 개수 | 설명 |
 |------|------|------|
-| Skills | 29개 | 워크플로우 13 + 기술 10 + E2E/Stitch 5 + 이미지 1 |
-| Agents | 8개 | 전문 분야별 AI 에이전트 |
-| Rules | 5개 | 코딩 컨벤션 및 규칙 |
+| Skills | 39개 | 워크플로우 19 + docs 스위트 4 + 기술 10 + E2E/Stitch 5 + 이미지 1 |
+| Agents | 12개 | 전문 분야별 AI 에이전트 |
+| Rules | 8개 | 코딩 컨벤션 및 규칙 (조건부 로드) |
 
 ---
 

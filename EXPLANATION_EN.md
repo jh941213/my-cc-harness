@@ -13,7 +13,7 @@ Think of **Claude Code as a smartphone**.
 - **Agents** = Specialized assistants like Siri or Alexa (experts in specific domains)
 - **Rules** = Phone settings (rules that define how things should work)
 
-This repository is an **all-in-one package** that installs **29 apps (skills)**, **8 specialist assistants (agents)**, and **5 rules** into Claude Code at once!
+This repository is an **all-in-one package** that installs **39 apps (skills)**, **12 specialist assistants (agents)**, and **8 rules** into Claude Code at once!
 
 ---
 
@@ -23,9 +23,9 @@ This repository is an **all-in-one package** that installs **29 apps (skills)**,
 ![Repository Structure](./nanobanana-output/claude_code_plugin_structure_git.png)
 
 > The repository is organized into 4 main folders:
-> - `skills/` - 29 skills (used via slash commands)
-> - `agents/` - 8 specialized agents
-> - `rules/` - 5 coding rules
+> - `skills/` - 39 skills (used via slash commands)
+> - `agents/` - 12 specialized agents
+> - `rules/` - 8 coding rules
 > - `.claude-plugin/` - Plugin configuration files
 
 ### Installation Flow
@@ -127,7 +127,7 @@ skills/
 ├── review/         # /ccpp:review - Code review
 ├── react-patterns/ # React pattern reference
 ├── nano-banana/    # Image generation
-└── ... (29 total)
+└── ... (39 total)
 ```
 
 Each skill folder contains a `SKILL.md` file. This file is the skill's "user manual"!
@@ -259,9 +259,9 @@ In Claude Code, type `/` and then `ccpp`. You'll see a list of available skills!
 
 | Item | Count | Description |
 |------|-------|-------------|
-| Skills | 29 | Workflow 13 + Tech 10 + E2E/Stitch 5 + Image 1 |
-| Agents | 8 | Domain-specific AI agents |
-| Rules | 5 | Coding conventions and guidelines |
+| Skills | 39 | Workflow 19 + Docs suite 4 + Tech 10 + E2E/Stitch 5 + Image 1 |
+| Agents | 12 | Domain-specific AI agents |
+| Rules | 8 | Coding conventions and guidelines (conditional loading) |
 
 ---
 

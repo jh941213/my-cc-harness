@@ -358,7 +358,7 @@ Elevate CLAUDE.md "suggestions" to settings.json "guarantees":
 
 ---
 
-## 🛠 Skills (33)
+## 🛠 Skills (39)
 
 ### Autonomous Experiment Skills (2)
 
@@ -367,7 +367,7 @@ Elevate CLAUDE.md "suggestions" to settings.json "guarantees":
 | `/ccpp:autodev` | Autonomous code experiment loop (autoresearch pattern) |
 | `/ccpp:autodev-parallel` | Parallel worktree experiment orchestrator |
 
-### Workflow Skills (15)
+### Workflow Skills (17)
 
 | Skill | Purpose |
 |-------|---------|
@@ -386,6 +386,19 @@ Elevate CLAUDE.md "suggestions" to settings.json "guarantees":
 | `/ccpp:compact-guide` | Context management guide |
 | `/ccpp:techdebt` | Technical debt cleanup |
 | `/ccpp:harness-diagnostics` | TTH harness diagnostics and debugging |
+| `/ccpp:eval` | Musk independent evaluation — ast-grep/gitleaks/scc auto-scan + 4-axis 100-point scoring |
+| `/ccpp:harness-audit` | Harness health audit — 8 dimensions + S~D grades |
+
+### Documentation Skills (4) — docs suite
+
+> Routed by the `/docs` command. Doc↔code mapping managed via the `docs/docs.yaml` manifest (drift-detection contract)
+
+| Skill | Purpose |
+|-------|---------|
+| `/ccpp:docs-architecture` | Architecture diagrams (C4 mermaid) + ARCHITECTURE.md codemap + ADRs (MADR) + ERD |
+| `/ccpp:docs-interfaces` | API topology + OpenAPI 3.1/AsyncAPI 3.0 specs + sequence flows + API CHANGELOG |
+| `/ccpp:docs-manuals` | User manual (Diátaxis quadrants) + operator manual/runbooks/deployment guide/incident playbook |
+| `/ccpp:docs-ci` | Docs validation pipeline — link/OpenAPI lint·breaking/mermaid/freshness checks + CHANGELOG automation |
 
 ### Technical Skills (10)
 
@@ -481,7 +494,7 @@ cp /tmp/my-claude-code-asset-main/agents/*.md ~/.claude/agents/
 | # | Tip | Summary |
 |---|-----|---------|
 | 1 | **Parallel Execution** | 5 terminals + 5-10 claude.ai/code sessions simultaneously |
-| 2 | **Opus 4.6** | Always use Opus. Slower but less steering needed, so faster overall |
+| 2 | **Opus 5** | Always use Opus. Less steering needed, so faster overall |
 | 3 | **Plan Mode** | Shift+Tab twice → Plan, then Auto-accept for 1-shot implementation |
 | 4 | **Share CLAUDE.md** | Entire team commits to git, add rules for every mistake |
 | 5 | **Immediate Re-plan** | If things go wrong, return to Plan mode — don't force it |
@@ -503,13 +516,13 @@ cp /tmp/my-claude-code-asset-main/agents/*.md ~/.claude/agents/
 
 | | Claude Code Power Pack | Codex CLI Power Pack |
 |---|:---:|:---:|
-| **Skills** | 33 (`/ccpp:skill`) | 33 (`$skill`) |
-| **Agents** | 11 (subagents) | AGENTS.md integrated |
-| **Rules** | 5 (YAML conditional loading) | AGENTS.md integrated |
+| **Skills** | 39 (`/ccpp:skill`) | 33 (`$skill`) |
+| **Agents** | 12 (subagents) | AGENTS.md integrated |
+| **Rules** | 8 (YAML conditional loading) | AGENTS.md integrated |
 | **Hooks** | settings.json physical block | config.toml |
 | **PRD** | Six Thinking Hats | Six Thinking Hats |
-| **Auto Docs** | docs-writer parallel execution | $docs |
-| **Model** | Claude Opus 4.6 | GPT-5.3 Codex |
+| **Auto Docs** | docs suite (4 skills) + docs-writer parallel execution | $docs |
+| **Model** | Claude Opus 5 | Codex (latest) |
 
 ```bash
 # Codex CLI version installation
@@ -531,6 +544,26 @@ curl -fsSL https://raw.githubusercontent.com/jh941213/my-codex-cli-asset/main/in
 ---
 
 ## 📋 Changelog
+
+<details open>
+<summary><b>v1.3.0 (2026-07-27) — Opus 5 generation optimization + docs suite + harness self-CI</b></summary>
+
+**Opus 5 prompt modernization (concept preserved, "unhobbling")**
+- CLAUDE.md rewritten (136 lines): junior mindset → goal+constraints autonomous colleague; Scope Discipline / Communication / evidence-based completion reporting added
+- Forced re-verification scaffolding removed (Opus 5 self-verifies — verification belongs to deterministic hooks)
+- Subagent guidance flipped to delegation criteria + caps (Opus 5 over-delegates by default)
+- 200k-era context numbers removed: signal-based `compact-guide`/`handoff`, `AUTO_COMPACT_WINDOW` hardcode dropped
+- All 8 rules now have frontmatter (consistent conditional loading); model-version hardcodes made version-agnostic
+
+**New docs suite (4 skills + expanded /docs router)**
+- `docs-architecture` (C4 diagrams + ARCHITECTURE.md codemap + MADR ADRs + ERD), `docs-interfaces` (OpenAPI 3.1/AsyncAPI 3.0 + API topology + sequence flows + API CHANGELOG), `docs-manuals` (Diátaxis user manual + operator manual/runbooks/deployment guide/incident playbook), `docs-ci` (link/OpenAPI/mermaid/freshness checks + `docs/docs.yaml` drift manifest)
+- `/docs` routing: code/arch/api/manual/ops/ci/sync/all
+
+**Harness self-validation (Goal-Driven loop)**
+- `scripts/validate-harness.sh` (7 structural checks) + `.github/workflows/validate.yml` (self-CI)
+- Plugin v1.1.0 now ships skills + commands + agents + hooks (hooks/hooks.json); KO/EN parity gaps closed
+
+</details>
 
 <details>
 <summary><b>v0.9.0 (2026-03-16) — /prd v2: Aletheia Engine Absorption</b></summary>

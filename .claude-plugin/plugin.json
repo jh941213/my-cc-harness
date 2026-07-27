@@ -1,7 +1,8 @@
 {
   "name": "ccpp",
-  "description": "Boris Cherny 팁 + 논문 기반 최적화 올인원 Claude Code 플러그인. 32개 스킬, 10개 에이전트, Hooks 보장 시스템.",
-  "version": "0.5.0",
+  "displayName": "Claude Code Power Pack",
+  "description": "Boris Cherny 팁 + 논문 기반 최적화 올인원 Claude Code 플러그인. 39개 스킬(docs 스위트 포함), 12개 에이전트, 3개 커맨드, Hooks 보장 시스템. Opus 5 세대 최적화.",
+  "version": "1.1.0",
   "author": {
     "name": "Community Contributors"
   },
@@ -11,13 +12,18 @@
   "keywords": [
     "boris-cherny",
     "workflow",
+    "docs",
+    "documentation",
     "react",
     "typescript",
     "fastapi",
     "code-review",
     "tdd",
     "skills-sh",
-    "all-in-one"
+    "all-in-one",
+    "opus-5"
   ],
-  "skills": "./skills/"
+  "skills": "./skills/",
+  "commands": "./commands/",
+  "hooks": "./hooks/hooks.json"
 }

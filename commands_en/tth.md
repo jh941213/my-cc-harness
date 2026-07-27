@@ -1,3 +1,8 @@
+---
+description: "TTH multi-agent silo — M7 CEO team autonomous collaboration (Toss silo + Musk 5-Step + Ralph Loop)"
+argument-hint: "[project/task description]"
+---
+
 # TTH (Toss-Tesla Harness) -- Multi-Agent Silo
 
 A multi-agent harness combining Toss's silo organizational culture + Musk's 5-Step Engineering Process + Ralph Loop's iterative convergence mechanism.

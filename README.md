@@ -35,7 +35,8 @@
 - [AutoDev 자율 실험 루프](#-autodev-자율-실험-루프)
 - [CLAUDE.md 최적화 철학](#-claudemd-최적화-철학)
 - [Hooks 보장 시스템](#-hooks-보장-시스템)
-- [스킬 (35개)](#-스킬-35개)
+- [Goal-Driven 실행 (/goal)](#-goal-driven-실행-goal-연동)
+- [스킬 (39개)](#-스킬-39개)
 - [에이전트 (12개)](#-에이전트-12개)
 - [Commands (3개)](#-commands-3개)
 - [Rules (8개)](#-rules-8개-조건부-로드)
@@ -74,14 +75,17 @@ brew install ast-grep difftastic gitleaks scc
 curl -fsSL https://raw.githubusercontent.com/jh941213/my-claude-code-asset/main/install.sh | bash
 ```
 
-### 방법 2: 플러그인 설치 (Skills만)
+### 방법 2: 플러그인 설치 (Skills + Commands + Agents + Hooks)
 
 ```bash
 claude plugin marketplace add jh941213/my-claude-code-asset
 claude plugin install ccpp@my-claude-code-asset
 ```
 
-> **Note**: 플러그인 시스템은 **skills만** 지원합니다. 에이전트, rules, TTH는 별도 설정이 필요합니다.
+> **Note (v0.6.0+)**: 현행 플러그인 시스템은 skills/commands/agents/hooks를 모두 배포합니다.
+> rules, team-roles, templates, CLAUDE.md, settings.json(권한/env)은 전체 설치(install.sh)로 반영하세요.
+>
+> ⚠️ **중복 주의**: install.sh(settings.json hook 등록)와 플러그인 설치를 **함께 쓰면 hook이 두 번 실행**됩니다. 한 가지 방식만 사용하세요.
 
 ### 방법 3: Claude에게 직접 요청
 
@@ -94,14 +98,14 @@ https://github.com/jh941213/my-claude-code-asset 저장소의 agents/, rules/, c
 
 | 항목 | 플러그인 설치 | 전체 설정 |
 |------|:---:|:---:|
-| Skills (35개) | ✅ | ✅ |
-| Agents (12개) | ❌ | ✅ |
+| Skills (39개) | ✅ | ✅ |
+| Commands (3개) | ✅ | ✅ |
+| Agents (12개) | ✅ | ✅ |
+| Hooks (14개 스크립트) | ✅ (핵심 10종 자동 등록) | ✅ (settings.json 전체) |
 | Rules (8개) | ❌ | ✅ |
-| Commands (3개) | ❌ | ✅ |
 | TTH Team Roles (7개) | ❌ | ✅ |
-| Hooks (8개) | ❌ | ✅ |
 | Semgrep Rules (2개) | ❌ | ✅ |
-| Scripts (1개) | ❌ | ✅ |
+| Scripts (2개) | ❌ | ✅ |
 | MCP Servers (1개) | ❌ | ✅ |
 | Templates (3개) | ❌ | ✅ |
 | CLAUDE.md | ❌ | ✅ |
@@ -434,7 +438,7 @@ main
 
 **"Claude가 코드를 읽어도 알 수 없는 것만 적어라."**
 
-- 200줄 이내 (현재 140줄)
+- 200줄 이내 (현재 136줄)
 - 발견 가능한 정보 제거 (스킬 목록, 에이전트 목록, 코드베이스 개요)
 - 린터로 강제 가능한 규칙은 hooks로 이동
 - Auto Memory(MEMORY.md)와 역할 분리
@@ -460,11 +464,12 @@ CLAUDE.md의 "제안"을 settings.json의 "보장"으로 격상:
 | 서브에이전트 완료 시 PRD.md 생성 확인 | 생성 알림 | SubagentStop |
 | AutoDev 스코어 판정 | 빌드/테스트/린트 종합 스코어 | autodev-judge.sh |
 
-### Hook 스크립트 (13개)
+### Hook 스크립트 (14개)
 
 | 파일 | 이벤트 | 설명 |
 |------|--------|------|
 | `verify-task-quality.sh` | TaskCompleted | TTH 태스크 완료 시 typecheck/lint/test/coverage/security 품질 게이트 |
+| `subagent-stop-tracker.sh` | SubagentStop | 서브에이전트 완료 추적 — prd/ 생성 확인 + 에이전트 카운터 정리 |
 | `check-architecture.sh` | TaskCompleted | 아키텍처 불변성 위반 감지 |
 | `check-remaining-tasks.sh` | TeammateIdle | TTH 팀원 유휴 시 남은 태스크 확인 |
 | `autodev-judge.sh` | AutoDev | 빌드/테스트/린트 종합 스코어 판정 + AI 슬롭 감지 |
@@ -504,7 +509,29 @@ settings.json에서 다음 이벤트에 hook이 등록되어 있습니다:
 
 ---
 
-## 🛠 스킬 (35개)
+## 🎯 Goal-Driven 실행 (/goal 연동)
+
+CLAUDE.md의 Goal-Driven 원칙을 Claude Code 내장 `/goal`과 연결합니다.
+`/goal <검증 가능한 조건>`을 등록하면 매 턴 종료 시 조건 충족 여부를 자동 평가(Haiku)하고, 미충족이면 계속 작업합니다.
+
+```
+# 예: 하네스 구조 검증 통과까지 자동 반복
+/goal bash scripts/validate-harness.sh 가 오류 0건으로 통과
+
+# 예: 테스트 전부 통과까지
+/goal npx vitest run 전체 통과 + tsc --noEmit 에러 0
+```
+
+| 상황 | 도구 |
+|------|------|
+| 단독 세션 장기 작업 | `/goal <조건>` — 세션 범위 Stop hook 기반 |
+| 멀티 에이전트 장기 작업 | `/tth` — Ralph Loop(ralph-loop.sh Stop hook) + 팀 사일로 |
+
+> 두 방식 모두 Stop hook 기반이라 공존 가능합니다. 조건은 "성공 기준을 커맨드로" 쓰는 것이 핵심 — 애매한 목표("좋게 만들어")가 아니라 검증 가능한 게이트를 등록하세요.
+
+---
+
+## 🛠 스킬 (39개)
 
 ### 자율 실험 스킬 (2개)
 
@@ -534,6 +561,17 @@ settings.json에서 다음 이벤트에 hook이 등록되어 있습니다:
 | `/ccpp:harness-diagnostics` | TTH 하네스 진단 및 디버깅 |
 | `/ccpp:eval` | 머스크 독립 평가 — ast-grep/gitleaks/scc 자동 스캔 + 4축 100점 채점 |
 | `/ccpp:harness-audit` | 하네스 건강도 진단 — 8차원 점수 + S~D 등급 |
+
+### 문서화 스킬 (4개) — docs 스위트
+
+> `/docs` 커맨드가 라우팅. 문서↔코드 매핑은 `docs/docs.yaml` 매니페스트로 관리 (드리프트 감지 계약)
+
+| 스킬 | 용도 |
+|------|------|
+| `/ccpp:docs-architecture` | 아키텍처 구성도(C4 mermaid) + ARCHITECTURE.md 코드맵 + ADR(MADR) + ERD |
+| `/ccpp:docs-interfaces` | API 구성도 + OpenAPI 3.1/AsyncAPI 3.0 명세 + 시퀀스 흐름도 + API CHANGELOG |
+| `/ccpp:docs-manuals` | 사용자 매뉴얼(Diátaxis 4분면) + 운영자 매뉴얼/런북/배포 가이드/인시던트 플레이북 |
+| `/ccpp:docs-ci` | docs 검증 파이프라인 — 링크/OpenAPI lint·breaking/mermaid/신선도 검사 + CHANGELOG 자동화 |
 
 ### 기술 스킬 (10개)
 
@@ -605,7 +643,7 @@ cp /tmp/my-claude-code-asset-main/agents/*.md ~/.claude/agents/
 |--------|------|
 | `/tth [설명]` | TTH 멀티 에이전트 사일로 (Toss + Tesla + Ralph Loop) |
 | `/prd [아이디어]` | Aletheia v3 — CPS 정렬 + 인문학 프레임워크 + prd/ 디렉토리 8개 파일 통합 생성 (PRD + SPEC) |
-| `/docs [유형]` | 코드 변경 기반 자동 문서 생성 |
+| `/docs [유형]` | 문서 생성/동기화 라우터 — code/arch/api/manual/ops/ci/sync/all (docs 스위트 연동) |
 
 ---
 
@@ -709,7 +747,7 @@ Long-Horizon 실행 패턴에서 자동 생성되는 파일의 템플릿입니�
 | # | 팁 | 요약 |
 |---|---|---|
 | 1 | **병렬 실행** | 터미널 5개 + claude.ai/code 5-10개 동시 실행 |
-| 2 | **Opus 4.6** | 항상 Opus 사용. 느리지만 스티어링 적어서 결과적으로 빠름 |
+| 2 | **Opus 5** | 항상 Opus 사용. 스티어링이 적어서 결과적으로 빠름 |
 | 3 | **Plan 모드** | Shift+Tab 두 번 → Plan, 확정 후 Auto-accept로 1-shot 구현 |
 | 4 | **CLAUDE.md 공유** | 팀 전체가 git에 커밋, 실수할 때마다 규칙 추가 |
 | 5 | **즉시 재계획** | 잘못되면 Plan 모드 복귀, 무리하게 밀어붙이지 않기 |
@@ -731,13 +769,13 @@ Long-Horizon 실행 패턴에서 자동 생성되는 파일의 템플릿입니�
 
 | | Claude Code Power Pack | Codex CLI Power Pack |
 |---|:---:|:---:|
-| **Skills** | 35개 (`/ccpp:skill`) | 33개 (`$skill`) |
+| **Skills** | 39개 (`/ccpp:skill`) | 33개 (`$skill`) |
 | **Agents** | 12개 (서브에이전트) | AGENTS.md 통합 |
-| **Rules** | 5개 (YAML 조건부 로드) | AGENTS.md 통합 |
+| **Rules** | 8개 (YAML 조건부 로드) | AGENTS.md 통합 |
 | **Hooks** | settings.json 물리 차단 | config.toml |
 | **PRD** | Aletheia v3 (CPS + prd/) | Six Thinking Hats |
-| **자동 문서** | docs-writer 병렬 실행 | $docs |
-| **모델** | Claude Opus 4.6 | GPT-5.3 Codex |
+| **자동 문서** | docs 스위트 (4스킬) + docs-writer 병렬 실행 | $docs |
+| **모델** | Claude Opus 5 | Codex (최신) |
 
 ```bash
 # Codex CLI 버전 설치
@@ -761,6 +799,32 @@ curl -fsSL https://raw.githubusercontent.com/jh941213/my-codex-cli-asset/main/in
 ## 📋 Changelog
 
 <details open>
+<summary><b>v1.3.0 (2026-07-27) — Opus 5 세대 최적화 + docs 스위트 + 하네스 자체 CI</b></summary>
+
+**Opus 5 프롬프트 현대화 (컨셉 유지, "unhobbling")**
+- Anthropic 가이드 반영: "하네스의 모든 구성요소는 '모델이 혼자 못 한다'는 가정을 인코딩한다 — 모델이 바뀔 때마다 스트레스 테스트하라"
+- `CLAUDE.md` 재작성 (136줄): 주니어 마인드셋 → 목표+제약 기반 자율 동료, Scope Discipline/커뮤니케이션/증거 기반 완료 보고 추가
+- 강제 재검증 스캐폴딩 제거 (Opus 5는 자가 검증 내장 — 검증은 결정적 게이트(hooks)가 담당)
+- 서브에이전트 "적극 활용" → 위임 기준 명시 (Opus 5는 위임 과다 방향이라 역방향 캡)
+- 200k 시대 컨텍스트 수치 제거: `compact-guide`/`handoff` 신호 기반 재작성, settings.json `AUTO_COMPACT_WINDOW` 하드코딩 삭제
+- GPT-5.4 등 상대 모델 버전 하드코딩 제거 (버전 독립 표기)
+- rules 8개 전부 frontmatter 완비 (조건부 로드 일관성)
+
+**docs 스위트 신설 (4스킬 + /docs 라우터 확장)**
+- `docs-architecture` — 아키텍처 구성도(C4 mermaid) + ARCHITECTURE.md 코드맵 + ADR(MADR) + ERD
+- `docs-interfaces` — API 구성도 + OpenAPI 3.1/AsyncAPI 3.0 + 시퀀스 흐름도 + API CHANGELOG
+- `docs-manuals` — 사용자 매뉴얼(Diátaxis) + 운영자 매뉴얼/런북/배포 가이드/인시던트 플레이북
+- `docs-ci` — docs 검증 파이프라인(링크/OpenAPI/mermaid/신선도) + `docs/docs.yaml` 드리프트 매니페스트
+- `/docs` 커맨드: code/arch/api/manual/ops/ci/sync/all 라우팅
+
+**하네스 자체 검증 (Goal-Driven 루프)**
+- `scripts/validate-harness.sh` — frontmatter/JSON/hooks/참조 무결성/한영 패리티 7종 검사
+- `.github/workflows/validate.yml` — 하네스 자체 CI (구조 검증 + shellcheck)
+- 한/영 패리티 갭 해소 (evaluator, eval, harness-audit, rules 3종, musk 번역 추가)
+
+</details>
+
+<details>
 <summary><b>v1.2.0 (2026-04-11) — 보안 도구체인 + 교차 모델 검증 + 템플릿</b></summary>
 
 **보안 도구체인 (토스 Security Research 패턴)**

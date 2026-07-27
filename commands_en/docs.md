@@ -1,61 +1,65 @@
-Analyzes code changes in the current project and auto-generates documentation in the /docs/ folder.
+---
+description: "Docs generation/sync router — code docs, architecture diagrams, API specs, manuals, ops docs, docs CI, drift sync"
+argument-hint: "[code|arch|api|manual|ops|ci|sync|all]"
+---
+
+Generates/synchronizes project documentation — from code-level docs to architecture diagrams, API specs, manuals, ops docs, and docs CI.
 
 Input: $ARGUMENTS
 
-## Execution Mode
+## Routing
 
-### Called without arguments: `/docs`
-- Generates/updates documentation based on recently changed files via git diff
+| Invocation | Target | Execution |
+|------------|--------|-----------|
+| `/docs` | Update code docs from recent changes | docs-writer agent |
+| `/docs code` | Code-level docs (api.md, components.md, utils.md, models.md) | docs-writer agent |
+| `/docs arch` | Architecture diagrams + ARCHITECTURE.md + ADRs + ERD | **docs-architecture skill** |
+| `/docs api` | API topology + OpenAPI/AsyncAPI specs + API CHANGELOG | **docs-interfaces skill** |
+| `/docs manual` | User manual (Diátaxis quadrants) | **docs-manuals skill** |
+| `/docs ops` | Operator manual + runbooks + deployment guide + incident playbook | **docs-manuals skill** (ops mode) |
+| `/docs ci` | Install docs validation pipeline (links/OpenAPI/mermaid/freshness) | **docs-ci skill** |
+| `/docs sync` | Detect docs drift → refresh stale docs | sync procedure below |
+| `/docs all` | Generate the full documentation set | all procedure below |
 
-### Called with arguments: `/docs api`, `/docs components`
-- Generates/updates only the specified type of documentation
+## `/docs sync` procedure (docs-code synchronization)
 
-### Full generation: `/docs all`
-- Analyzes the entire project codebase and generates all /docs/ at once
+1. Check `docs/docs.yaml` exists — if not, generate the manifest first via the docs-ci skill
+2. Run `bash scripts/check-docs-freshness.sh` (or diff docs.yaml covers vs git log directly)
+3. Report stale docs grouped by area
+4. Refresh each stale area with its owner:
+   - `docs/ARCHITECTURE.md` → docs-architecture
+   - `docs/api/*` → docs-interfaces
+   - `docs/manuals/*`, `docs/ops/*` → docs-manuals
+   - `docs/*.md` code docs → docs-writer
+5. Update `last_reviewed` to today for refreshed docs
+6. If `.docs-queue/` exists (TTH mode), process and delete queue files
 
-## Execution Process
+## `/docs all` procedure
 
-### Step 1: Identify Changes
-
-```bash
-git diff --name-only HEAD~5..HEAD 2>/dev/null
-git diff --name-only
-git diff --name-only --cached
-```
-
-If the argument is `all`, all source files are targeted.
-
-### Step 2: Run docs-writer Agent
-
-Runs a docs-writer agent (subagent_type: docs-writer) to generate documentation.
-
-If there are many changed files, sub-agents are executed **in parallel** by type:
-
-**10 or fewer files**: Handled by a single docs-writer agent
-**More than 10 files**: Parallel execution by type
-- Agent A: API docs (routes, endpoints)
-- Agent B: Component/hook docs (components, hooks)
-- Agent C: Utility/service/model docs (utils, services, models)
-
-### Step 3: Review Results
-
-Displays the list of generated documents and updates the docs/README.md index.
-
-## Parallel Execution Guide with Implementation Agents
-
-Pattern for running docs-writer in the background alongside planner or implementation agents:
+Analyze the whole project and generate the documentation set. Independent areas run in parallel:
 
 ```
-# Call like this during the Implementation Phase
+Agent A (docs-writer): code-level docs
+Agent B (docs-architecture skill): ARCHITECTURE.md + diagrams + ERD
+Agent C (docs-interfaces skill): API specs + topology
+Agent D (docs-manuals skill): manuals + ops docs
+```
+
+Afterwards, install the manifest + CI pipeline via the docs-ci skill and update the `docs/README.md` index.
+
+## Parallel execution with implementation agents
+
+Pattern for running docs-writer in the background during implementation (TTH triggers this via hooks automatically):
+
+```
 Agent(subagent_type: "docs-writer", run_in_background: true, prompt: "...")
 ```
 
-This way, documentation is completed around the same time as the implementation.
-
-## Important Rules
+## Important rules
 
 - Only modify the /docs/ folder (never modify source code)
-- If existing documentation exists, update rather than overwrite (prefer Edit)
+- Update existing docs rather than overwrite (prefer Edit)
 - Descriptions in English, code/variable names kept as-is
-- Omit what is obvious from reading the code -- document "why" and "when"
+- Omit what is obvious from reading the code — document "why" and "when"
 - Do not create documentation files for empty types
+- When creating or updating a doc, also update its `docs/docs.yaml` entry
