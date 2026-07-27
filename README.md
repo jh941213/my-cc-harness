@@ -4,9 +4,9 @@
 
 # MY Claude Code harness
 
-<img src="assets/banner.png" alt="Claude Code Power Pack" width="720" />
+<img src="assets/banner.png" alt="My CC Harness" width="720" />
 
-[![Version](https://img.shields.io/badge/version-1.2.0-7C3AED.svg?style=for-the-badge)](https://github.com/jh941213/my-claude-code-asset)
+[![Version](https://img.shields.io/badge/version-1.2.0-7C3AED.svg?style=for-the-badge)](https://github.com/jh941213/my-cc-harness)
 [![License](https://img.shields.io/badge/license-MIT-E87C3E.svg?style=for-the-badge)](LICENSE)
 [![Skills](https://img.shields.io/badge/skills-35-blue.svg?style=for-the-badge)](#-스킬-35개)
 [![Agents](https://img.shields.io/badge/agents-12-green.svg?style=for-the-badge)](#-에이전트-12개)
@@ -72,14 +72,14 @@ brew install ast-grep difftastic gitleaks scc
 ### 방법 1: 원클릭 전체 설치 (권장)
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/jh941213/my-claude-code-asset/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/jh941213/my-cc-harness/main/install.sh | bash
 ```
 
 ### 방법 2: 플러그인 설치 (Skills + Commands + Agents + Hooks)
 
 ```bash
-claude plugin marketplace add jh941213/my-claude-code-asset
-claude plugin install ccpp@my-claude-code-asset
+claude plugin marketplace add jh941213/my-cc-harness
+claude plugin install my-cc-harness@my-cc-harness
 ```
 
 > **Note (v0.6.0+)**: 현행 플러그인 시스템은 skills/commands/agents/hooks를 모두 배포합니다.
@@ -90,7 +90,7 @@ claude plugin install ccpp@my-claude-code-asset
 ### 방법 3: Claude에게 직접 요청
 
 ```
-https://github.com/jh941213/my-claude-code-asset 저장소의 agents/, rules/, commands/, CLAUDE.md를
+https://github.com/jh941213/my-cc-harness 저장소의 agents/, rules/, commands/, CLAUDE.md를
 내 ~/.claude/ 폴더에 반영해줘
 ```
 
@@ -537,30 +537,30 @@ CLAUDE.md의 Goal-Driven 원칙을 Claude Code 내장 `/goal`과 연결합니다
 
 | 스킬 | 용도 |
 |------|------|
-| `/ccpp:autodev` | 자율 코드 실험 루프 (autoresearch 패턴) |
-| `/ccpp:autodev-parallel` | 병렬 워크트리 실험 오케스트레이터 |
+| `/my-cc-harness:autodev` | 자율 코드 실험 루프 (autoresearch 패턴) |
+| `/my-cc-harness:autodev-parallel` | 병렬 워크트리 실험 오케스트레이터 |
 
 ### 워크플로우 스킬 (17개)
 
 | 스킬 | 용도 |
 |------|------|
-| `/ccpp:plan` | 작업 계획 수립 |
-| `/ccpp:spec` | SPEC 기반 개발 - 심층 인터뷰로 명세서 작성 |
-| `/ccpp:spec-verify` | 명세서 기반 구현 검증 |
-| `/ccpp:frontend` | 빅테크 스타일 UI 개발 |
-| `/ccpp:verify` | 테스트, 린트, 빌드 + 순환참조/데드코드/시크릿/AI슬롭 검증 |
-| `/ccpp:e2e-verify` | 피처 기반 E2E 테스트 검증 |
-| `/ccpp:commit-push-pr` | 커밋 → 푸시 → PR |
-| `/ccpp:review` | 코드 리뷰 (difftastic 구조적 diff + gitleaks + ast-grep) |
-| `/ccpp:simplify` | 코드 단순화 (jscpd 중복 탐지 + ast-grep) |
-| `/ccpp:tdd` | 테스트 주도 개발 |
-| `/ccpp:build-fix` | 빌드 에러 수정 |
-| `/ccpp:handoff` | HANDOFF.md 세션 인계 |
-| `/ccpp:compact-guide` | 컨텍스트 관리 가이드 |
-| `/ccpp:techdebt` | 기술 부채 정리 |
-| `/ccpp:harness-diagnostics` | TTH 하네스 진단 및 디버깅 |
-| `/ccpp:eval` | 머스크 독립 평가 — ast-grep/gitleaks/scc 자동 스캔 + 4축 100점 채점 |
-| `/ccpp:harness-audit` | 하네스 건강도 진단 — 8차원 점수 + S~D 등급 |
+| `/my-cc-harness:plan` | 작업 계획 수립 |
+| `/my-cc-harness:spec` | SPEC 기반 개발 - 심층 인터뷰로 명세서 작성 |
+| `/my-cc-harness:spec-verify` | 명세서 기반 구현 검증 |
+| `/my-cc-harness:frontend` | 빅테크 스타일 UI 개발 |
+| `/my-cc-harness:verify` | 테스트, 린트, 빌드 + 순환참조/데드코드/시크릿/AI슬롭 검증 |
+| `/my-cc-harness:e2e-verify` | 피처 기반 E2E 테스트 검증 |
+| `/my-cc-harness:commit-push-pr` | 커밋 → 푸시 → PR |
+| `/my-cc-harness:review` | 코드 리뷰 (difftastic 구조적 diff + gitleaks + ast-grep) |
+| `/my-cc-harness:simplify` | 코드 단순화 (jscpd 중복 탐지 + ast-grep) |
+| `/my-cc-harness:tdd` | 테스트 주도 개발 |
+| `/my-cc-harness:build-fix` | 빌드 에러 수정 |
+| `/my-cc-harness:handoff` | HANDOFF.md 세션 인계 |
+| `/my-cc-harness:compact-guide` | 컨텍스트 관리 가이드 |
+| `/my-cc-harness:techdebt` | 기술 부채 정리 |
+| `/my-cc-harness:harness-diagnostics` | TTH 하네스 진단 및 디버깅 |
+| `/my-cc-harness:eval` | 머스크 독립 평가 — ast-grep/gitleaks/scc 자동 스캔 + 4축 100점 채점 |
+| `/my-cc-harness:harness-audit` | 하네스 건강도 진단 — 8차원 점수 + S~D 등급 |
 
 ### 문서화 스킬 (4개) — docs 스위트
 
@@ -568,10 +568,10 @@ CLAUDE.md의 Goal-Driven 원칙을 Claude Code 내장 `/goal`과 연결합니다
 
 | 스킬 | 용도 |
 |------|------|
-| `/ccpp:docs-architecture` | 아키텍처 구성도(C4 mermaid) + ARCHITECTURE.md 코드맵 + ADR(MADR) + ERD |
-| `/ccpp:docs-interfaces` | API 구성도 + OpenAPI 3.1/AsyncAPI 3.0 명세 + 시퀀스 흐름도 + API CHANGELOG |
-| `/ccpp:docs-manuals` | 사용자 매뉴얼(Diátaxis 4분면) + 운영자 매뉴얼/런북/배포 가이드/인시던트 플레이북 |
-| `/ccpp:docs-ci` | docs 검증 파이프라인 — 링크/OpenAPI lint·breaking/mermaid/신선도 검사 + CHANGELOG 자동화 |
+| `/my-cc-harness:docs-architecture` | 아키텍처 구성도(C4 mermaid) + ARCHITECTURE.md 코드맵 + ADR(MADR) + ERD |
+| `/my-cc-harness:docs-interfaces` | API 구성도 + OpenAPI 3.1/AsyncAPI 3.0 명세 + 시퀀스 흐름도 + API CHANGELOG |
+| `/my-cc-harness:docs-manuals` | 사용자 매뉴얼(Diátaxis 4분면) + 운영자 매뉴얼/런북/배포 가이드/인시던트 플레이북 |
+| `/my-cc-harness:docs-ci` | docs 검증 파이프라인 — 링크/OpenAPI lint·breaking/mermaid/신선도 검사 + CHANGELOG 자동화 |
 
 ### 기술 스킬 (10개)
 
@@ -592,17 +592,17 @@ CLAUDE.md의 Goal-Driven 원칙을 Claude Code 내장 `/goal`과 연결합니다
 
 | 스킬 | 용도 |
 |------|------|
-| `/ccpp:e2e-agent-browser` | agent-browser CLI로 E2E 테스트 자동화 |
-| `/ccpp:stitch-design-md` | Stitch 프로젝트 → DESIGN.md 생성 |
-| `/ccpp:stitch-enhance-prompt` | UI 아이디어 → Stitch 최적화 프롬프트 변환 |
-| `/ccpp:stitch-loop` | Stitch로 멀티 페이지 웹사이트 자율 생성 |
-| `/ccpp:stitch-react` | Stitch 스크린 → React 컴포넌트 변환 |
+| `/my-cc-harness:e2e-agent-browser` | agent-browser CLI로 E2E 테스트 자동화 |
+| `/my-cc-harness:stitch-design-md` | Stitch 프로젝트 → DESIGN.md 생성 |
+| `/my-cc-harness:stitch-enhance-prompt` | UI 아이디어 → Stitch 최적화 프롬프트 변환 |
+| `/my-cc-harness:stitch-loop` | Stitch로 멀티 페이지 웹사이트 자율 생성 |
+| `/my-cc-harness:stitch-react` | Stitch 스크린 → React 컴포넌트 변환 |
 
 ### 이미지 생성 스킬 (1개)
 
 | 스킬 | 용도 |
 |------|------|
-| `/ccpp:nano-banana` | Gemini로 이미지 생성/편집 (썸네일, 아이콘, 다이어그램 등) |
+| `/my-cc-harness:nano-banana` | Gemini로 이미지 생성/편집 (썸네일, 아이콘, 다이어그램 등) |
 
 ---
 
@@ -629,8 +629,8 @@ CLAUDE.md의 Goal-Driven 원칙을 Claude Code 내장 `/goal`과 연결합니다
 <summary><b>수동 설치 방법</b></summary>
 
 ```bash
-curl -fsSL https://github.com/jh941213/my-claude-code-asset/archive/main.tar.gz | tar -xz -C /tmp
-cp /tmp/my-claude-code-asset-main/agents/*.md ~/.claude/agents/
+curl -fsSL https://github.com/jh941213/my-cc-harness/archive/main.tar.gz | tar -xz -C /tmp
+cp /tmp/my-cc-harness-main/agents/*.md ~/.claude/agents/
 ```
 
 </details>
@@ -767,9 +767,9 @@ Long-Horizon 실행 패턴에서 자동 생성되는 파일의 템플릿입니�
 
 </div>
 
-| | Claude Code Power Pack | Codex CLI Power Pack |
+| | My CC Harness | Codex CLI Power Pack |
 |---|:---:|:---:|
-| **Skills** | 39개 (`/ccpp:skill`) | 33개 (`$skill`) |
+| **Skills** | 39개 (`/my-cc-harness:skill`) | 33개 (`$skill`) |
 | **Agents** | 12개 (서브에이전트) | AGENTS.md 통합 |
 | **Rules** | 8개 (YAML 조건부 로드) | AGENTS.md 통합 |
 | **Hooks** | settings.json 물리 차단 | config.toml |
@@ -799,6 +799,18 @@ curl -fsSL https://raw.githubusercontent.com/jh941213/my-codex-cli-asset/main/in
 ## 📋 Changelog
 
 <details open>
+<summary><b>v1.4.0 (2026-07-27) — 플러그인 정체성 재구성: ccpp → my-cc-harness</b></summary>
+
+**플러그인 rename (breaking, 플러그인 v1.2.0)**
+- 플러그인명 `ccpp` → `my-cc-harness`, 마켓플레이스명 `my-claude-code-asset` → `my-cc-harness` (레포명과 통일)
+- 스킬 호출 프리픽스 변경: `/ccpp:plan` → `/my-cc-harness:plan`
+- 설치 명령 변경: `claude plugin marketplace add jh941213/my-cc-harness` → `claude plugin install my-cc-harness@my-cc-harness`
+- homepage/repository/설치 URL 전부 새 레포 기준으로 교체 (install.sh clone 대상 포함)
+- 구 `ccpp` 플러그인 사용자는 제거 후 재설치: `claude plugin uninstall ccpp` → 위 설치 명령
+
+</details>
+
+<details>
 <summary><b>v1.3.0 (2026-07-27) — Opus 5 세대 최적화 + docs 스위트 + 하네스 자체 CI</b></summary>
 
 **Opus 5 프롬프트 현대화 (컨셉 유지, "unhobbling")**
@@ -1065,7 +1077,7 @@ curl -fsSL https://raw.githubusercontent.com/jh941213/my-codex-cli-asset/main/in
 <details>
 <summary><b>v0.4.0 (2026-02-24) — E2E 검증 + Worktree 지원</b></summary>
 
-- `/ccpp:e2e-verify` - 피처 기반 E2E 테스트 검증
+- `/my-cc-harness:e2e-verify` - 피처 기반 E2E 테스트 검증
 - 세션 초기화 시 Worktree 사용 여부 자동 질문
 - 병렬 에이전트 실행 규칙 추가
 - `langfuse` 스킬 제거

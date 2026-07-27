@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Claude Code Configuration Installer
-# https://github.com/jh941213/my-claude-code-asset
+# https://github.com/jh941213/my-cc-harness
 
 set -e
 
@@ -27,14 +27,14 @@ if [ -z "$LANG_CHOICE" ]; then
 fi
 
 if [ "$LANG_CHOICE" = "en" ]; then
-    echo "Starting Claude Code Power Pack installation (English)..."
+    echo "Starting My CC Harness installation (English)..."
 else
-    echo "Claude Code Power Pack 설치 시작..."
+    echo "My CC Harness 설치 시작..."
 fi
 
 # Clone to temp directory
 TEMP_DIR=$(mktemp -d)
-git clone --depth 1 https://github.com/jh941213/my-claude-code-asset.git "$TEMP_DIR"
+git clone --depth 1 https://github.com/jh941213/my-cc-harness.git "$TEMP_DIR"
 
 # Create ~/.claude directories
 mkdir -p ~/.claude/agents ~/.claude/skills ~/.claude/rules ~/.claude/commands ~/.claude/team-roles ~/.claude/hooks ~/.claude/scripts ~/.claude/templates ~/.claude/semgrep-rules
@@ -162,8 +162,8 @@ if [ "$LANG_CHOICE" = "en" ]; then
     echo "   /build-fix, /handoff, /compact-guide, /techdebt"
     echo ""
     echo "Plugin installation (alternative):"
-    echo "   claude plugin marketplace add jh941213/my-claude-code-asset"
-    echo "   claude plugin install ccpp@my-claude-code-asset"
+    echo "   claude plugin marketplace add jh941213/my-cc-harness"
+    echo "   claude plugin install my-cc-harness@my-cc-harness"
 else
     echo "설치 완료!"
     echo ""
@@ -191,7 +191,7 @@ else
     echo "   /build-fix, /handoff, /compact-guide, /techdebt"
     echo ""
     echo "플러그인 방식 설치 (권장):"
-    echo "   claude plugin marketplace add jh941213/my-claude-code-asset"
-    echo "   claude plugin install ccpp@my-claude-code-asset"
+    echo "   claude plugin marketplace add jh941213/my-cc-harness"
+    echo "   claude plugin install my-cc-harness@my-cc-harness"
 fi
 echo ""

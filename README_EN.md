@@ -2,11 +2,11 @@
 
 **🌐 English | [한국어](README.md)**
 
-# Claude Code Power Pack
+# My CC Harness
 
-<img src="assets/banner.png" alt="Claude Code Power Pack" width="720" />
+<img src="assets/banner.png" alt="My CC Harness" width="720" />
 
-[![Version](https://img.shields.io/badge/version-0.9.0-7C3AED.svg?style=for-the-badge)](https://github.com/jh941213/my-claude-code-asset)
+[![Version](https://img.shields.io/badge/version-0.9.0-7C3AED.svg?style=for-the-badge)](https://github.com/jh941213/my-cc-harness)
 [![License](https://img.shields.io/badge/license-MIT-E87C3E.svg?style=for-the-badge)](LICENSE)
 [![Skills](https://img.shields.io/badge/skills-33-blue.svg?style=for-the-badge)](#-skills-33)
 [![Agents](https://img.shields.io/badge/agents-11-green.svg?style=for-the-badge)](#-agents-11)
@@ -50,14 +50,14 @@
 ### Method 1: One-Click Full Installation (Recommended)
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/jh941213/my-claude-code-asset/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/jh941213/my-cc-harness/main/install.sh | bash
 ```
 
 ### Method 2: Plugin Installation (Skills Only)
 
 ```bash
-claude plugin marketplace add jh941213/my-claude-code-asset
-claude plugin install ccpp@my-claude-code-asset
+claude plugin marketplace add jh941213/my-cc-harness
+claude plugin install my-cc-harness@my-cc-harness
 ```
 
 > **Note**: The plugin system only supports **skills**. Agents, rules, and TTH require separate configuration.
@@ -66,7 +66,7 @@ claude plugin install ccpp@my-claude-code-asset
 
 ```
 Copy agents/, rules/, commands/, and CLAUDE.md from
-https://github.com/jh941213/my-claude-code-asset to my ~/.claude/ folder
+https://github.com/jh941213/my-cc-harness to my ~/.claude/ folder
 ```
 
 ### Installation Comparison
@@ -364,30 +364,30 @@ Elevate CLAUDE.md "suggestions" to settings.json "guarantees":
 
 | Skill | Purpose |
 |-------|---------|
-| `/ccpp:autodev` | Autonomous code experiment loop (autoresearch pattern) |
-| `/ccpp:autodev-parallel` | Parallel worktree experiment orchestrator |
+| `/my-cc-harness:autodev` | Autonomous code experiment loop (autoresearch pattern) |
+| `/my-cc-harness:autodev-parallel` | Parallel worktree experiment orchestrator |
 
 ### Workflow Skills (17)
 
 | Skill | Purpose |
 |-------|---------|
-| `/ccpp:plan` | Task planning |
-| `/ccpp:spec` | SPEC-based development - deep interview for specification writing |
-| `/ccpp:spec-verify` | Specification-based implementation verification |
-| `/ccpp:frontend` | Big-tech style UI development |
-| `/ccpp:verify` | Test, lint, build verification |
-| `/ccpp:e2e-verify` | Feature-based E2E test verification |
-| `/ccpp:commit-push-pr` | Commit → Push → PR |
-| `/ccpp:review` | Code review |
-| `/ccpp:simplify` | Code simplification |
-| `/ccpp:tdd` | Test-driven development |
-| `/ccpp:build-fix` | Build error fix |
-| `/ccpp:handoff` | HANDOFF.md session handover |
-| `/ccpp:compact-guide` | Context management guide |
-| `/ccpp:techdebt` | Technical debt cleanup |
-| `/ccpp:harness-diagnostics` | TTH harness diagnostics and debugging |
-| `/ccpp:eval` | Musk independent evaluation — ast-grep/gitleaks/scc auto-scan + 4-axis 100-point scoring |
-| `/ccpp:harness-audit` | Harness health audit — 8 dimensions + S~D grades |
+| `/my-cc-harness:plan` | Task planning |
+| `/my-cc-harness:spec` | SPEC-based development - deep interview for specification writing |
+| `/my-cc-harness:spec-verify` | Specification-based implementation verification |
+| `/my-cc-harness:frontend` | Big-tech style UI development |
+| `/my-cc-harness:verify` | Test, lint, build verification |
+| `/my-cc-harness:e2e-verify` | Feature-based E2E test verification |
+| `/my-cc-harness:commit-push-pr` | Commit → Push → PR |
+| `/my-cc-harness:review` | Code review |
+| `/my-cc-harness:simplify` | Code simplification |
+| `/my-cc-harness:tdd` | Test-driven development |
+| `/my-cc-harness:build-fix` | Build error fix |
+| `/my-cc-harness:handoff` | HANDOFF.md session handover |
+| `/my-cc-harness:compact-guide` | Context management guide |
+| `/my-cc-harness:techdebt` | Technical debt cleanup |
+| `/my-cc-harness:harness-diagnostics` | TTH harness diagnostics and debugging |
+| `/my-cc-harness:eval` | Musk independent evaluation — ast-grep/gitleaks/scc auto-scan + 4-axis 100-point scoring |
+| `/my-cc-harness:harness-audit` | Harness health audit — 8 dimensions + S~D grades |
 
 ### Documentation Skills (4) — docs suite
 
@@ -395,10 +395,10 @@ Elevate CLAUDE.md "suggestions" to settings.json "guarantees":
 
 | Skill | Purpose |
 |-------|---------|
-| `/ccpp:docs-architecture` | Architecture diagrams (C4 mermaid) + ARCHITECTURE.md codemap + ADRs (MADR) + ERD |
-| `/ccpp:docs-interfaces` | API topology + OpenAPI 3.1/AsyncAPI 3.0 specs + sequence flows + API CHANGELOG |
-| `/ccpp:docs-manuals` | User manual (Diátaxis quadrants) + operator manual/runbooks/deployment guide/incident playbook |
-| `/ccpp:docs-ci` | Docs validation pipeline — link/OpenAPI lint·breaking/mermaid/freshness checks + CHANGELOG automation |
+| `/my-cc-harness:docs-architecture` | Architecture diagrams (C4 mermaid) + ARCHITECTURE.md codemap + ADRs (MADR) + ERD |
+| `/my-cc-harness:docs-interfaces` | API topology + OpenAPI 3.1/AsyncAPI 3.0 specs + sequence flows + API CHANGELOG |
+| `/my-cc-harness:docs-manuals` | User manual (Diátaxis quadrants) + operator manual/runbooks/deployment guide/incident playbook |
+| `/my-cc-harness:docs-ci` | Docs validation pipeline — link/OpenAPI lint·breaking/mermaid/freshness checks + CHANGELOG automation |
 
 ### Technical Skills (10)
 
@@ -419,17 +419,17 @@ Elevate CLAUDE.md "suggestions" to settings.json "guarantees":
 
 | Skill | Purpose |
 |-------|---------|
-| `/ccpp:e2e-agent-browser` | E2E test automation with agent-browser CLI |
-| `/ccpp:stitch-design-md` | Stitch project → DESIGN.md generation |
-| `/ccpp:stitch-enhance-prompt` | UI idea → Stitch-optimized prompt transformation |
-| `/ccpp:stitch-loop` | Autonomous multi-page website generation with Stitch |
-| `/ccpp:stitch-react` | Stitch screens → React component conversion |
+| `/my-cc-harness:e2e-agent-browser` | E2E test automation with agent-browser CLI |
+| `/my-cc-harness:stitch-design-md` | Stitch project → DESIGN.md generation |
+| `/my-cc-harness:stitch-enhance-prompt` | UI idea → Stitch-optimized prompt transformation |
+| `/my-cc-harness:stitch-loop` | Autonomous multi-page website generation with Stitch |
+| `/my-cc-harness:stitch-react` | Stitch screens → React component conversion |
 
 ### Image Generation Skill (1)
 
 | Skill | Purpose |
 |-------|---------|
-| `/ccpp:nano-banana` | Image generation/editing with Gemini (thumbnails, icons, diagrams, etc.) |
+| `/my-cc-harness:nano-banana` | Image generation/editing with Gemini (thumbnails, icons, diagrams, etc.) |
 
 ---
 
@@ -455,8 +455,8 @@ Elevate CLAUDE.md "suggestions" to settings.json "guarantees":
 <summary><b>Manual Installation</b></summary>
 
 ```bash
-curl -fsSL https://github.com/jh941213/my-claude-code-asset/archive/main.tar.gz | tar -xz -C /tmp
-cp /tmp/my-claude-code-asset-main/agents/*.md ~/.claude/agents/
+curl -fsSL https://github.com/jh941213/my-cc-harness/archive/main.tar.gz | tar -xz -C /tmp
+cp /tmp/my-cc-harness-main/agents/*.md ~/.claude/agents/
 ```
 
 </details>
@@ -514,9 +514,9 @@ cp /tmp/my-claude-code-asset-main/agents/*.md ~/.claude/agents/
 
 </div>
 
-| | Claude Code Power Pack | Codex CLI Power Pack |
+| | My CC Harness | Codex CLI Power Pack |
 |---|:---:|:---:|
-| **Skills** | 39 (`/ccpp:skill`) | 33 (`$skill`) |
+| **Skills** | 39 (`/my-cc-harness:skill`) | 33 (`$skill`) |
 | **Agents** | 12 (subagents) | AGENTS.md integrated |
 | **Rules** | 8 (YAML conditional loading) | AGENTS.md integrated |
 | **Hooks** | settings.json physical block | config.toml |
@@ -546,6 +546,18 @@ curl -fsSL https://raw.githubusercontent.com/jh941213/my-codex-cli-asset/main/in
 ## 📋 Changelog
 
 <details open>
+<summary><b>v1.4.0 (2026-07-27) — Plugin identity rebuild: ccpp → my-cc-harness</b></summary>
+
+**Plugin rename (breaking, plugin v1.2.0)**
+- Plugin name `ccpp` → `my-cc-harness`, marketplace name `my-claude-code-asset` → `my-cc-harness` (unified with the repo name)
+- Skill invocation prefix: `/ccpp:plan` → `/my-cc-harness:plan`
+- Install commands: `claude plugin marketplace add jh941213/my-cc-harness` → `claude plugin install my-cc-harness@my-cc-harness`
+- homepage/repository/install URLs all point to the new repo (including the install.sh clone target)
+- Existing `ccpp` users: `claude plugin uninstall ccpp`, then reinstall with the commands above
+
+</details>
+
+<details>
 <summary><b>v1.3.0 (2026-07-27) — Opus 5 generation optimization + docs suite + harness self-CI</b></summary>
 
 **Opus 5 prompt modernization (concept preserved, "unhobbling")**
@@ -702,7 +714,7 @@ curl -fsSL https://raw.githubusercontent.com/jh941213/my-codex-cli-asset/main/in
 <details>
 <summary><b>v0.4.0 (2026-02-24) — E2E Verification + Worktree Support</b></summary>
 
-- `/ccpp:e2e-verify` - Feature-based E2E test verification
+- `/my-cc-harness:e2e-verify` - Feature-based E2E test verification
 - Auto-prompt for Worktree usage on session initialization
 - Added parallel agent execution rules
 - Removed `langfuse` skill
