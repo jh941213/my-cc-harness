@@ -1,4 +1,4 @@
-# 🎓 Understanding the Claude Code Power Pack
+# 🎓 Understanding the My CC Harness
 
 ## 📌 TL;DR
 > A **collection of skills, agents, and rules** that makes Claude Code smarter. Think of it like equipping a game character with new abilities!
@@ -44,13 +44,13 @@ This repository is an **all-in-one package** that installs **39 apps (skills)**,
 
 **Analogy:** Just like **apps** on your smartphone!
 
-The same way you open iMessage to send a message, you can use the `/ccpp:plan` skill to create a work plan.
+The same way you open iMessage to send a message, you can use the `/my-cc-harness:plan` skill to create a work plan.
 
 **In practice:**
 ```bash
-/ccpp:plan          # Create a work plan
-/ccpp:verify        # Run test/lint verification
-/ccpp:commit-push-pr  # Automate from commit to PR
+/my-cc-harness:plan          # Create a work plan
+/my-cc-harness:verify        # Run test/lint verification
+/my-cc-harness:commit-push-pr  # Automate from commit to PR
 ```
 
 **Why do you need this?**
@@ -122,9 +122,9 @@ When Claude writes code, it follows these rules to produce code with **consisten
 
 ```
 skills/
-├── plan/           # /ccpp:plan - Work planning
-├── verify/         # /ccpp:verify - Verification
-├── review/         # /ccpp:review - Code review
+├── plan/           # /my-cc-harness:plan - Work planning
+├── verify/         # /my-cc-harness:verify - Verification
+├── review/         # /my-cc-harness:review - Code review
 ├── react-patterns/ # React pattern reference
 ├── nano-banana/    # Image generation
 └── ... (39 total)
@@ -166,19 +166,19 @@ rules/
 ```
 User enters command → Claude Code loads skill → Executes as defined in skill → Outputs result
       👆                      👆                          👆                    👆
-  "/ccpp:plan"      skills/plan/SKILL.md          Planning logic         Plan generated
+  "/my-cc-harness:plan"      skills/plan/SKILL.md          Planning logic         Plan generated
 ```
 
 ### Plugin Installation Flow
 ```
-1. claude plugin marketplace add jh941213/my-claude-code-asset
+1. claude plugin marketplace add jh941213/my-cc-harness
    └→ Downloads repository info from GitHub
 
-2. claude plugin install ccpp@my-claude-code-asset
+2. claude plugin install my-cc-harness@my-cc-harness
    └→ All skills in the skills/ folder become available
 
 3. Restart Claude Code
-   └→ /ccpp:plan, /ccpp:verify, etc. are ready to use!
+   └→ /my-cc-harness:plan, /my-cc-harness:verify, etc. are ready to use!
 ```
 
 ---
@@ -189,7 +189,7 @@ User enters command → Claude Code loads skill → Executes as defined in skill
 
 ```bash
 # ❌ Installing just the plugin won't include agents and rules!
-claude plugin install ccpp@my-claude-code-asset
+claude plugin install my-cc-harness@my-cc-harness
 
 # ✅ If you need agents and rules too, copy them separately
 curl -fsSL https://raw.githubusercontent.com/.../install.sh | bash
@@ -211,11 +211,11 @@ claude plugin install ...
 
 ```bash
 # ❌ Trying to install directly will cause an error!
-claude plugin install ccpp@my-claude-code-asset
+claude plugin install my-cc-harness@my-cc-harness
 
 # ✅ You need to add the marketplace first
-claude plugin marketplace add jh941213/my-claude-code-asset
-claude plugin install ccpp@my-claude-code-asset
+claude plugin marketplace add jh941213/my-cc-harness
+claude plugin install my-cc-harness@my-cc-harness
 ```
 
 ---
@@ -223,11 +223,11 @@ claude plugin install ccpp@my-claude-code-asset
 ## 🎮 Try It Yourself
 
 ### Experiment 1: Check Available Skills
-In Claude Code, type `/` and then `ccpp`. You'll see a list of available skills!
+In Claude Code, type `/` and then `my-cc-harness`. You'll see a list of available skills!
 
 ### Experiment 2: Use a Simple Skill
 ```
-/ccpp:plan Build a login feature
+/my-cc-harness:plan Build a login feature
 ```
 → A plan is automatically generated!
 
@@ -239,7 +239,7 @@ In Claude Code, type `/` and then `ccpp`. You'll see a list of available skills!
 
 ### Experiment 4: Generate Images (nano-banana)
 ```
-/ccpp:nano-banana Create a login flow diagram
+/my-cc-harness:nano-banana Create a login flow diagram
 ```
 → A visual diagram is generated!
 

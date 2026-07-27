@@ -1,13 +1,13 @@
 {
-  "name": "ccpp",
-  "displayName": "Claude Code Power Pack",
+  "name": "my-cc-harness",
+  "displayName": "My CC Harness",
   "description": "Boris Cherny 팁 + 논문 기반 최적화 올인원 Claude Code 플러그인. 39개 스킬(docs 스위트 포함), 12개 에이전트, 3개 커맨드, Hooks 보장 시스템. Opus 5 세대 최적화.",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "author": {
     "name": "Community Contributors"
   },
-  "homepage": "https://github.com/jh941213/my-claude-code-asset",
-  "repository": "https://github.com/jh941213/my-claude-code-asset",
+  "homepage": "https://github.com/jh941213/my-cc-harness",
+  "repository": "https://github.com/jh941213/my-cc-harness",
   "license": "MIT",
   "keywords": [
     "boris-cherny",

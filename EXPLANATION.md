@@ -1,4 +1,4 @@
-# 🎓 Claude Code Power Pack 이해하기
+# 🎓 My CC Harness 이해하기
 
 ## 📌 한 줄 요약
 > Claude Code를 더 똑똑하게 만들어주는 **스킬, 에이전트, 규칙 모음집**이에요. 마치 게임 캐릭터에게 새로운 능력을 장착시켜주는 것처럼요!
@@ -44,13 +44,13 @@
 
 **비유:** 스마트폰의 **앱**과 같아요!
 
-카카오톡 앱을 열면 메시지를 보낼 수 있듯이, `/ccpp:plan` 스킬을 사용하면 작업 계획을 세울 수 있어요.
+카카오톡 앱을 열면 메시지를 보낼 수 있듯이, `/my-cc-harness:plan` 스킬을 사용하면 작업 계획을 세울 수 있어요.
 
 **실제 사용:**
 ```bash
-/ccpp:plan          # 작업 계획 세우기
-/ccpp:verify        # 테스트/린트 검증
-/ccpp:commit-push-pr  # 커밋부터 PR까지 자동화
+/my-cc-harness:plan          # 작업 계획 세우기
+/my-cc-harness:verify        # 테스트/린트 검증
+/my-cc-harness:commit-push-pr  # 커밋부터 PR까지 자동화
 ```
 
 **왜 필요해요?**
@@ -122,9 +122,9 @@ Claude가 코드를 짤 때 이 규칙을 따라서 **일관된 품질**의 코�
 
 ```
 skills/
-├── plan/           # /ccpp:plan - 작업 계획
-├── verify/         # /ccpp:verify - 검증
-├── review/         # /ccpp:review - 코드 리뷰
+├── plan/           # /my-cc-harness:plan - 작업 계획
+├── verify/         # /my-cc-harness:verify - 검증
+├── review/         # /my-cc-harness:review - 코드 리뷰
 ├── react-patterns/ # React 패턴 참조
 ├── nano-banana/    # 이미지 생성
 └── ... (29개)
@@ -166,19 +166,19 @@ rules/
 ```
 사용자 명령어 입력 → Claude Code가 스킬 로드 → 스킬에 정의된 대로 실행 → 결과 출력
       👆                    👆                        👆                👆
-  "/ccpp:plan"      skills/plan/SKILL.md       계획 수립 로직        계획서 생성
+  "/my-cc-harness:plan"      skills/plan/SKILL.md       계획 수립 로직        계획서 생성
 ```
 
 ### 플러그인 설치 흐름
 ```
-1. claude plugin marketplace add jh941213/my-claude-code-asset
+1. claude plugin marketplace add jh941213/my-cc-harness
    └→ GitHub에서 저장소 정보 다운로드
 
-2. claude plugin install ccpp@my-claude-code-asset
+2. claude plugin install my-cc-harness@my-cc-harness
    └→ skills/ 폴더의 모든 스킬이 사용 가능해짐
 
 3. Claude Code 재시작
-   └→ /ccpp:plan, /ccpp:verify 등 사용 가능!
+   └→ /my-cc-harness:plan, /my-cc-harness:verify 등 사용 가능!
 ```
 
 ---
@@ -189,7 +189,7 @@ rules/
 
 ```bash
 # ✅ 플러그인 설치로 skills + commands + agents + hooks까지 설치돼요 (v0.6.0+)
-claude plugin install ccpp@my-claude-code-asset
+claude plugin install my-cc-harness@my-cc-harness
 
 # ✅ rules, team-roles, templates, settings.json까지 전부 원하면 install.sh
 curl -fsSL https://raw.githubusercontent.com/.../install.sh | bash
@@ -197,7 +197,7 @@ curl -fsSL https://raw.githubusercontent.com/.../install.sh | bash
 
 **왜?** 현행 Claude Code 플러그인 시스템은 skills/commands/agents/hooks를 모두 배포할 수 있어요. 다만 rules, team-roles, templates, settings.json(권한/env)은 플러그인 범위 밖이라 전체 하네스를 원하면 install.sh를 쓰세요.
 
-**⚠️ 중복 주의**: install.sh로 settings.json에 hooks를 이미 등록했다면, 플러그인 설치 시 같은 hook이 두 번 실행될 수 있어요. 한쪽만 사용하세요 (플러그인 설치 후 `claude plugin disable ccpp` 또는 settings.json의 해당 hook 제거).
+**⚠️ 중복 주의**: install.sh로 settings.json에 hooks를 이미 등록했다면, 플러그인 설치 시 같은 hook이 두 번 실행될 수 있어요. 한쪽만 사용하세요 (플러그인 설치 후 `claude plugin disable my-cc-harness` 또는 settings.json의 해당 hook 제거).
 
 ### 실수 2: 명령어 오타
 
@@ -213,11 +213,11 @@ claude plugin install ...
 
 ```bash
 # ❌ 바로 설치하려고 하면 에러!
-claude plugin install ccpp@my-claude-code-asset
+claude plugin install my-cc-harness@my-cc-harness
 
 # ✅ 먼저 마켓플레이스 추가해야 해요
-claude plugin marketplace add jh941213/my-claude-code-asset
-claude plugin install ccpp@my-claude-code-asset
+claude plugin marketplace add jh941213/my-cc-harness
+claude plugin install my-cc-harness@my-cc-harness
 ```
 
 ---
@@ -225,11 +225,11 @@ claude plugin install ccpp@my-claude-code-asset
 ## 🎮 직접 실험해보기
 
 ### 실험 1: 스킬 목록 확인
-Claude Code에서 `/`를 입력하고 `ccpp`를 쳐보세요. 사용 가능한 스킬 목록이 나와요!
+Claude Code에서 `/`를 입력하고 `my-cc-harness`를 쳐보세요. 사용 가능한 스킬 목록이 나와요!
 
 ### 실험 2: 간단한 스킬 사용
 ```
-/ccpp:plan 로그인 기능 만들기
+/my-cc-harness:plan 로그인 기능 만들기
 ```
 → 자동으로 계획서가 만들어져요!
 
@@ -241,7 +241,7 @@ Claude Code에서 `/`를 입력하고 `ccpp`를 쳐보세요. 사용 가능한 �
 
 ### 실험 4: 이미지 생성 (nano-banana)
 ```
-/ccpp:nano-banana 로그인 플로우 다이어그램 만들어줘
+/my-cc-harness:nano-banana 로그인 플로우 다이어그램 만들어줘
 ```
 → 시각적인 다이어그램이 생성돼요!
 
