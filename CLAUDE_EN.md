@@ -15,6 +15,10 @@
 - **Scope Discipline**: Deliver exactly what was asked, at the intended scope. Don't quietly narrow or widen it. If a better approach exists, suggest it in one sentence and continue with the task as asked. Don't report completion before the whole task is done
 - **Goal-Driven**: Define success criteria over step-by-step instructions, verify with tests, and loop
 - **Design Before Code**: For creative work (adding features, changing behavior), settle the design via the `brainstorming` skill and get approval before implementing
+- **Research First**: Before designing a solution, study how established products and this codebase already solve the same problem. Adopt proven patterns instead of inventing approaches
+- **Delete Over Append**: Remove unused paths instead of stacking compat layers, fallbacks, or `_v2`s (teams shipping public APIs/SDKs should state the opposite in their project CLAUDE.md)
+- **Grow in Layers**: Start from the smallest end-to-end working version and add on top of what works. Never trade working code for unfinished complexity
+- **Existing Dependencies First**: Check installed dependencies before implementing or adding packages. Never claim "this library doesn't do that" without reading its docs/types
 
 ## Session Initialization
 
@@ -104,6 +108,12 @@ For 3+ step or multi-session work, use durable project memory.
 - Don't modify CLAUDE.md, rules/, agents/ files mid-session
 - Don't change /model or restart/add/remove MCP servers mid-session
 - If config changes are needed → /clear and start a new session
+
+### Operating the Context File
+**This file is a bias-correction prompt, not a knowledge store. Quality comes from density, not length.**
+- Never write what the agent can discover itself (directory layout, installed packages, code style) — explore, or route via auto-memory
+- When the same kind of correction is requested 3 times, promote that pattern from `tasks/lessons.md` into one line here
+- Quarterly, run harness-audit's A/B/C pruning: self-discoverable lines → delete, lines countering default behavior → keep, team-choice lines → confirm still current. Delete lines that no longer fire
 
 ## Search Tool Rules
 

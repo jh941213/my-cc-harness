@@ -98,3 +98,18 @@ The audit target is not a fixed skill list — scan the full set of skills actua
 1. [How to improve the lowest-scoring dimension]
 2. ...
 ```
+
+## Context-File Pruning (quarterly routine)
+
+CLAUDE.md is a bias-correction prompt, not a knowledge store — density is quality. Each quarter, classify every line:
+
+| Class | Criterion | Action |
+|---|---|---|
+| **A** | Info the agent can discover itself (layout, packages, style) | **Delete candidate** — give one-line evidence each |
+| **B** | Lines whose absence flips default behavior (delete, research, simplify, check deps) | **Keep** |
+| **C** | Team-divergent choices (backward compat, test rigor, logging) | **Keep, but ask the user if still current** |
+
+Additional checks:
+- Patterns corrected 3+ times in `tasks/lessons.md` → report as promotion candidates for a CLAUDE.md line
+- Lines that no longer fire after model generations change (the targeted tendency is gone) → delete candidates
+- Output the classification as a table; delete only after user approval
