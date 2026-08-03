@@ -5,6 +5,9 @@
 
 set -euo pipefail
 
+# jq 미설치 환경에서는 조용히 종료
+command -v jq >/dev/null 2>&1 || exit 0
+
 # stdin에서 hook 데이터 읽기
 INPUT=$(cat)
 

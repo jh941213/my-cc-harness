@@ -1,6 +1,6 @@
 ---
 name: e2e-verify
-description: "Feature-based E2E test writing and execution after development. Verifies actual user flows after /verify. Triggers on: e2e verification, e2e-verify, E2E testing, browser test execution. NOT for: unit tests, type checking, build verification."
+description: "API/CLI-level E2E test writing and execution after development, for E2E that needs no browser automation. Verifies actual user flows after /verify. Use the e2e-agent-browser skill when browser automation is needed. Triggers on: e2e verification, e2e-verify, E2E testing. NOT for: unit tests, type checking, build verification, browser-automation E2E."
 user-invocable: true
 disable-model-invocation: false
 allowed-tools: Read, Write, Edit, Bash, Grep, Glob, Task
@@ -32,7 +32,13 @@ cat package.json | grep -A 5 '"scripts"'
 
 # Run app (background)
 npm run dev &
-sleep 5  # Wait for app to be ready
+
+# Wait for app readiness via port polling (max 30 seconds) — no fixed sleep
+for i in $(seq 1 30); do
+  curl -sf http://localhost:3000 >/dev/null 2>&1 && break
+  sleep 1
+done
+curl -sf http://localhost:3000 >/dev/null 2>&1 || echo "FAIL: app not ready within 30 seconds"
 ```
 
 ### Step 3: Write E2E Tests

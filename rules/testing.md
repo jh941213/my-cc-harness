@@ -19,3 +19,4 @@ paths:
 - 새 코드: 80%+
 - 핵심 비즈니스 로직: 90%+
 - 유틸리티 함수: 100%
+- 커버리지 게이트는 `coverage/coverage-summary.json`이 없으면 생략된다 (verify-task-quality 훅 동작)

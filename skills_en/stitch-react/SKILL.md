@@ -29,7 +29,7 @@ This skill transforms Stitch's static HTML output into production-ready React co
 - Stitch MCP server access
 - Stitch project with generated screens
 - Node.js environment (React project)
-- `DESIGN.md` file (optional, improves token consistency)
+- `DESIGN.md` file (optional, improves token consistency. If missing, create it first with the `stitch-design-md` skill -- execution order: `stitch-design-md` → this skill)
 
 ## Conversion Workflow
 

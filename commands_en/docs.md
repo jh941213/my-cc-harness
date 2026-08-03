@@ -11,8 +11,8 @@ Input: $ARGUMENTS
 
 | Invocation | Target | Execution |
 |------------|--------|-----------|
-| `/docs` | Update code docs from recent changes | docs-writer agent |
-| `/docs code` | Code-level docs (api.md, components.md, utils.md, models.md) | docs-writer agent |
+| `/docs` | Code docs (recent changes)* | docs-writer agent |
+| `/docs code` | Code docs (full set)* | docs-writer agent |
 | `/docs arch` | Architecture diagrams + ARCHITECTURE.md + ADRs + ERD | **docs-architecture skill** |
 | `/docs api` | API topology + OpenAPI/AsyncAPI specs + API CHANGELOG | **docs-interfaces skill** |
 | `/docs manual` | User manual (Diátaxis quadrants) | **docs-manuals skill** |
@@ -20,6 +20,8 @@ Input: $ARGUMENTS
 | `/docs ci` | Install docs validation pipeline (links/OpenAPI/mermaid/freshness) | **docs-ci skill** |
 | `/docs sync` | Detect docs drift → refresh stale docs | sync procedure below |
 | `/docs all` | Generate the full documentation set | all procedure below |
+
+\* `/docs` (no args) and `/docs code` run the same docs-writer — no args updates incrementally from recent changes; `code` generates/updates the full code-level doc set (api.md, components.md, utils.md, models.md).
 
 ## `/docs sync` procedure (docs-code synchronization)
 

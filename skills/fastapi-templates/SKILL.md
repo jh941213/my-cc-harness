@@ -111,18 +111,17 @@ from app.api.v1.router import api_router
 app.include_router(api_router, prefix="/api/v1")
 
 # core/config.py
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 from functools import lru_cache
 
 class Settings(BaseSettings):
     """Application settings."""
+    model_config = SettingsConfigDict(env_file=".env")
+
     DATABASE_URL: str
     SECRET_KEY: str
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     API_V1_STR: str = "/api/v1"
-
-    class Config:
-        env_file = ".env"
 
 @lru_cache()
 def get_settings() -> Settings:
@@ -207,7 +206,7 @@ class BaseRepository(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         obj_in: CreateSchemaType
     ) -> ModelType:
         """Create new record."""
-        db_obj = self.model(**obj_in.dict())
+        db_obj = self.model(**obj_in.model_dump())
         db.add(db_obj)
         await db.flush()
         await db.refresh(db_obj)
@@ -220,7 +219,7 @@ class BaseRepository(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         obj_in: UpdateSchemaType
     ) -> ModelType:
         """Update record."""
-        update_data = obj_in.dict(exclude_unset=True)
+        update_data = obj_in.model_dump(exclude_unset=True)
         for field, value in update_data.items():
             setattr(db_obj, field, value)
         await db.flush()
@@ -286,7 +285,7 @@ class UserService:
             raise ValueError("Email already registered")
 
         # Hash password
-        user_in_dict = user_in.dict()
+        user_in_dict = user_in.model_dump()
         user_in_dict["hashed_password"] = get_password_hash(user_in_dict.pop("password"))
 
         # Create user
@@ -319,7 +318,7 @@ class UserService:
             return None
 
         if user_in.password:
-            user_in_dict = user_in.dict(exclude_unset=True)
+            user_in_dict = user_in.model_dump(exclude_unset=True)
             user_in_dict["hashed_password"] = get_password_hash(
                 user_in_dict.pop("password")
             )

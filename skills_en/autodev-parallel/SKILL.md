@@ -154,6 +154,7 @@ for round in 1..rounds:
 3. **Existing test protection**: Unconditionally discard if broken
 4. **Resource limits**: Do not exceed the parallel count
 5. **Cross-round synchronization**: Use previous round's best as the next round's base
+6. **TTH mutual exclusion**: Do not use concurrently with TTH (/tth) -- Stop hook loop conflict
 
 ## Leveraging Existing Agents (Optional)
 

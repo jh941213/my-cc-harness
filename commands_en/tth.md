@@ -163,6 +163,29 @@ Ralph Loop protocol must be followed (see below)
 
 ## Phase 3: Ralph Loop Execution
 
+### Stop Hook Integration
+
+TTH integrates with the `~/.claude/hooks/ralph-loop.sh` Stop Hook.
+After completing Phase 2, Satya initializes `.ralph-loop/state.json`:
+
+```bash
+mkdir -p .ralph-loop
+cat > .ralph-loop/state.json << 'STATE'
+{
+  "active": true,
+  "iteration": 0,
+  "max_iterations": 100,
+  "prompt": "TTH silo: process the next incomplete story. Read progress.txt and start.",
+  "completion_promise": "DONE",
+  "started_at": "{ISO time}",
+  "status": "running"
+}
+STATE
+```
+
+The Stop Hook automatically starts the next iteration when the session ends.
+Once all stories are complete, output `<promise>DONE</promise>` to terminate the loop.
+
 ### docs-writer Background Spawn
 
 Spawn docs-writer as a background sub-agent at the same time as Ralph Loop starts:

@@ -3,7 +3,7 @@ name: spec
 description: "SPEC-based development interview -- generates a detailed SPEC.md specification through in-depth questioning. Triggers on: spec, spec, specification, interview, feature design. NOT for: immediate implementation, simple fixes, code writing."
 user-invocable: true
 disable-model-invocation: true
-allowed-tools: Read, Write, Edit
+allowed-tools: Read, Write, Edit, AskUserQuestion
 ---
 
 # SPEC-Based Development - Interview

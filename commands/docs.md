@@ -11,8 +11,8 @@ argument-hint: "[code|arch|api|manual|ops|ci|sync|all]"
 
 | 호출 | 대상 | 실행 방법 |
 |------|------|----------|
-| `/docs` | 최근 변경 기준 코드 문서 갱신 | docs-writer 에이전트 |
-| `/docs code` | 코드 레벨 문서 (api.md, components.md, utils.md, models.md) | docs-writer 에이전트 |
+| `/docs` | 코드 문서 (최근 변경분)* | docs-writer 에이전트 |
+| `/docs code` | 코드 문서 (전체)* | docs-writer 에이전트 |
 | `/docs arch` | 아키텍처 구성도 + ARCHITECTURE.md + ADR + ERD | **docs-architecture 스킬** |
 | `/docs api` | API 구성도 + OpenAPI/AsyncAPI 명세 + API CHANGELOG | **docs-interfaces 스킬** |
 | `/docs manual` | 사용자 매뉴얼 (Diátaxis 4분면) | **docs-manuals 스킬** |
@@ -20,6 +20,8 @@ argument-hint: "[code|arch|api|manual|ops|ci|sync|all]"
 | `/docs ci` | docs 검증 파이프라인 설치 (링크/OpenAPI/mermaid/신선도) | **docs-ci 스킬** |
 | `/docs sync` | 문서 드리프트 감지 → stale 문서 갱신 | 아래 sync 절차 |
 | `/docs all` | 전체 문서 세트 일괄 생성 | 아래 all 절차 |
+
+\* `/docs`(무인자)와 `/docs code`는 동일한 docs-writer 실행 — 무인자는 최근 변경분만 증분 갱신, `code`는 코드 레벨 문서 전체(api.md, components.md, utils.md, models.md)를 생성/갱신.
 
 ## `/docs sync` 절차 (문서-코드 동기화)
 

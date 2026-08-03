@@ -30,7 +30,7 @@ Build Loop 패턴은 "바통" 시스템을 통해 지속적이고 자율적인 �
 **필수:**
 - Stitch MCP 서버 접근 권한
 - Stitch 프로젝트 (기존 또는 새로 생성)
-- `DESIGN.md` 파일 (없으면 `stitch-design-md` 스킬로 생성)
+- `DESIGN.md` 파일 (없으면 `stitch-design-md` 스킬로 먼저 생성 — 실행 순서: `stitch-design-md` → 이 스킬)
 - `SITE.md` 파일 (사이트 비전 및 로드맵 문서)
 
 **선택:**

@@ -19,6 +19,8 @@ globs: ["**/*"]
 | Semantic code exploration | mgrep | — |
 | Exact strings/regex | built-in Grep, Glob | — |
 
+If mgrep/Tavily/Exa MCP servers are not installed, fall back to built-in Grep/Glob (code exploration) and WebSearch/WebFetch (web).
+
 ## Error handling
 
 - Never ignore a tool error

@@ -14,6 +14,8 @@ allowed-tools: Read, Write, Bash, Edit, Glob
 
 Expert guide for building accessible, customizable UI components with shadcn/ui, Radix UI, and Tailwind CSS.
 
+> Snippet lookup: read official-ui-reference.md first (latest official docs dump, wider coverage incl. blocks/chart); fall back to ui-reference.md (older excerpt) only for snippets not found there.
+
 ## Table of Contents
 
 - [When to Use](#when-to-use)

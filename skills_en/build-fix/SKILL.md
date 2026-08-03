@@ -32,6 +32,7 @@ Incrementally fixes TypeScript and build errors.
    - Suggest and apply fix
    - Re-run build
    - Confirm error is resolved
+   - If one attempt does not resolve it, switch to the systematic-debugging skill's 4 phases (no repeated guess-based fixes)
 
 4. **Stop Conditions**
    - When a fix causes new errors

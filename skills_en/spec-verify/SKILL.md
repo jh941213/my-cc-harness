@@ -4,7 +4,7 @@ description: "Verifies implementation completeness against SPEC.md specification
 user-invocable: true
 disable-model-invocation: true
 context: fork
-allowed-tools: Read, Grep, Glob
+allowed-tools: Read, Grep, Glob, Write, Task, AskUserQuestion
 ---
 
 # SPEC Verification
@@ -36,8 +36,10 @@ prompt: |
   3. Specifically identify any missing items
   4. Include improvement suggestions
 
-  Write results to SPEC-REVIEW.md file.
+  Return the results as text. (The Explore sub-agent is read-only — do not write files.)
 ```
+
+The sub-agent returns its results as text; writing the returned results to the SPEC-REVIEW.md file is done by this skill (the parent).
 
 ### Step 2: Address Feedback
 

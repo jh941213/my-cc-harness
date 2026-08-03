@@ -1,6 +1,6 @@
 ---
 name: techdebt
-description: Technical debt cleanup - inspects and cleans up duplicate code, console.log, unused imports, etc. Recommended before ending a session. Triggers on "technical debt", "techdebt", "console.log cleanup", "unused imports", "code cleanup". Anti-triggers: "add new features", "refactoring".
+description: Technical debt cleanup - inspects and cleans up duplicate code, console.log, unused imports, etc. Recommended before ending a session. Triggers on "technical debt", "techdebt", "console.log cleanup", "unused imports", "dead code cleanup", "dependency cleanup", "tech debt scan". Anti-triggers: "add new features", "refactoring", "code simplification (simplify)".
 disable-model-invocation: true
 allowed-tools: Read, Grep, Glob, Edit, Bash
 user-invocable: true

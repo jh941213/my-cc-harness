@@ -22,7 +22,7 @@ $ARGUMENTS
 | 소규모 프로젝트(<10k LOC) | README 아키텍처 섹션 + 컨텍스트 다이어그램 1개면 충분 — 과잉 문서화 금지 |
 | 기여자가 길을 잃는 규모 | `docs/ARCHITECTURE.md` (코드맵) |
 | 시스템 경계/외부 연동 설명 필요 | C4 Context + Container 다이어그램 |
-| 중요한 설계 결정 발생 | `docs/design-docs/ADR-NNNN-[제목].md` (MADR) |
+| 중요한 설계 결정 발생 | `docs/design-docs/ADR-NNN-[제목].md` (MADR) |
 | 영속 데이터 구조 변경 | `docs/ARCHITECTURE.md` 내 ERD 섹션 또는 `docs/data-model.md` |
 | 대규모/규제 시스템 | arc42 12섹션 문서 (명시 요청 시에만) |
 
@@ -56,10 +56,10 @@ mermaid 문법과 관례는 `references/mermaid-conventions.md` 참조 (C4Contex
 
 ## ADR (MADR 형식)
 
-- 위치: `docs/design-docs/ADR-NNNN-[kebab-제목].md`, `docs/design-docs/index.md`에 인덱스 갱신
+- 위치: `docs/design-docs/ADR-NNN-[kebab-제목].md` — 번호는 3자리 제로패딩 (예: `ADR-001-use-postgres.md`), `docs/design-docs/index.md`에 인덱스 갱신
 - 템플릿: `templates/adr.md` (기본은 minimal — Context/Decision/Consequences. 논쟁적 결정만 full MADR)
 - **ADR은 불변** — 뒤집을 땐 새 ADR로 supersede, 기존 문서 수정 금지
-- status: proposed → accepted → superseded by ADR-NNNN
+- status: proposed → accepted → superseded by ADR-NNN
 
 ## 실행 절차
 

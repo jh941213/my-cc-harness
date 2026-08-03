@@ -16,11 +16,11 @@ allowed-tools: Bash, Read
 ## Step 1: 사전 검증
 
 ```bash
-# 현재 브랜치 확인 — main/master면 STOP
+# 현재 브랜치 확인 — main/master면 직접 커밋 금지
 BRANCH=$(git branch --show-current)
 if [ "$BRANCH" = "main" ] || [ "$BRANCH" = "master" ]; then
   echo "BLOCKED: main/master 브랜치에서 직접 커밋 금지"
-  exit 1
+  echo "대안: feature 브랜치 생성 후 진행 → git checkout -b feature/<작업명>"
 fi
 
 # 상태 확인
@@ -29,19 +29,21 @@ git diff --stat
 git log --oneline -5
 ```
 
-## Step 2: 위험 파일 확인
+main/master에서 실행된 경우: 사용자에게 브랜치명을 확인한 뒤 `git checkout -b feature/<작업명>`으로 feature 브랜치를 생성하고 다음 단계로 진행한다.
 
-```bash
-# 민감한 파일이 staged 되었는지 검사
-git diff --cached --name-only | grep -E '\.(env|pem|key|credentials)' && echo "WARNING: 민감 파일 포함!"
-```
-
-## Step 3: 커밋
+## Step 2: 스테이징 + 위험 파일 확인
 
 ```bash
 # 변경 파일 선택적 staging (git add -A 지양)
 git add [specific-files]
 
+# 민감한 파일이 staged 되었는지 검사 (git add 직후에 실행해야 유효)
+git diff --cached --name-only | grep -E '\.(env|pem|key|credentials)' && echo "WARNING: 민감 파일 포함! 커밋 전 unstage 필요"
+```
+
+## Step 3: 커밋
+
+```bash
 # 커밋 메시지 작성
 git commit -m "$(cat <<'EOF'
 [타입] 제목 (50자 이내)

@@ -29,7 +29,7 @@ Stitch에서 생성된 HTML 스크린을 재사용 가능한 React 컴포넌트 
 - Stitch MCP 서버 접근 권한
 - Stitch 프로젝트와 생성된 스크린
 - Node.js 환경 (React 프로젝트)
-- `DESIGN.md` 파일 (선택, 토큰 일관성 향상)
+- `DESIGN.md` 파일 (선택, 토큰 일관성 향상. 없으면 `stitch-design-md` 스킬로 먼저 생성 — 실행 순서: `stitch-design-md` → 이 스킬)
 
 ## 변환 워크플로우
 

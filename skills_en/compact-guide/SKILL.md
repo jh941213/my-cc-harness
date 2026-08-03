@@ -11,7 +11,7 @@ Context is like fresh milk. **The problem is freshness, not volume** — pollute
 
 ## Core Principles (the 1M-context era)
 
-- Don't count remaining tokens — **auto-compact manages the threshold**
+- Don't count remaining tokens — **auto-compact manages the threshold** — manual /compact **only when a work unit ends**
 - Manual intervention is **signal-based**, not number-based:
 
 | Signal | Action |
@@ -19,7 +19,7 @@ Context is like fresh milk. **The problem is freshness, not volume** — pollute
 | A work unit (milestone/story) just finished | /compact — start the next unit clean |
 | The work topic changes entirely | /handoff → /clear — new session |
 | Repeating the same mistakes, forgetting earlier decisions, illogical replies | Pollution signal — /handoff → /clear (compact doesn't wash pollution out) |
-| Right after long exploration/log output | Consider /compact before the next task |
+| Right after long exploration/log output | /compact if a work unit is ending; otherwise leave it to auto-compact |
 
 - Never shrink or rush work out of worry about remaining context — keep going
 
@@ -55,17 +55,17 @@ Topic switch or pollution signal
 Read HANDOFF.md in new session
 ```
 
-## Context Management from a Cache Perspective
+## Context Management from a Cost Perspective
 
 ### Why /compact is advantageous
-- System prompt + tool definition prefix cache is preserved
-- Only conversation messages are summarized, so cache hits are possible every turn
-- Significantly lower cost than /clear
+- Work context (progress, decisions) is preserved as a summary, so nothing needs rebuilding
+- Retains important information while reducing tokens only, so workflow is not interrupted
+- Lower restart cost than /clear
 
 ### Hidden cost of /clear
-- Invalidates the entire prefix cache (system prompt + tools + CLAUDE.md + rules/ all recomputed)
+- Conversation-context rebuild cost — progress, decisions, and exploration results must be rebuilt from scratch
 - Additional tokens generated when loading HANDOFF.md
-- Cache warmup needed from the next API call
+- Implicit context not captured in HANDOFF.md is lost
 
 ### Decision rule
 - **On cost alone**: /compact > /clear

@@ -1,6 +1,6 @@
 ---
 name: e2e-verify
-description: "개발 완료 후 피처 기반 E2E 테스트 작성 및 실행. /verify 이후 실제 사용자 플로우를 검증합니다. Triggers on: e2e 검증, e2e-verify, E2E 테스트, 브라우저 테스트 실행. NOT for: 유닛 테스트, 타입체크, 빌드 검증."
+description: "개발 완료 후 브라우저 자동화가 필요 없는 API/CLI 레벨 E2E 테스트 작성 및 실행. /verify 이후 실제 사용자 플로우를 검증합니다. 브라우저 자동화가 필요하면 e2e-agent-browser 스킬 사용. Triggers on: e2e 검증, e2e-verify, E2E 테스트. NOT for: 유닛 테스트, 타입체크, 빌드 검증, 브라우저 자동화 E2E."
 user-invocable: true
 disable-model-invocation: false
 allowed-tools: Read, Write, Edit, Bash, Grep, Glob
@@ -32,7 +32,13 @@ cat package.json | grep -A 5 '"scripts"'
 
 # 앱 실행 (백그라운드)
 npm run dev &
-sleep 5  # 앱 준비 대기
+
+# 포트 폴링으로 앱 준비 대기 (최대 30초) — 고정 sleep 금지
+for i in $(seq 1 30); do
+  curl -sf http://localhost:3000 >/dev/null 2>&1 && break
+  sleep 1
+done
+curl -sf http://localhost:3000 >/dev/null 2>&1 || echo "FAIL: 30초 내 앱이 준비되지 않음"
 ```
 
 ### 3단계: E2E 테스트 작성

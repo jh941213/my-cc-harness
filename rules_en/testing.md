@@ -19,3 +19,4 @@ paths:
 - New code: 80%+
 - Core business logic: 90%+
 - Utility functions: 100%
+- The coverage gate is skipped when `coverage/coverage-summary.json` is absent (verify-task-quality hook behavior)

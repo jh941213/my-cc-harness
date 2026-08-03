@@ -4,16 +4,16 @@
 #
 # 동작 원리:
 #   1. .ralph-loop/state.json이 존재하고 active=true이면 루프 계속
-#   2. 완료 프로미스(<promise>DONE</promise>)가 트랜스크립트에 있으면 종료
+#   2. 완료 프로미스(<promise>...</promise>)가 트랜스크립트의 assistant 메시지에 있으면 종료
+#      (전체 grep 금지 — 주입 프롬프트/문서 본문의 리터럴 태그 오탐 방지)
 #   3. max_iterations 초과 시 종료
-#   4. 그 외: inject_prompt로 다음 반복 시작
+#   4. 그 외: 연속 프롬프트 전문을 reason에 실어 계속 (Stop 훅 스키마상 reason만 전달됨)
 #
 # 입력: stdin으로 JSON (session_id, transcript_path, cwd 등)
-# 출력: stdout으로 JSON (decision, inject_prompt 등)
+# 출력: stdout으로 JSON (decision, reason)
 
 set -uo pipefail
 
-# stdin에서 hook input 읽기
 INPUT=$(cat)
 
 HOOK_VARS=$(echo "$INPUT" | python3 -c "
@@ -37,43 +37,52 @@ if [ ! -f "$STATE_FILE" ]; then
   exit 0
 fi
 
-# 상태를 한 번에 읽기 (환경변수로 경로 전달 — 경로 인젝션 방지)
-STATE_VARS=$(RALPH_STATE_FILE="$STATE_FILE" python3 -c "
-import json, os
-f = os.environ['RALPH_STATE_FILE']
-s = json.load(open(f))
-print(s.get('active', False))
-print(s.get('iteration', 0))
-print(s.get('max_iterations', 100))
-print(s.get('prompt', ''))
-print(s.get('completion_promise', 'DONE'))
-" 2>/dev/null) || {
-  echo '{"decision":"approve"}'
-  exit 0
-}
+# 필드별 jq 파싱 — 멀티라인 prompt에도 안전 (sed 줄 단위 파싱 금지)
+ACTIVE=$(jq -r '.active // false' "$STATE_FILE" 2>/dev/null) || ACTIVE="false"
+ITERATION=$(jq -r '.iteration // 0' "$STATE_FILE" 2>/dev/null) || ITERATION=0
+MAX_ITER=$(jq -r '.max_iterations // 100' "$STATE_FILE" 2>/dev/null) || MAX_ITER=100
+PROMPT=$(jq -r '.prompt // ""' "$STATE_FILE" 2>/dev/null) || PROMPT=""
+COMPLETION=$(jq -r '.completion_promise // "DONE"' "$STATE_FILE" 2>/dev/null) || COMPLETION="DONE"
 
-ACTIVE=$(echo "$STATE_VARS" | sed -n '1p')
-ITERATION=$(echo "$STATE_VARS" | sed -n '2p')
-MAX_ITER=$(echo "$STATE_VARS" | sed -n '3p')
-PROMPT=$(echo "$STATE_VARS" | sed -n '4p')
-COMPLETION=$(echo "$STATE_VARS" | sed -n '5p')
-
-if [ "$ACTIVE" != "True" ]; then
+if [ "$ACTIVE" != "true" ]; then
   echo '{"decision":"approve"}'
   exit 0
 fi
 
-# 완료 프로미스 감지 (트랜스크립트에서)
+# 완료 프로미스 감지 — 트랜스크립트 JSONL에서 assistant 메시지 텍스트만 검사
 PROMISE_FOUND=false
 if [ -n "$TRANSCRIPT_PATH" ] && [ -f "$TRANSCRIPT_PATH" ]; then
-  if grep -q "<promise>${COMPLETION}</promise>" "$TRANSCRIPT_PATH" 2>/dev/null; then
+  if RALPH_T="$TRANSCRIPT_PATH" RALPH_TAG="<promise>${COMPLETION}</promise>" python3 -c "
+import json, os, sys
+tag = os.environ['RALPH_TAG']
+found = False
+with open(os.environ['RALPH_T']) as f:
+    for line in f:
+        line = line.strip()
+        if not line:
+            continue
+        try:
+            d = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        m = d.get('message') if isinstance(d.get('message'), dict) else d
+        role = d.get('type') or m.get('role')
+        if role != 'assistant':
+            continue
+        c = m.get('content', '')
+        if isinstance(c, list):
+            c = ''.join(x.get('text', '') for x in c if isinstance(x, dict))
+        if tag in str(c):
+            found = True
+            break
+sys.exit(0 if found else 1)
+" 2>/dev/null; then
     PROMISE_FOUND=true
   fi
 fi
 
 # 종료 조건 체크
 if [ "$PROMISE_FOUND" = "true" ]; then
-  # 완료 — 상태 비활성화
   RALPH_STATE_FILE="$STATE_FILE" python3 -c "
 import json, os, datetime
 f = os.environ['RALPH_STATE_FILE']
@@ -88,7 +97,6 @@ json.dump(s, open(f, 'w'), indent=2, ensure_ascii=False)
 fi
 
 if [ "$ITERATION" -ge "$MAX_ITER" ]; then
-  # 최대 반복 초과 — 상태 비활성화
   RALPH_STATE_FILE="$STATE_FILE" python3 -c "
 import json, os, datetime
 f = os.environ['RALPH_STATE_FILE']
@@ -159,7 +167,6 @@ try:
     data = json.load(open(f))
     running = {k: v for k,v in data.get('teammates',{}).items() if v.get('status')=='running'}
     if running:
-        # name 필드가 있으면 이름 사용, 없으면 agent_id 사용
         labels = [v.get('name', k) for k,v in running.items()]
         names = ', '.join(labels)
         print(f'\n⚡ 활성 팀원: {names} — SendMessage(to=이름)로 재사용. 새 Agent() 금지.')
@@ -171,7 +178,7 @@ except (json.JSONDecodeError, OSError, KeyError):
   TEAMMATE_INSTRUCTION="$TEAMMATE_INFO"
 fi
 
-# 연속 프롬프트 주입
+# 연속 프롬프트 — Stop 훅 스키마상 Claude에게 전달되는 것은 reason뿐이므로 전문을 reason에 싣는다
 CONTINUATION="[Ralph Loop ${NEW_ITER}/${MAX_ITER}] ${PROMPT}${TEAMMATE_INSTRUCTION}${DOCS_INSTRUCTION}
 완료 시 <promise>${COMPLETION}</promise> 출력."
 
@@ -185,4 +192,4 @@ with open(os.environ['RALPH_TMP']) as f:
 " 2>/dev/null || echo "\"Continue\"")
 rm -f "$PROMPT_TMP"
 
-echo "{\"decision\":\"block\",\"reason\":\"Ralph Loop 계속\",\"inject_prompt\":${ESCAPED_PROMPT}}"
+echo "{\"decision\":\"block\",\"reason\":${ESCAPED_PROMPT}}"

@@ -35,7 +35,7 @@ $ARGUMENTS
 |---|------|----------|
 | 1 | **Agent Entry Point** | CLAUDE.md/AGENTS.md 존재 + 명확한 에이전트 진입점 |
 | 2 | **Map, Not Manual** | 문서가 "지도"인가 vs "매뉴얼"인가 (포인터, 계층 구조) |
-| 3 | **Invariant Enforcement** | 도구가 실수를 자동 차단하는가 (hooks, linters, CI) |
+| 3 | **Invariant Enforcement** | 도구가 실수를 자동 차단하는가 (settings.json에 등록된 훅 전수, linters, CI) |
 | 4 | **Convention Over Configuration** | 명시적 규칙 파일 존재 (rules/, .eslintrc, prettier 등) |
 | 5 | **Progressive Disclosure** | 정보 계층화 (CLAUDE.md → rules/ → docs/ → 코드) |
 | 6 | **Layered Architecture** | 의존성 방향 단방향, 레이어 분리 |
@@ -80,6 +80,7 @@ $ARGUMENTS
    - 파일/디렉토리 존재 여부 (Glob)
    - 설정 파일 내용 분석 (Read)
    - 패턴 검색 (Grep)
+   - 훅 점검은 settings.json에 등록된 훅 전수 대상 — 단, `notchi-hook.sh`는 선택(알림용)이므로 미설치여도 감점하지 않음
 2. 원칙별 점수 산정 (0-8)
 3. 종합 보너스 산정 (0-4):
    - 원칙 간 시너지 (예: hooks + rules + docs 3개 모두 있으면 +2)

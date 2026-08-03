@@ -8,6 +8,8 @@ user-invocable: false
 
 Build production-ready design systems with Tailwind CSS, including design tokens, component variants, responsive patterns, and accessibility.
 
+> 본 가이드는 Tailwind v3 문법 기준 (v4는 CSS-first 설정 등 차이 있음)
+
 ## When to Use This Skill
 
 - Creating a component library with Tailwind

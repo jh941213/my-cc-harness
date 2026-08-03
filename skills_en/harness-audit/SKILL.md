@@ -24,6 +24,8 @@ Diagnoses the overall health of a Claude Code harness across 8 dimensions.
 - 2: 6-15 + trigger/anti-trigger definitions
 - 3: 16+ + domain classification + eval skill included
 
+The audit target is not a fixed skill list — scan the full set of skills actually present in the `skills/` directory.
+
 ### 3. Agents architecture (0-3)
 - 0: no agents
 - 1: 1-3 (basic)

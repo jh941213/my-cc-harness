@@ -19,6 +19,8 @@ globs: ["**/*"]
 | 시맨틱 코드 탐색 | mgrep | — |
 | 정확한 문자열/정규식 | built-in Grep, Glob | — |
 
+mgrep/Tavily/Exa MCP 미설치 환경에서는 built-in Grep/Glob(코드 탐색)·WebSearch/WebFetch(웹)로 폴백한다.
+
 ## 에러 메시지 처리
 
 - 도구가 에러를 반환하면 **절대 무시하지 않는다**

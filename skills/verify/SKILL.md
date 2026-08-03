@@ -8,6 +8,9 @@ allowed-tools: Read, Bash, Grep, Edit
 
 # 코드 검증
 
+> TaskCompleted 훅(`verify-task-quality.sh`)이 자동 실행하는 검증과 동일합니다.
+> 훅 미발동 상황(수동 검증 요청, 훅 미설치 환경)에서 이 스킬을 사용하세요.
+
 작업 완료 후 코드를 검증합니다. 순서대로 실행하며, 각 단계 통과 후 다음으로 진행.
 
 ## Step 1: 프로젝트 감지

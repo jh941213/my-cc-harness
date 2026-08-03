@@ -1,202 +1,187 @@
 ---
 name: autodev
 description: >
-  Autonomous code experimentation loop. An AI agent modifies code, validates, and iteratively keeps or discards changes for autonomous improvement.
-  Applies Karpathy's autoresearch pattern to general software development.
-  Triggers: "autodev", "autonomous development", "autonomous experimentation", "run overnight", "experiment loop", "auto optimization"
+  Ralph Loop based autonomous development loop. A Stop Hook intercepts session termination and completes PRD items one by one with automatic commits.
+  Triggers: "autodev", "autonomous development", "run overnight", "ralph loop", "auto development"
   Anti-triggers: "implement it yourself", "do it once", "manual"
 user-invocable: true
 disable-model-invocation: false
 allowed-tools: Read, Write, Edit, Bash, Grep, Glob, Agent
 ---
 
-# AutoDeveloper -- Autonomous Code Experimentation Loop
+# AutoDev — Ralph Loop Autonomous Development
 
-Autoresearch pattern: modify code, validate, keep/discard, repeat.
-While the human sleeps, the agent autonomously performs dozens of experiments.
+Stop Hook based autonomous development loop. Completes PRD/checklist items one by one with automatic commits.
+Leave it running overnight and a PR is waiting when you arrive at work.
+
+> Note: this is a separate mechanism from Claude Code's **built-in** `/goal` (session-scoped completion-condition loop). For a single simple completion condition use the built-in /goal; when you need PRD-based multi-item work, quality gates, or team-member reuse, use this skill (autodev).
+
+## Core Principle
+
+```
+Session start → Read PRD → Process next item → Commit → Session end
+                                                    ↓
+                                            Stop Hook detects
+                                                    ↓
+                                        Done? → Yes → Exit
+                                          ↓ No
+                                   inject_prompt → New session starts
+                                                    ↓
+                                              Read PRD → ...
+```
 
 ## Phase 0: Configuration Collection
 
-Confirm the following with the user (only ask about missing items):
+Confirm with the user (only ask about missing items):
 
 ```yaml
-goal: "What to achieve"                # e.g., "Reduce API response time by 50%"
-scope: ["Modifiable file patterns"]    # e.g., ["src/api/**", "src/utils/**"]
-metric: "Evaluation command"           # e.g., "npm test" or "npm run bench"
-budget: 20                             # Maximum number of experiments (default 20)
-mode: "single"                         # single | parallel (default single)
+goal: "What to achieve"                # e.g., "Complete all items in PRD.md"
+prd: "Path to PRD or checklist file"   # e.g., "PRD.md" or "tasks/todo.md"
+scope: ["Modifiable file patterns"]    # e.g., ["src/**", "tests/**"]
+verify: "Verification command"         # e.g., "npm test" (can be auto-detected)
+max_iterations: 100                    # Maximum iterations (default 100) — do not set above 50 without user confirmation
+completion_promise: "DONE"             # Completion signal (default "DONE")
+mode: "continue"                       # continue | reset (default continue)
 ```
 
-### Automatic Metric Detection
+### verify auto-detection
 
-If the user does not provide a metric, analyze the project and auto-configure:
-1. `package.json` -> `npm test` or `vitest run` or `jest`
-2. `pyproject.toml` -> `pytest`
-3. `Makefile` -> `make test`
-4. If a benchmark script exists -> suggest that command
+If the user did not provide verify:
+1. `package.json` → `npm test` or `vitest run`
+2. `pyproject.toml` → `pytest`
+3. `Makefile` → `make test`
+4. None → `echo "no verify command"`
 
-## Phase 1: Establish Baseline
-
-Record the current state before starting experiments:
+## Phase 1: Loop Initialization
 
 ```bash
-# 1. Create autodev branch from current branch
+# 1. Create autodev branch
 git checkout -b autodev/$(date +%Y%m%d-%H%M)
 
-# 2. Run baseline verification
-{metric_command} > .autodev/baseline.log 2>&1
+# 2. Create .ralph-loop/ state directory
+mkdir -p .ralph-loop
 
-# 3. Extract baseline score
-bash ~/.claude/hooks/autodev-judge.sh
+# 3. Initialize state file
+cat > .ralph-loop/state.json << 'STATE'
+{
+  "active": true,
+  "iteration": 0,
+  "max_iterations": {max_iterations},
+  "prompt": "{goal}",
+  "completion_promise": "{completion_promise}",
+  "prd_path": "{prd}",
+  "verify_command": "{verify}",
+  "started_at": "{ISO time}",
+  "status": "running"
+}
+STATE
 
-# 4. Initialize results.tsv
-echo -e "experiment\tcommit\tscore\tstatus\tdescription" > .autodev/results.tsv
+# 4. Add .ralph-loop/ to .gitignore
+echo ".ralph-loop/" >> .gitignore
+
+# 5. Baseline verification
+{verify} 2>&1 | tee .ralph-loop/baseline.log
 ```
 
-### .autodev/ Directory Structure
+## Phase 2: Iteration Execution (every session)
+
+Procedure performed in each session (iteration):
 
 ```
-.autodev/
-  results.tsv      # Experiment result log (autoresearch's results.tsv)
-  baseline.log     # Baseline execution log
-  run.log          # Current experiment execution log
-  ideas.md         # List of ideas to try
-```
+1. READ PRD
+   - Read the {prd} file
+   - Select the first incomplete item ([ ])
 
-Add `.autodev/` to `.gitignore`.
+2. PLAN
+   - Minimal change plan to implement the selected item
+   - Only files within scope may be modified
 
-## Phase 2: Idea Generation
+3. IMPLEMENT
+   - Modify code according to the plan
+   - Never modify files outside scope
 
-Read files within scope and create a list of improvement ideas aligned with the goal.
+4. VERIFY
+   - Run {verify}
+   - On failure, attempt build-fix once
+   - After 2 failures, roll back changes (git checkout -- .)
 
-Record in `.autodev/ideas.md`:
-
-```markdown
-# Experiment Ideas
-
-## Pending
-- [ ] Idea 1: Description
-- [ ] Idea 2: Description
-...
-
-## Completed
-- [x] Idea N: Description -> keep (score: 85)
-- [x] Idea M: Description -> discard (score: 40)
-```
-
-When ideas run out:
-1. Try combining existing kept changes
-2. Re-read scope files and find new angles
-3. Try simplifying kept code
-
-## Phase 3: Experiment Loop (LOOP)
-
-**NEVER STOP**: Do not stop until the budget is exhausted. Do not ask questions.
-
-```
-LOOP (experiment = 1 to budget):
-
-  1. SNAPSHOT
-     git_snapshot=$(git rev-parse HEAD)
-
-  2. MODIFY
-     - Select the next idea from ideas.md
-     - Only modify files within scope
-     - Do not modify files outside scope
-
-  3. COMMIT
+5. COMMIT
+   - On success:
      git add -A
-     git commit -m "[autodev] exp-{N}: {description}"
+     git commit -m "[autodev] {item summary}"
+   - Check off the item as [x] in the PRD
 
-  4. VERIFY
-     {metric_command} > .autodev/run.log 2>&1
-     EXIT_CODE=$?
-
-  5. SCORE
-     bash ~/.claude/hooks/autodev-judge.sh
-     SCORE=$(cat .autodev-score)
-
-  6. JUDGE
-     if SCORE == -999:
-       # CRASH -- attempt recovery
-       Apply build-fix skill once
-       Re-run -> if still failing, DISCARD
-     elif SCORE > BEST_SCORE:
-       # KEEP -- advance branch
-       BEST_SCORE = SCORE
-       STATUS = "keep"
-     else:
-       # DISCARD -- rollback
-       git reset --hard $git_snapshot
-       STATUS = "discard"
-
-  7. LOG
-     Append one line to results.tsv:
-     {experiment}\t{commit}\t{SCORE}\t{STATUS}\t{description}
-
-     Update ideas.md (check mark + result)
-
-  8. CONTINUE
-     Proceed to next idea
+6. CHECK COMPLETION
+   - Are there incomplete items left in the PRD?
+   - Yes → End the session naturally (Stop Hook starts the next iteration)
+   - No → All items complete!
+     Output <promise>{completion_promise}</promise>
+     → Stop Hook detects it and terminates the loop
 ```
 
-## Scoring Function (Score Calculation)
+## Phase 3: Completion Report
 
-`~/.claude/hooks/autodev-judge.sh` calculates the score.
-Scoring criteria:
-
-| Condition | Score |
-|-----------|-------|
-| Build failure | -999 (immediate discard) |
-| Existing tests broken | -999 (immediate discard) |
-| All tests pass | +100 |
-| New tests passing | +10/each |
-| Zero type errors | +50 |
-| Zero lint errors | +20 |
-| Performance improvement (if applicable) | +200 |
-| Reduced lines of code | +0.1/line (simplicity bonus) |
-
-## Phase 4: Completion Report
-
-When budget is exhausted or goal is achieved:
+When the loop ends (completed or max_iterations reached):
 
 ```markdown
-# AutoDev Experiment Report
+# AutoDev Completion Report
 
 ## Summary
-- Total experiments: {N}
-- Keep: {K} / Discard: {D} / Crash: {C}
-- Baseline score: {baseline}
-- Final score: {best}
-- Improvement: {improvement}%
+- Total iterations: {N}
+- Completed items: {K}/{total}
+- Baseline → Final: verification passing
+- Status: {completed | max_iterations_reached}
 
-## Kept Experiments
-| # | Description | Score Change |
-|---|-------------|-------------|
-| 3 | Added cache layer | 45 -> 85 |
-| 7 | Query batching | 85 -> 120 |
+## Completed Items
+| # | Item | Commit |
+|---|------|--------|
+| 1 | Implement API endpoint | abc1234 |
+| 2 | Add authentication | def5678 |
 
-## Final Branch
-autodev/{tag} -- ready to merge into main
+## Incomplete Items (if any)
+- [ ] Item N: reason
 
-## Detailed Log
-See .autodev/results.tsv
+## Branch
+autodev/{tag} — ready to merge into main
 ```
 
-## Safety Measures
+## Safeguards
 
-1. **No modifications outside scope**: Only modify files/directories specified in scope
-2. **Existing test protection**: Unconditionally discard if existing tests break
-3. **Crash recovery limit**: Only one build-fix attempt. Give up after 2+ failures
-4. **Git safety**: All experiments only on autodev/ branches. Never touch main
-5. **.autodev/ not tracked**: Added to .gitignore
+1. **No modifications outside scope**: only modify files/directories specified in scope
+2. **Protect existing tests**: roll back changes when verify fails
+3. **Crash recovery limit**: build-fix only once. Skip the item after 2 failures
+4. **Git safety**: work only on the autodev/ branch. Never touch main
+5. **max_iterations**: prevents infinite loops (default 100. Do not set above 50 without user confirmation)
+6. **Cost awareness**: each iteration incurs token cost. Set the iteration count reasonably
+
+## Stop Hook Behavior
+
+`~/.claude/hooks/ralph-loop.sh` runs on session termination:
+
+- If `active` in `.ralph-loop/state.json` is `true`, start the next iteration
+- Terminate the loop when `<promise>DONE</promise>` is detected in the transcript
+- Terminate the loop when `iteration >= max_iterations`
+- Do nothing if there is no state or `active: false`
+
+## Manual Control
+
+```bash
+# Stop the loop
+python3 -c "import json; s=json.load(open('.ralph-loop/state.json')); s['active']=False; json.dump(s,open('.ralph-loop/state.json','w'))"
+
+# Check state
+cat .ralph-loop/state.json
+
+# Resume the loop
+python3 -c "import json; s=json.load(open('.ralph-loop/state.json')); s['active']=True; json.dump(s,open('.ralph-loop/state.json','w'))"
+```
 
 ## Leveraging Existing Skills
 
-| Situation | Skill Used |
-|-----------|------------|
+| Situation | Skill to use |
+|-----------|--------------|
 | Recovery on build failure | `build-fix` |
-| Code cleanup after keep | `simplify` |
-| Test-based experimentation | `tdd` |
-| Experiment idea generation | `plan` (planner agent) |
+| Code cleanup after commit | `simplify` |
+| Test-driven implementation | `tdd` |
+| Item implementation planning | `plan` |
 | Final verification | `verify` |

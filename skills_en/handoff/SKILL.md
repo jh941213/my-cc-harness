@@ -16,6 +16,8 @@ In a new session, just reading this file lets you immediately continue the work.
 
 ## Content to Generate
 
+If `tasks/context.md` exists, merge its content (goal/decisions/next steps) instead of writing it again.
+
 ```markdown
 # Work Handoff Document
 

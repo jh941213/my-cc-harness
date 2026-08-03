@@ -72,6 +72,7 @@ gemini -y -m gemini-3.1-flash-image-preview \
 - 프로젝트에 `assets/` 디렉토리가 있으면 그곳에 저장
 - 없으면 현재 디렉토리에 저장
 - 파일명은 용도에 맞게 (예: `hero.png`, `thumbnail.png`, `logo.png`)
+- 전용 출력 디렉토리 `nanobanana-output/`을 사용하는 경우 `.gitignore`에 추가 권장
 
 ### Step 2: 프롬프트 최적화
 좋은 프롬프트 구조:

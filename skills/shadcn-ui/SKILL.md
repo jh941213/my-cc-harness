@@ -14,6 +14,8 @@ allowed-tools: Read, Write, Bash, Edit, Glob
 
 Expert guide for building accessible, customizable UI components with shadcn/ui, Radix UI, and Tailwind CSS.
 
+> 스니펫 조회: 기본은 official-ui-reference.md(공식 문서 최신 덤프, blocks·chart 등 범위 넓음)를 읽고, 거기 없는 스니펫만 ui-reference.md(구버전 발췌)에서 보조 조회한다.
+
 ## Table of Contents
 
 - [When to Use](#when-to-use)

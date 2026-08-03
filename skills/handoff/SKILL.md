@@ -16,6 +16,8 @@ allowed-tools: Read, Write, Bash
 
 ## 생성할 내용
 
+`tasks/context.md`가 있으면 그 내용(목표/결정/다음단계)을 병합하고 중복 작성하지 않는다.
+
 ```markdown
 # 작업 인계 문서
 

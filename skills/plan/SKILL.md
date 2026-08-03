@@ -1,7 +1,7 @@
 ---
 name: plan
 description: |
-  복잡한 작업 전 계획 수립. Plan 모드에서 사용하거나 자동 활성화.
+  복잡한 작업(3단계 이상 구현 또는 아키텍처 결정 포함) 전 계획 수립. Plan 모드에서 사용하거나 자동 활성화.
   트리거: "계획", "플랜", "어떻게 구현", "설계", "아키텍처 결정"
   안티-트리거: "바로 구현해", "간단한 수정", "마이크로 수정"
 user-invocable: true
@@ -91,5 +91,7 @@ allowed-tools: Read, Write, Edit, Grep, Glob
 
 ## 계획 확정 후
 1. 사용자 승인 대기
-2. 승인 시 CHECKPOINT.md 생성 (3단계 이상일 때)
-3. 실수 발생 시 즉시 STOP → re-plan (밀어붙이지 않기)
+2. 계획을 `docs/execute-plans/`에 저장 — `~/.claude/templates/execute-plan.md.template` 형식 사용
+3. 승인 시 CHECKPOINT.md 생성 (3단계 이상일 때)
+4. 3단계 이상 계획이면 교차 모델 검토(`~/.claude/rules/cross-model-verification.md`) 수행
+5. 실수 발생 시 즉시 STOP → re-plan (밀어붙이지 않기)

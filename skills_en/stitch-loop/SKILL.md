@@ -30,7 +30,7 @@ Each iteration:
 **Required:**
 - Stitch MCP server access
 - Stitch project (existing or newly created)
-- `DESIGN.md` file (if not available, create with `stitch-design-md` skill)
+- `DESIGN.md` file (if missing, create it first with the `stitch-design-md` skill -- execution order: `stitch-design-md` → this skill)
 - `SITE.md` file (site vision and roadmap document)
 
 **Optional:**

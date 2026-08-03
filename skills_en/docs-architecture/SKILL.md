@@ -22,7 +22,7 @@ $ARGUMENTS
 | Small project (<10k LOC) | README architecture section + 1 context diagram — no over-documentation |
 | Contributors get lost | `docs/ARCHITECTURE.md` (codemap) |
 | System boundaries/external integrations need explaining | C4 Context + Container diagrams |
-| Significant design decision made | `docs/design-docs/ADR-NNNN-[title].md` (MADR) |
+| Significant design decision made | `docs/design-docs/ADR-NNN-[title].md` (MADR) |
 | Persistent data structure changed | ERD section in `docs/ARCHITECTURE.md` or `docs/data-model.md` |
 | Large/regulated system | arc42 12-section document (only on explicit request) |
 
@@ -56,10 +56,10 @@ Key conventions:
 
 ## ADRs (MADR format)
 
-- Location: `docs/design-docs/ADR-NNNN-[kebab-title].md`; update the index in `docs/design-docs/index.md`
+- Location: `docs/design-docs/ADR-NNN-[kebab-title].md` — numbers are zero-padded 3 digits (e.g., `ADR-001-use-postgres.md`); update the index in `docs/design-docs/index.md`
 - Template: `templates/adr.md` (default is minimal — Context/Decision/Consequences; full MADR only for contested decisions)
 - **ADRs are immutable** — to reverse one, supersede with a new ADR; never rewrite
-- status: proposed → accepted → superseded by ADR-NNNN
+- status: proposed → accepted → superseded by ADR-NNN
 
 ## Procedure
 

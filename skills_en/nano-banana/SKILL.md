@@ -93,6 +93,7 @@ config=types.GenerateContentConfig(
 - If the project has an `assets/` directory, save there
 - Otherwise save to current directory
 - Name files appropriately (e.g., `hero.png`, `thumbnail.png`, `logo.png`)
+- If using a dedicated `nanobanana-output/` output directory, adding it to `.gitignore` is recommended
 
 ### Step 2: Load API Key
 ```python

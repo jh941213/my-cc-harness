@@ -35,7 +35,7 @@ Each principle scores 0-8, total 100 (12 x 8 = 96, remaining 4 points as overall
 |---|-----------|-------------|
 | 1 | **Agent Entry Point** | CLAUDE.md/AGENTS.md existence + clear agent entry point |
 | 2 | **Map, Not Manual** | Is documentation a "map" vs "manual"? (pointers, hierarchy) |
-| 3 | **Invariant Enforcement** | Do tools auto-block mistakes? (hooks, linters, CI) |
+| 3 | **Invariant Enforcement** | Do tools auto-block mistakes? (all hooks registered in settings.json, linters, CI) |
 | 4 | **Convention Over Configuration** | Explicit rule files exist (rules/, .eslintrc, prettier, etc.) |
 | 5 | **Progressive Disclosure** | Information layering (CLAUDE.md -> rules/ -> docs/ -> code) |
 | 6 | **Layered Architecture** | Unidirectional dependencies, layer separation |
@@ -80,6 +80,7 @@ Each principle scores 0-8, total 100 (12 x 8 = 96, remaining 4 points as overall
    - File/directory existence (Glob)
    - Configuration file content analysis (Read)
    - Pattern search (Grep)
+   - Hook checks cover all hooks registered in settings.json — however, `notchi-hook.sh` is optional (notification-only), so its absence is not penalized
 2. Score each principle (0-8)
 3. Calculate overall bonus (0-4):
    - Synergy between principles (e.g., hooks + rules + docs all present: +2)

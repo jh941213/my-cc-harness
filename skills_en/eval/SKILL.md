@@ -10,6 +10,8 @@ allowed-tools: Read, Bash, Grep, Glob
 
 Spawns an Evaluator agent separated from the Generator (implementer) for independent assessment.
 
+**How to evaluate with a separate model**: run via the gemini CLI (if installed) or in a separate new session. If neither is possible, run an independent subagent that does not reference the generation context, even within the same session.
+
 ## Process
 
 ### Step 1: Spawn the Evaluator agent

@@ -1,6 +1,6 @@
 ---
 name: brainstorming
-description: Use before any creative work - adding features, creating components, or changing behavior. Locks down intent, requirements, and design through dialogue before implementation
+description: Use before any creative work - adding features, creating components, or changing behavior. Locks down intent, requirements, and design through dialogue before implementation (for large features that need an in-depth interview, use /spec)
 ---
 
 # Brainstorming (design before code)

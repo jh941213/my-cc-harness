@@ -10,6 +10,8 @@ allowed-tools: Read, Bash, Grep, Glob
 
 Generator(구현자)와 분리된 Evaluator 에이전트를 스폰하여 산출물을 독립 평가합니다.
 
+**별도 모델로 평가 실행 방법**: gemini CLI(설치되어 있으면) 또는 별도 새 세션에서 실행한다. 둘 다 불가하면 같은 세션이라도 생성 컨텍스트를 참조하지 않는 독립 서브에이전트로 실행한다.
+
 ## 실행 프로세스
 
 ### Step 1: Evaluator 에이전트 스폰

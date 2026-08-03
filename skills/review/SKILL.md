@@ -24,6 +24,8 @@ Codex 플러그인으로 1차 리뷰를 실행한다:
 Codex 리뷰 결과를 수신한 후, Step 1로 진행하여 Claude 관점에서 2차 리뷰를 수행한다.
 두 리뷰 결과를 종합하여 최종 보고서에 병합한다.
 
+**폴백**: codex 플러그인이 설치되어 있지 않으면 Step 0을 건너뛰고 Step 1로 진행한다. 없는 Codex 결과를 지어내지 말 것 — 이 경우 최종 보고서의 Codex 섹션에 "미실행(플러그인 미설치)"으로 명시한다.
+
 ## Step 1: 변경사항 수집
 ```bash
 # 기본 브랜치 자동 감지
@@ -118,6 +120,8 @@ GIT_EXTERNAL_DIFF=difft git diff ${BASE}...HEAD 2>/dev/null || git diff ${BASE}.
 - **재작업** — CRITICAL 1건 이상
 ```
 
+리뷰 결과를 전달받는 측의 대응 규칙은 `~/.claude/rules/code-review-reception.md` 참조 (리뷰 수신 측 규칙).
+
 ## Step 4: 듀얼 리뷰 종합
 
 최종 보고서에 다음 섹션을 추가:
@@ -135,12 +139,15 @@ GIT_EXTERNAL_DIFF=difft git diff ${BASE}...HEAD 2>/dev/null || git diff ${BASE}.
 
 ## Step 5: 구조 분석 (자동)
 ```bash
+# 셸 상태는 bash 호출 간 유지되지 않음 — BASE를 이 블록에서 재정의
+BASE=$(git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's@^refs/remotes/origin/@@' || echo "main")
+
 # 순환참조 검사 (JS/TS)
 npx madge --circular --extensions ts,tsx src/ 2>/dev/null
 
 # AI 슬롭 패턴 (ast-grep)
 sg --pattern 'console.log($$$)' --lang ts 2>/dev/null | head -10
-sg --pattern 'as any' --lang ts 2>/dev/null | head -10
+sg --pattern '$A as any' --lang ts 2>/dev/null | head -10
 
 # 시크릿 스캔 (gitleaks)
 gitleaks detect --source . --no-git -v 2>&1 | head -20

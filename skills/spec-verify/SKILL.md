@@ -4,7 +4,7 @@ description: "SPEC.md 명세서 대비 구현 완료도를 검증합니다. Trig
 user-invocable: true
 disable-model-invocation: true
 context: fork
-allowed-tools: Read, Grep, Glob
+allowed-tools: Read, Grep, Glob, Write, Task, AskUserQuestion
 ---
 
 # SPEC 검증
@@ -36,8 +36,10 @@ prompt: |
   3. 누락된 항목이 있으면 구체적으로 명시
   4. 개선 제안 사항 포함
 
-  결과를 SPEC-REVIEW.md 파일로 작성하세요.
+  결과를 텍스트로 반환하세요. (Explore 서브에이전트는 읽기 전용 — 파일 작성 금지)
 ```
+
+서브에이전트는 결과를 텍스트로 반환하고, 반환된 결과를 SPEC-REVIEW.md 파일로 작성하는 것은 본 스킬(부모)이 수행합니다.
 
 ### 2단계: 피드백 반영
 

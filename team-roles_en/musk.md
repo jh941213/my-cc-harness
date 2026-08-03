@@ -57,6 +57,8 @@ May NOT modify:
 | 65-84 | ⚠️ CONDITIONAL | Fix listed items, re-evaluate (once) |
 | 0-64 | ❌ FAIL | Return to implementer + concrete failure list |
 
+> Stop immediately on failure. However, for quality-gate failures the default is fix and retry.
+
 ## Ralph Loop Protocol
 
 Evaluation follows the Ralph Loop too:

@@ -55,8 +55,8 @@ review_max_age_days: 90
 1. **프로젝트 진단**: 어떤 문서/명세가 존재하나 (`docs/`, `openapi.*`, mermaid 블록, docs 사이트 생성기)
 2. 존재하는 것에 맞는 검사만 선택 — OpenAPI 없는 프로젝트에 spectral 게이트 넣지 않기
 3. `docs/docs.yaml` 생성/갱신 (기존 문서 스캔해서 covers 초안 작성 — 사용자가 다듬을 수 있게 주석 포함)
-4. `scripts/check-docs-freshness.sh` 생성 (템플릿: `templates/check-docs-freshness.sh`)
-5. `.github/workflows/docs-ci.yml` 생성 (템플릿: `templates/docs-ci.yml`에서 해당 프로젝트에 필요한 잡만)
+4. `{project}/scripts/check-docs-freshness.sh` 생성 — 템플릿 `templates/check-docs-freshness.sh`를 대상 프로젝트의 `{project}/scripts/`로 복사
+5. `.github/workflows/docs-ci.yml` 생성 (템플릿: `templates/docs-ci.yml`에서 해당 프로젝트에 필요한 잡만) — 트리거 브랜치가 `main` 고정이므로 브랜치 전략에 맞게 조정 (develop 운용 시 추가)
 6. 로컬에서 1회 실행해 결과 확인 후 보고: `bash scripts/check-docs-freshness.sh`
 
 ## 하네스 연동 (이 플러그인의 다른 컴포넌트와)

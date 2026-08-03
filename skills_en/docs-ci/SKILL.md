@@ -55,8 +55,8 @@ review_max_age_days: 90
 1. **Diagnose the project**: which docs/specs exist (`docs/`, `openapi.*`, mermaid blocks, docs site generator)
 2. Install only checks that match what exists — no spectral gate for a project without OpenAPI
 3. Create/update `docs/docs.yaml` (scan existing docs to draft `covers` — include comments so users can refine)
-4. Create `scripts/check-docs-freshness.sh` (template: `templates/check-docs-freshness.sh`)
-5. Create `.github/workflows/docs-ci.yml` (only the needed jobs from `templates/docs-ci.yml`)
+4. Create `{project}/scripts/check-docs-freshness.sh` — copy the template `templates/check-docs-freshness.sh` into the target project's `{project}/scripts/`
+5. Create `.github/workflows/docs-ci.yml` (only the needed jobs from `templates/docs-ci.yml`) — the trigger branch is fixed to `main`, so adjust to the branching strategy (add `develop` if it is in use)
 6. Run once locally and report: `bash scripts/check-docs-freshness.sh`
 
 ## Harness integration (with this plugin's other components)

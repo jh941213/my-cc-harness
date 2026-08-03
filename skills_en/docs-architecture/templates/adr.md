@@ -4,12 +4,12 @@
 
 ```markdown
 ---
-status: accepted        # proposed | accepted | superseded by ADR-NNNN
+status: accepted        # proposed | accepted | superseded by ADR-NNN
 date: {YYYY-MM-DD}
 decision-makers: [{name}]
 ---
 
-# ADR-{NNNN}: {the decision in one sentence}
+# ADR-{NNN}: {the decision in one sentence}
 
 ## Context
 {What problem/constraint forced a decision. 2-5 sentences}
@@ -34,7 +34,7 @@ consulted: [{who gave input}]
 informed: [{who was told}]
 ---
 
-# ADR-{NNNN}: {title}
+# ADR-{NNN}: {title}
 
 ## Context and Problem Statement
 {problem definition}
@@ -74,5 +74,5 @@ Chosen: **{option}** — {reason summary}
 Add one line to `docs/design-docs/index.md`:
 
 ```markdown
-| ADR-{NNNN} | {title} | {status} | {date} |
+| ADR-{NNN} | {title} | {status} | {date} |
 ```

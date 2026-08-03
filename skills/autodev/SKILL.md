@@ -14,6 +14,8 @@ allowed-tools: Read, Write, Edit, Bash, Grep, Glob, Agent
 Stop Hook 기반 자율 개발 루프. PRD/체크리스트의 항목을 하나씩 완료하고 자동 커밋한다.
 밤새 돌려놓으면 출근 시 PR이 올라와 있다.
 
+> 참고: Claude Code **내장** `/goal`(세션 범위 완료 조건 루프)과는 별개 메커니즘이다. 간단한 완료 조건 하나면 내장 /goal, PRD 기반 다항목·품질 게이트·팀원 재사용이 필요하면 이 스킬(autodev)을 사용한다.
+
 ## 핵심 원리
 
 ```
@@ -37,7 +39,7 @@ goal: "무엇을 달성할 것인가"           # 예: "PRD.md의 모든 항목 
 prd: "PRD 또는 체크리스트 파일 경로"    # 예: "PRD.md" 또는 "tasks/todo.md"
 scope: ["수정 가능한 파일 패턴"]        # 예: ["src/**", "tests/**"]
 verify: "검증 명령어"                  # 예: "npm test" (자동 감지 가능)
-max_iterations: 100                   # 최대 반복 수 (기본 100)
+max_iterations: 100                   # 최대 반복 수 (기본 100) — 사용자 확인 없이 50 초과 설정 금지
 completion_promise: "DONE"            # 완료 시그널 (기본 "DONE")
 mode: "continue"                      # continue | reset (기본 continue)
 ```
@@ -149,7 +151,7 @@ autodev/{tag} — main 머지 준비 완료
 2. **기존 테스트 보호**: verify 실패 시 변경 롤백
 3. **crash 복구 제한**: build-fix 1회만. 2회 실패 시 해당 항목 스킵
 4. **git 안전**: autodev/ 브랜치에서만 작업. main 절대 안 건드림
-5. **max_iterations**: 무한 루프 방지 (기본 100)
+5. **max_iterations**: 무한 루프 방지 (기본 100. 사용자 확인 없이 50 초과 설정 금지)
 6. **비용 인식**: 각 반복은 토큰 비용 발생. 반복 수를 합리적으로 설정
 
 ## Stop Hook 동작

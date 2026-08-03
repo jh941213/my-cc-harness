@@ -4,12 +4,12 @@
 
 ```markdown
 ---
-status: accepted        # proposed | accepted | superseded by ADR-NNNN
+status: accepted        # proposed | accepted | superseded by ADR-NNN
 date: {YYYY-MM-DD}
 decision-makers: [{이름}]
 ---
 
-# ADR-{NNNN}: {결정을 한 문장으로}
+# ADR-{NNN}: {결정을 한 문장으로}
 
 ## Context
 {어떤 문제/제약 때문에 결정이 필요했나. 2-5문장}
@@ -34,7 +34,7 @@ consulted: [{의견 준 사람/에이전트}]
 informed: [{공유 대상}]
 ---
 
-# ADR-{NNNN}: {제목}
+# ADR-{NNN}: {제목}
 
 ## Context and Problem Statement
 {문제 정의}
@@ -74,5 +74,5 @@ informed: [{공유 대상}]
 `docs/design-docs/index.md`에 한 줄 추가:
 
 ```markdown
-| ADR-{NNNN} | {제목} | {status} | {date} |
+| ADR-{NNN} | {제목} | {status} | {date} |
 ```

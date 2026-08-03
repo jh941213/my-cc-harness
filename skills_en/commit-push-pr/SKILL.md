@@ -39,6 +39,6 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 Types: feat, fix, docs, style, refactor, test, chore
 
 ## Precautions
-- Do not run on main/master branch
+- Do not commit directly on main/master — create a feature branch (`git checkout -b feature/<task-name>`) and proceed there instead
 - Do not commit files containing sensitive information
-- Check for .env, credentials files
+- Check staged files for sensitive files right after `git add` (before that the check is always empty): `git diff --cached --name-only | grep -E '\.(env|pem|key|credentials)'`
