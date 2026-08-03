@@ -1,7 +1,7 @@
 #!/bin/bash
 # docs-sync.sh — TaskCompleted hook: 스토리 완료 시 docs 동기화 큐에 기록
 # TTH 병렬 작업 중 팀원이 스토리를 완료하면 .docs-queue에 변경사항을 기록한다.
-# ralph-loop.sh가 다음 반복 시 이 큐를 읽어 docs-writer 트리거를 inject_prompt에 포함.
+# ralph-loop.sh가 다음 반복 시 이 큐를 읽어 docs-writer 트리거를 연속 프롬프트(reason)에 포함.
 
 set -euo pipefail
 
