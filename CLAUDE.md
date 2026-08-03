@@ -139,7 +139,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 | 스크립트 | `~/.claude/scripts/` | sarif-to-jsonl.py, validate-harness.sh |
 | 에이전트 역할 | `~/.claude/agents/` | code-reviewer, architect, planner, docs-writer 등 |
 | 스킬 워크플로우 | `~/.claude/skills/` | plan, spec, verify, docs-* 문서화 스위트, brainstorming, systematic-debugging, auto-memory 등 |
-| TTH 팀 역할 | `~/.claude/team-roles/` | satya, pichai, jensen, tim-cook, zuckerberg, bezos |
+| TTH 팀 역할 | `~/.claude/team-roles/` | satya, pichai, jensen, tim-cook, zuckerberg, bezos, musk |
 | 프로젝트 지식 | `{project}/docs/` | ARCHITECTURE.md, api/, manuals/, ops/, design-docs/(ADR), QUALITY_SCORE.md |
 | 세션 학습 | `{project}/tasks/lessons.md` | 작업별 교훈 (훅 강제, 세션 시작 시 자동 주입) |
 | 작업별 메모리 | `{project}/memory/` | INDEX.md 로드 조건 기반 선택 로드 (auto-memory 스킬) |

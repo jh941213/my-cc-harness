@@ -139,7 +139,7 @@ Where agents look when they need deeper information:
 | Scripts | `~/.claude/scripts/` | sarif-to-jsonl.py, validate-harness.sh |
 | Agent roles | `~/.claude/agents/` | code-reviewer, architect, planner, docs-writer, etc. |
 | Skill workflows | `~/.claude/skills/` | plan, spec, verify, docs-* documentation suite, brainstorming, systematic-debugging, auto-memory, etc. |
-| TTH team roles | `~/.claude/team-roles/` | satya, pichai, jensen, tim-cook, zuckerberg, bezos |
+| TTH team roles | `~/.claude/team-roles/` | satya, pichai, jensen, tim-cook, zuckerberg, bezos, musk |
 | Project knowledge | `{project}/docs/` | ARCHITECTURE.md, api/, manuals/, ops/, design-docs/ (ADR), QUALITY_SCORE.md |
 | Session learning | `{project}/tasks/lessons.md` | Per-task lessons (hook-enforced, auto-injected at session start) |
 | Task-scoped memory | `{project}/memory/` | Selective loading via INDEX.md conditions (auto-memory skill) |
