@@ -116,8 +116,10 @@ if [ ${#ERRORS[@]} -gt 0 ]; then
 fi
 
 # 아키텍처 불변식 검사 (소프트 게이트 — 경고만, 차단 안 함)
+# source 금지: 부모의 set -euo pipefail이 상속되면 grep 무매칭만으로 게이트가 죽는다.
+# 서브프로세스로 격리 실행하고 실패는 무시한다.
 if [ -f "$HOME/.claude/hooks/check-architecture.sh" ]; then
-  source "$HOME/.claude/hooks/check-architecture.sh"
+  bash "$HOME/.claude/hooks/check-architecture.sh" || true
 fi
 
 echo "✅ 품질 게이트 통과"

@@ -27,6 +27,11 @@ description: Use when asked for client-submission SI/AO deliverables (architectu
 4. **Facts only**: only content verified from code/docs/run output. Leave unverified items empty marked `[NEEDS CONFIRMATION]` — never fill plausibly
 5. **If sources are stale, run /docs sync first**, then generate
 6. After generating, add a deliverables/ routing row to `memory/INDEX.md` if absent (keywords: deliverable, acceptance, delivery)
+7. **Acceptance-grade requirements** (rejection-prevention rules from independent evaluation):
+   - Test reports need more than summary tables — include a **per-case detail appendix** (ID, test name, verdict) generated from actual `-v` output
+   - Coverage must **state the measurement command and scope**; never report a tests-included figure alone — also give the source-package-only figure (denominator differences can double the apparent number)
+   - Include an **approval box** (author/reviewer/approver) and a **requirements traceability matrix** skeleton — mark missing values [NEEDS CONFIRMATION]
+8. After generating, verify facts (number reproduction) with a separate agent when possible — the generator must not grade its own deliverable
 
 ## Entry points
 - Slash command: `/client-docs [arch|api|db|rtm|test|manual|ops|report]`
