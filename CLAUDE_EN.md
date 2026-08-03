@@ -11,9 +11,10 @@
 ## Core Principles
 
 - **Simplicity First**: Change only the minimum code. No over-abstraction
-- **No Laziness**: Find and fix root causes. No temporary hacks/workarounds
+- **No Laziness**: Find and fix root causes. No temporary hacks/workarounds — debugging follows the 4 phases of the `systematic-debugging` skill
 - **Scope Discipline**: Deliver exactly what was asked, at the intended scope. Don't quietly narrow or widen it. If a better approach exists, suggest it in one sentence and continue with the task as asked. Don't report completion before the whole task is done
 - **Goal-Driven**: Define success criteria over step-by-step instructions, verify with tests, and loop
+- **Design Before Code**: For creative work (adding features, changing behavior), settle the design via the `brainstorming` skill and get approval before implementing
 
 ## Session Initialization
 
@@ -46,6 +47,10 @@ Subagents cost context re-establishment and report re-reading. Delegate only whe
 - Run evals in a separate session or separate model
 - Details: `~/.claude/rules/cross-model-verification.md`
 
+### Code Review Reception
+- Verify review feedback against the codebase before implementing. No performative agreement ("You're right!"); reasoned pushback is allowed
+- Details: `~/.claude/rules/code-review-reception.md`
+
 ### Execution Plan Persistence
 - Save plans to files: `{project}/docs/execute-plans/[date]-[feature].md`
 - Template: `~/.claude/templates/execute-plan.md.template` (includes retrospective section)
@@ -62,12 +67,15 @@ Subagents cost context re-establishment and report re-reading. Delegate only whe
 - Mention self-corrections only when the error changes the user's code, conclusions, or decisions — otherwise fix and move on
 - Match written deliverable length to what the task needs — no filler sections, redundant summaries, or boilerplate
 
-## Task Management
+## Task Management (hook-enforced)
 
-1. Write plans as checkable items in `tasks/todo.md`
+1. Write plans as checkable items in `tasks/todo.md` (alongside the todo panel)
 2. Confirm with the user before implementation (in autonomous mode: save the plan, then proceed)
 3. Check off completed items, high-level summary per phase
-4. When corrected, record the pattern in `tasks/lessons.md` (self-improvement loop)
+4. On task completion, record lessons/patterns in `tasks/lessons.md` (self-improvement loop)
+   - **Hook-enforced**: after file-modifying work, the Stop gate blocks turn completion until lessons are recorded (`hooks/lessons-stop-gate.sh`)
+   - At session start, recent lessons, working state, and the memory index are auto-injected (`hooks/lessons-recall.sh`)
+5. Route task-type knowledge into `memory/{topic}.md` via the auto-memory skill — load only the memory each task needs
 
 ## Long-Horizon Execution Pattern
 
@@ -78,6 +86,8 @@ For 3+ step or multi-session work, use durable project memory.
 | `CHECKPOINT.md` | Milestones + verify commands + done-when | At /plan or TTH start |
 | `AUDIT.log` | Append-only event stream | At first milestone start |
 | `progress.txt` | Patterns, gotchas, failure lessons | At team work start |
+| `tasks/context.md` | Mid-term memory: goal/decisions/next steps (auto-restored after compaction and restarts) | For 30min+ work |
+| `memory/` | Task-scoped knowledge, selectively loaded via INDEX.md conditions (auto-memory skill) | On first repo survey |
 
 - CHECKPOINT.md format: each milestone specifies verify commands and done-when (see template)
 - AUDIT.log: decisions and state transitions only — not a debug log
@@ -123,15 +133,17 @@ Where agents look when they need deeper information:
 
 | Category | Location | Description |
 |----------|----------|-------------|
-| Coding rules | `~/.claude/rules/` | coding-style, security, testing, performance, git-workflow, drift-control, cross-model-verification, tool-overlap |
+| Coding rules | `~/.claude/rules/` | coding-style, security, testing, performance, git-workflow, drift-control, cross-model-verification, tool-overlap, code-review-reception |
 | Templates | `~/.claude/templates/` | CHECKPOINT.md, AUDIT.log, execute-plan.md templates |
 | Security analysis | `~/.claude/semgrep-rules/` | Taint rules for SAST input path extraction (ts-express, py-fastapi) |
 | Scripts | `~/.claude/scripts/` | sarif-to-jsonl.py, validate-harness.sh |
 | Agent roles | `~/.claude/agents/` | code-reviewer, architect, planner, docs-writer, etc. |
-| Skill workflows | `~/.claude/skills/` | plan, spec, verify, docs-* documentation suite, harness-diagnostics, etc. |
+| Skill workflows | `~/.claude/skills/` | plan, spec, verify, docs-* documentation suite, brainstorming, systematic-debugging, auto-memory, etc. |
 | TTH team roles | `~/.claude/team-roles/` | satya, pichai, jensen, tim-cook, zuckerberg, bezos |
 | Project knowledge | `{project}/docs/` | ARCHITECTURE.md, api/, manuals/, ops/, design-docs/ (ADR), QUALITY_SCORE.md |
-| Session learning | `{project}/progress.txt` | Team shared memory (patterns, gotchas, failure lessons) |
+| Session learning | `{project}/tasks/lessons.md` | Per-task lessons (hook-enforced, auto-injected at session start) |
+| Task-scoped memory | `{project}/memory/` | Selective loading via INDEX.md conditions (auto-memory skill) |
+| Team shared memory | `{project}/progress.txt` | Patterns, gotchas, failure lessons (team work) |
 | Milestone tracking | `{project}/CHECKPOINT.md` | Milestone definitions + verify commands + done-when |
 | Audit log | `{project}/AUDIT.log` | Append-only event stream (state transitions) |
 | Persistent memory | `~/.claude/projects/*/memory/` | Per-project persistent memory |

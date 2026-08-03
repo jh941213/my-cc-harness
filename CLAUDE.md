@@ -11,9 +11,10 @@
 ## 핵심 원칙
 
 - **Simplicity First**: 최소한의 코드만 변경. 과도한 추상화 금지
-- **No Laziness**: 근본 원인을 찾아 수정. 임시 수정/우회 금지
+- **No Laziness**: 근본 원인을 찾아 수정. 임시 수정/우회 금지 — 디버깅은 `systematic-debugging` 스킬의 4단계를 따른다
 - **Scope Discipline**: 요청받은 범위 그대로 완수. 조용히 좁히거나 넓히지 않는다. 더 나은 접근이 보이면 한 줄로 제안하고 요청받은 작업을 계속한다. 전체를 끝내기 전에 완료 보고하지 않는다
 - **Goal-Driven**: 단계별 지시보다 성공 기준을 정의하고, 테스트로 검증하며 루프
+- **Design Before Code**: 기능 추가·동작 변경 등 창작 작업은 `brainstorming` 스킬로 설계를 확정하고 승인받은 뒤 구현
 
 ## 세션 초기화
 
@@ -46,6 +47,10 @@
 - eval은 별도 세션 또는 별도 모델에서 실행
 - 상세: `~/.claude/rules/cross-model-verification.md`
 
+### 코드 리뷰 수신
+- 리뷰 피드백은 구현 전에 코드베이스와 대조 검증. 수행적 동의("맞습니다!") 금지, 근거 있는 반론 허용
+- 상세: `~/.claude/rules/code-review-reception.md`
+
 ### 실행 계획 영속화
 - 계획은 파일로 저장: `{project}/docs/execute-plans/[날짜]-[기능명].md`
 - 템플릿: `~/.claude/templates/execute-plan.md.template` (회고 섹션 포함)
@@ -62,12 +67,15 @@
 - 자기 수정은 사용자의 코드·결론·결정이 바뀌는 경우에만 언급하고, 나머지는 고치고 넘어간다
 - 산출 문서 길이는 작업에 필요한 만큼만 — 채우기용 섹션, 중복 요약, 보일러플레이트 금지
 
-## 작업 관리
+## 작업 관리 (훅으로 강제됨)
 
-1. `tasks/todo.md`에 체크 가능한 항목으로 계획 작성
+1. `tasks/todo.md`에 체크 가능한 항목으로 계획 작성 (todo 패널과 병행)
 2. 구현 시작 전 사용자와 확인 (자율 모드에서는 계획 저장 후 진행)
 3. 완료된 항목 체크, 단계마다 고수준 요약
-4. 수정받으면 `tasks/lessons.md`에 패턴 기록 (자기 개선 루프)
+4. 작업 완료 시 `tasks/lessons.md`에 배운 점·패턴 기록 (자기 개선 루프)
+   - **훅 강제**: 파일 수정 작업 후 lessons 미기록 시 Stop 게이트가 턴 종료를 차단한다 (`hooks/lessons-stop-gate.sh`)
+   - 새 세션 시작 시 최근 lessons·작업 상태·메모리 인덱스가 자동 주입된다 (`hooks/lessons-recall.sh`)
+5. 작업 유형별 지식은 auto-memory 스킬로 `memory/{주제}.md`에 라우팅 — 작업 시작 시 필요한 메모리만 선택 로드
 
 ## Long-Horizon 실행 패턴
 
@@ -78,6 +86,8 @@
 | `CHECKPOINT.md` | 마일스톤 + 검증 커맨드 + done-when | /plan 또는 TTH 시작 시 |
 | `AUDIT.log` | append-only 이벤트 스트림 | 첫 마일스톤 시작 시 |
 | `progress.txt` | 패턴, gotcha, 실패 교훈 | 팀 작업 시작 시 |
+| `tasks/context.md` | 중기 메모리: 목표/결정/다음단계 (컴팩션·재시작 후 자동 복원) | 30분+ 장기 작업 시 |
+| `memory/` | 작업 유형별 선택 로드 지식 (INDEX.md 로드 조건 기반, auto-memory 스킬) | 레포 첫 파악 시 |
 
 - CHECKPOINT.md 형식: 마일스톤마다 검증 커맨드와 done-when 명시 (템플릿 참조)
 - AUDIT.log: 의사결정과 상태 전이만 기록 — 디버깅 로그 아님
@@ -123,15 +133,17 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 
 | 카테고리 | 위치 | 설명 |
 |----------|------|------|
-| 코딩 규칙 | `~/.claude/rules/` | coding-style, security, testing, performance, git-workflow, drift-control, cross-model-verification, tool-overlap |
+| 코딩 규칙 | `~/.claude/rules/` | coding-style, security, testing, performance, git-workflow, drift-control, cross-model-verification, tool-overlap, code-review-reception |
 | 템플릿 | `~/.claude/templates/` | CHECKPOINT.md, AUDIT.log, execute-plan.md 템플릿 |
 | 보안 분석 | `~/.claude/semgrep-rules/` | SAST 입력 경로 추출용 taint 룰 (ts-express, py-fastapi) |
 | 스크립트 | `~/.claude/scripts/` | sarif-to-jsonl.py, validate-harness.sh |
 | 에이전트 역할 | `~/.claude/agents/` | code-reviewer, architect, planner, docs-writer 등 |
-| 스킬 워크플로우 | `~/.claude/skills/` | plan, spec, verify, docs-* 문서화 스위트, harness-diagnostics 등 |
+| 스킬 워크플로우 | `~/.claude/skills/` | plan, spec, verify, docs-* 문서화 스위트, brainstorming, systematic-debugging, auto-memory 등 |
 | TTH 팀 역할 | `~/.claude/team-roles/` | satya, pichai, jensen, tim-cook, zuckerberg, bezos |
 | 프로젝트 지식 | `{project}/docs/` | ARCHITECTURE.md, api/, manuals/, ops/, design-docs/(ADR), QUALITY_SCORE.md |
-| 세션 학습 | `{project}/progress.txt` | 팀 공유 메모리 (패턴, gotcha, 실패 교훈) |
+| 세션 학습 | `{project}/tasks/lessons.md` | 작업별 교훈 (훅 강제, 세션 시작 시 자동 주입) |
+| 작업별 메모리 | `{project}/memory/` | INDEX.md 로드 조건 기반 선택 로드 (auto-memory 스킬) |
+| 팀 공유 메모리 | `{project}/progress.txt` | 패턴, gotcha, 실패 교훈 (팀 작업) |
 | 마일스톤 추적 | `{project}/CHECKPOINT.md` | 마일스톤 정의 + 검증 커맨드 + done-when |
 | 감사 로그 | `{project}/AUDIT.log` | append-only 이벤트 스트림 (상태 전이 기록) |
 | 지속 메모리 | `~/.claude/projects/*/memory/` | 프로젝트별 영속 메모리 |

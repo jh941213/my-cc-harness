@@ -128,29 +128,22 @@
     ],
     "PostToolUse": [
       {
-        "matcher": "Write",
+        "matcher": "Write|Edit|NotebookEdit",
         "hooks": [
           {
             "type": "command",
-            "command": "if echo \"$CLAUDE_FILE_PATH\" | grep -qE '\\.(ts|tsx|js|jsx)$'; then if command -v prettier &>/dev/null; then prettier --write \"$CLAUDE_FILE_PATH\" 2>/dev/null; fi; fi; exit 0"
+            "command": "~/.claude/hooks/lessons-track-edit.sh",
+            "timeout": 10
           }
         ]
       },
       {
-        "matcher": "Edit",
+        "matcher": "Write|Edit",
         "hooks": [
           {
             "type": "command",
-            "command": "if echo \"$CLAUDE_FILE_PATH\" | grep -qE '\\.(ts|tsx|js|jsx)$'; then if command -v prettier &>/dev/null; then prettier --write \"$CLAUDE_FILE_PATH\" 2>/dev/null; fi; fi; exit 0"
-          }
-        ]
-      },
-      {
-        "matcher": "Bash(git commit*)",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash -c 'STAGED=$(git diff --cached --name-only); if echo \"$STAGED\" | grep -qE \"\\.env\"; then echo \"BLOCKED: .env 파일 커밋 금지\" && exit 1; fi; if git diff --cached | grep -qiE \"(console\\.log|console\\.warn|console\\.debug)\"; then echo \"WARNING: console.log가 포함되어 있습니다. 제거하세요.\" && exit 1; fi; exit 0'"
+            "command": "IN=$(cat); F=$(printf '%s' \"$IN\" | jq -r '.tool_input.file_path // empty'); case \"$F\" in *.ts|*.tsx|*.js|*.jsx) command -v prettier >/dev/null 2>&1 && prettier --write \"$F\" 2>/dev/null;; esac; exit 0",
+            "timeout": 30
           }
         ]
       },
@@ -185,7 +178,18 @@
       }
     ],
     "PreToolUse": [
-{
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "STAGED=$(git diff --cached --name-only 2>/dev/null); if printf '%s\\n' \"$STAGED\" | grep -qE '(^|/)\\.env'; then echo 'BLOCKED: .env 파일 커밋 금지' >&2; exit 2; fi; if git diff --cached 2>/dev/null | grep -qE '^\\+.*console\\.(log|warn|debug)'; then echo 'BLOCKED: console.log 포함 — 제거 후 커밋하세요' >&2; exit 2; fi; exit 0",
+            "if": "Bash(git commit*)",
+            "timeout": 15
+          }
+        ]
+      },
+      {
         "matcher": "*",
         "hooks": [
           {
@@ -210,6 +214,15 @@
         "hooks": [
           {
             "type": "command",
+            "command": "~/.claude/hooks/lessons-recall.sh",
+            "timeout": 10
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
             "command": "~/.claude/hooks/reset-home-memory.sh"
           }
         ]
@@ -224,6 +237,15 @@
       }
     ],
     "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/lessons-stop-gate.sh",
+            "timeout": 10
+          }
+        ]
+      },
       {
         "hooks": [
           {
@@ -310,6 +332,15 @@
         "hooks": [
           {
             "type": "command",
+            "command": "~/.claude/hooks/work-protocol-prompt.sh",
+            "timeout": 10
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
             "command": "~/.claude/hooks/notchi-hook.sh"
           }
         ]
@@ -337,6 +368,17 @@
             "command": "bash ~/.claude/hooks/post-compact-guard.sh",
             "timeout": 5,
             "statusMessage": "컨텍스트 복구 안내 중..."
+          }
+        ]
+      },
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/memory-postcompact.sh",
+            "timeout": 10,
+            "statusMessage": "중기 메모리 복원 중..."
           }
         ]
       }

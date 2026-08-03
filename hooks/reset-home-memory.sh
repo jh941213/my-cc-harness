@@ -7,7 +7,8 @@ HOME_DIR="$HOME"
 
 # 홈 디렉토리 정확히 일치할 때만 리셋 (하위 경로 X)
 if [ "$CWD" = "$HOME_DIR" ] || [ "$CWD" = "$HOME_DIR/" ]; then
-  MEMORY_DIR="$HOME/.claude/projects/-Users-kdb/memory"
+  HOME_SLUG=$(printf '%s' "$HOME" | tr '/' '-')
+  MEMORY_DIR="$HOME/.claude/projects/$HOME_SLUG/memory"
   MEMORY_FILE="$MEMORY_DIR/MEMORY.md"
 
   if [ -d "$MEMORY_DIR" ]; then
