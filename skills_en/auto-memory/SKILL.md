@@ -1,71 +1,65 @@
 ---
 name: auto-memory
-description: Use when starting substantial work in a repo (implementation, fixes, deploys, debugging), when first exploring a new repo, or when finishing work that produced reusable knowledge. Loads only the memory relevant to the task type and routes new knowledge into topic files
+description: Use when starting substantial work in a repo (implementation, fixes, deploys, debugging), when first exploring a new repo, or when finishing work that produced reusable knowledge. Operates a routing table that selectively loads only the docs/memory relevant to the task type
 ---
 
-# Auto-Memory (task-scoped selective memory)
+# Auto-Memory (docs-routing selective memory)
 
-**Principle: never load everything. Read only the memory this task needs.**
-Injecting all memory into every context is wasteful. Only the index is always loaded; bodies are read only when the task type matches their load condition.
+**Principle: route knowledge, don't copy it. Only the routing table is always loaded; bodies (docs and memory) are Read only when the task type matches.**
+
+The harness already generates documentation in `{project}/docs/` (the /docs suite, DEPLOY.md, ARCHITECTURE.md, ...). Those docs can't all be injected into every context, so this skill's job is to **route the right docs into context when a matching task starts** — e.g. a "deploy this" request loads the CI/CD doc first.
 
 ## Store layout
 
 ```
 {project}/memory/
-├── INDEX.md          # topic | file | load condition — auto-injected at session start / post-compact (keep lean)
-├── architecture.md   # system structure, module boundaries, key design decisions
-├── deploy.md         # deploy procedure, CI/CD, env vars, infra (e.g. deploy work → where the CI/CD docs live)
-├── testing.md        # how to run tests, fixtures, flaky spots
-├── data-model.md     # schemas, migrations, data flow
-├── gotchas.md        # traps, workarounds, environment quirks
-└── (add topics only when needed — no empty stubs)
+├── INDEX.md      # routing table (format below) — auto-injected at session start / post-compact, keep lean
+└── {topic}.md    # ONLY knowledge with no docs home (environment quirks, gotchas). If a doc exists, don't create one
 ```
 
-INDEX.md format:
+INDEX.md format (the keyword column powers the deterministic hint hook):
 
 ```markdown
-# Memory Index
-| Topic | File | Load condition (read when the task is...) |
+# Memory Index (routing table)
+
+| Task type | Keywords | Files to load |
 |------|------|------|
-| Deploy/CI | deploy.md | deploy, release, CI/CD changes, env vars, infra work |
-| Architecture | architecture.md | new feature design, adding modules, refactoring, structure questions |
-| Testing | testing.md | writing/fixing tests, debugging failures |
+| Deploy/CI | deploy,docker,release,ci | docs/ops/cicd.md, DEPLOY.md |
+| Architecture/design | design,structure,refactor,architecture | docs/ARCHITECTURE.md |
+| API work | api,endpoint,router | docs/api/ |
+| Testing | test,pytest | memory/testing.md |
 ```
+
+## How it works (dual routing)
+
+1. **Deterministic layer (hook)**: `memory-route-hint.sh` (UserPromptSubmit) matches prompt keywords against INDEX rows and injects a **one-line hint** — "this looks like an X task → Read these files first". It never injects document bodies
+2. **Model layer (skill)**: even without a hint, classify the task at start, consult INDEX, and Read only the matching files — if nothing matches, load nothing
 
 ## Workflows
 
-### A. Init (repo has no memory/)
-1. Survey the repo: README, docs/, CI config (.github/workflows etc.), manifests (package.json/pyproject.toml), directory layout
-2. Create `memory/INDEX.md` plus topic files ONLY for what you actually learned (no empty stubs)
-3. If docs already exist (docs/ARCHITECTURE.md etc.), do not copy their content — store a **pointer** (summary + location); docs own the truth
+### A. Init (repo has no memory/INDEX.md)
+1. Survey the repo: full docs/ listing, README, DEPLOY.md-style files, CI config (.github/workflows), manifests, layout
+2. **Classify existing docs by task type and create INDEX.md routing rows** — docs own the truth, INDEX is the map
+3. Create `memory/{topic}.md` only for knowledge with no docs home (no empty stubs)
 
 ### B. Task start (selective load)
-1. Classify the task (deploy? feature? bug? tests?)
-2. Read ONLY the files whose load condition matches — if nothing matches, load nothing
-3. If loaded memory is stale (paths gone, etc.), fix or delete it on the spot
+1. If the hook emitted a hint, Read those files first
+2. Otherwise classify the task → Read only INDEX-matched files
+3. If loaded content is stale (dead paths etc.), fix the INDEX/doc on the spot
 
-### C. Task end (routing)
-The test is: "will I need this the next time I do this kind of task?" Roles:
-- **`memory/{topic}.md`** — latest knowledge per topic (overwrite in place, always reflects current state)
-- **`tasks/lessons.md`** — chronological work journal (enforced by the Stop gate, append-only)
-- **`~/.claude/projects/*/memory/`** — only cross-project user preferences / environment knowledge
-New topic → new file + INDEX.md row. Consider splitting any file that passes ~100 lines.
+### C. Task end (routing new knowledge)
+The test: "needed the next time this task type comes up?" Priority:
+1. **If a doc owns that knowledge, update the doc** (never copy into memory)
+2. If it has no docs home, update/create `memory/{topic}.md` + add an INDEX row
+3. Chronological journal goes to `tasks/lessons.md` (Stop-gate enforced); cross-project knowledge to `~/.claude/projects/*/memory/`
+4. If new docs were created, add routing rows for them
 
 ### D. Long sessions (mid-term memory)
-For work stretching past ~30 minutes, maintain `tasks/context.md`:
-
-```markdown
-# Current working state
-- Goal: <verifiable done-condition>
-- Key decisions: <one line each, with reason>
-- Done: <finished> / Next: <immediate next step>
-- Key files: <paths>
-```
-
-Update it at each milestone. This file is re-injected automatically after compaction and at session start, so nothing written here gets forgotten.
+For 30min+ work, maintain `tasks/context.md` (goal / key decisions / done·next / key files). It is auto-reinjected after compaction and at session start, so nothing written there gets forgotten.
 
 ## Forbidden
-- Reading all of memory/ without consulting the index
-- Loading memory unrelated to the task
-- Copying anything derivable from code (function lists etc.) — code is the source of truth
+- Copying docs content into memory/ (pointers/routing only)
+- Loading docs/memory wholesale without consulting the index
+- Loading files unrelated to the task
+- Copying anything derivable from code — code is the source of truth
 - Creating empty topic files in advance

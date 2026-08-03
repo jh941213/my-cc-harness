@@ -109,7 +109,7 @@ fi
 if [ -d "$TEMP_DIR/hooks" ]; then
     cp "$TEMP_DIR/hooks/"*.sh ~/.claude/hooks/ 2>/dev/null || true
     chmod +x ~/.claude/hooks/*.sh 2>/dev/null || true
-    echo "   hooks/ (19 scripts)"
+    echo "   hooks/ (20 scripts)"
 fi
 
 # scripts (language-independent)
@@ -148,7 +148,7 @@ if [ "$LANG_CHOICE" = "en" ]; then
     echo "   - rules/ (9, YAML conditional loading)"
     echo "   - commands/ (3 slash commands)"
     echo "   - team-roles/ (7 TTH CEO personas)"
-    echo "   - hooks/ (19 scripts)"
+    echo "   - hooks/ (20 scripts)"
     echo "   - scripts/ + templates/ + semgrep-rules/"
     echo ""
     echo "TTH Multi-Agent:"
@@ -177,7 +177,7 @@ else
     echo "   - rules/ (9개, YAML 조건부 로드)"
     echo "   - commands/ (3개 슬래시 커맨드)"
     echo "   - team-roles/ (7개 TTH CEO 페르소나)"
-    echo "   - hooks/ (19개 스크립트)"
+    echo "   - hooks/ (20개 스크립트)"
     echo "   - scripts/ + templates/ + semgrep-rules/"
     echo ""
     echo "TTH 멀티 에이전트:"

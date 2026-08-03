@@ -341,6 +341,15 @@
         "hooks": [
           {
             "type": "command",
+            "command": "~/.claude/hooks/memory-route-hint.sh",
+            "timeout": 10
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
             "command": "~/.claude/hooks/notchi-hook.sh"
           }
         ]
