@@ -2,1123 +2,416 @@
 
 **🌐 [English](README_EN.md) | 한국어**
 
-# MY Claude Code harness
+# MY Claude Code Harness
 
 <img src="assets/banner.png" alt="My CC Harness" width="720" />
 
-[![Version](https://img.shields.io/badge/version-1.2.0-7C3AED.svg?style=for-the-badge)](https://github.com/jh941213/my-cc-harness)
+[![Version](https://img.shields.io/badge/version-1.3.0-7C3AED.svg?style=for-the-badge)](https://github.com/jh941213/my-cc-harness)
 [![License](https://img.shields.io/badge/license-MIT-E87C3E.svg?style=for-the-badge)](LICENSE)
-[![Skills](https://img.shields.io/badge/skills-35-blue.svg?style=for-the-badge)](#-스킬-35개)
+[![Skills](https://img.shields.io/badge/skills-43-blue.svg?style=for-the-badge)](#-스킬-43개)
 [![Agents](https://img.shields.io/badge/agents-12-green.svg?style=for-the-badge)](#-에이전트-12개)
-[![PRD](https://img.shields.io/badge/PRD-Aletheia_v3-9333ea.svg?style=for-the-badge)](#-prd-aletheia-v3)
+[![Hooks](https://img.shields.io/badge/hooks-20-ff6b6b.svg?style=for-the-badge)](#-hooks-게이트-시스템-20개)
+[![Memory](https://img.shields.io/badge/memory-3--tier-00d4aa.svg?style=for-the-badge)](#-3계층-메모리-시스템)
 [![TTH](https://img.shields.io/badge/TTH-Multi--Agent-ff6b35.svg?style=for-the-badge)](#-tth-멀티-에이전트-사일로)
-[![AutoDev](https://img.shields.io/badge/AutoDev-Autonomous-00d4aa.svg?style=for-the-badge)](#-autodev-자율-실험-루프)
 
-**실무에서 바로 쓸 수 있는 Claude Code 최적 에이전트 하네스**
+### 지시가 아니라 강제한다 — 게이트·메모리·자율 루프 올인원 하네스
 
-`Skills` `Agents` `Hooks` `Rules` `Commands` `TTH` `SAST` `MCP` 올인원
+`Skills 43` · `Agents 12` · `Commands 4` · `Rules 9` · `Hooks 20` · `3-Tier Memory` · `TTH M7` · `SAST`
+
+</div>
 
 ---
 
-**35개 스킬** | **12개 에이전트** | **8개 조건부 Rules** | **Hooks 보장 시스템 (8개)** | **TTH 멀티 에이전트 (M7)** | **AutoDev 자율 실험** | **보안 도구체인 (SAST + MCP)**
+## 왜 이 하네스인가
 
-</div>
+CLAUDE.md에 "~해라"라고 적는 것만으로는 부족하다. 모델은 잊는다. 이 하네스는 세 가지 레이어로 그 문제를 구조적으로 해결한다:
+
+| 레이어 | 무엇을 하나 | 예 |
+|---|---|---|
+| 🔒 **게이트 (Hooks)** | 어기면 **막힌다** — 지시가 아니라 강제 | 교훈 미기록 시 턴 종료 차단, `.env` 커밋 사전 차단, 태스크 완료 시 품질 게이트 |
+| 🧠 **메모리 (3계층)** | 잊지 않는다 — 필요한 것만 로드 | "배포해주세요" → CI/CD 문서 자동 라우팅, 컴팩션 후 작업 상태 자동 복원 |
+| 🔁 **자율 루프 (Ralph Loop)** | 밤새 돌아간다 — 완료 조건까지 | PRD 항목 자동 소진(AutoDev), M7 CEO 팀 협업(TTH) |
 
 ---
 
 ## 목차
 
 - [설치](#-설치)
-- [PRD Aletheia v3](#-prd-aletheia-v3)
+- [3계층 메모리 시스템](#-3계층-메모리-시스템)
+- [Hooks 게이트 시스템 (20개)](#-hooks-게이트-시스템-20개)
 - [TTH 멀티 에이전트 사일로](#-tth-멀티-에이전트-사일로)
+- [PRD Aletheia v3](#-prd-aletheia-v3)
+- [AutoDev — Ralph Loop 자율 개발](#-autodev--ralph-loop-자율-개발)
 - [Musk Evaluator](#-musk-evaluator--독립-평가-시스템)
-- [AutoDev 자율 실험 루프](#-autodev-자율-실험-루프)
-- [CLAUDE.md 최적화 철학](#-claudemd-최적화-철학)
-- [Hooks 보장 시스템](#-hooks-보장-시스템)
-- [Goal-Driven 실행 (/goal)](#-goal-driven-실행-goal-연동)
-- [스킬 (39개)](#-스킬-39개)
+- [고객 제출 산출물 (/client-docs)](#-고객-제출-산출물-client-docs)
+- [스킬 (43개)](#-스킬-43개)
 - [에이전트 (12개)](#-에이전트-12개)
-- [Commands (3개)](#-commands-3개)
-- [Rules (8개)](#-rules-8개-조건부-로드)
-- [보안 도구체인](#-보안-도구체인-sast--mcp)
-- [템플릿](#-템플릿-3개)
-- [Boris Cherny 팁](#-boris-cherny-팁)
-- [Codex CLI 버전](#-codex-cli-버전)
-- [참고 자료](#-참고-자료)
-- [Changelog](#-changelog)
+- [Rules (9개)](#-rules-9개)
+- [CLAUDE.md 철학](#-claudemd-철학)
+- [디렉토리 구조](#-디렉토리-구조)
 
 ---
 
 ## 🚀 설치
 
-### 사전 요구사항: CLI 도구 설치
-
-스킬과 에이전트가 자동 분석에 활용하는 CLI 도구들입니다:
-
-```bash
-brew install ast-grep difftastic gitleaks scc
-```
-
-| 도구 | 용도 | 사용처 |
-|------|------|--------|
-| **ast-grep** (`sg`) | AST 기반 코드 검색/패턴 매칭 | verify, review, simplify, evaluator, code-reviewer |
-| **difftastic** (`difft`) | AST 기반 구조적 diff (포매팅 노이즈 제거) | review, code-reviewer |
-| **gitleaks** | 800+ 패턴 시크릿 스캔 | verify, review, evaluator, security-reviewer |
-| **scc** | 코드 통계 + 복잡도 분석 | evaluator, code-reviewer |
-
-> **Note**: 도구 미설치 시 해당 검사를 건너뜁니다 (폴백 동작).
-> `npx` 기반 도구 (`madge`, `knip`, `jscpd`)는 자동 설치됩니다.
-
-### 방법 1: 원클릭 전체 설치 (권장)
+### 방법 1: 원클릭 설치 (권장)
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/jh941213/my-cc-harness/main/install.sh | bash
 ```
 
-### 방법 2: 플러그인 설치 (Skills + Commands + Agents + Hooks)
+언어 선택(한국어/English) 후 `~/.claude/`에 전체 구성 요소가 설치된다.
+
+### 방법 2: 플러그인 설치
 
 ```bash
 claude plugin marketplace add jh941213/my-cc-harness
 claude plugin install my-cc-harness@my-cc-harness
 ```
 
-> **Note (v0.6.0+)**: 현행 플러그인 시스템은 skills/commands/agents/hooks를 모두 배포합니다.
-> rules, team-roles, templates, CLAUDE.md, settings.json(권한/env)은 전체 설치(install.sh)로 반영하세요.
->
-> ⚠️ **중복 주의**: install.sh(settings.json hook 등록)와 플러그인 설치를 **함께 쓰면 hook이 두 번 실행**됩니다. 한 가지 방식만 사용하세요.
-
 ### 방법 3: Claude에게 직접 요청
 
 ```
-https://github.com/jh941213/my-cc-harness 저장소의 agents/, rules/, commands/, CLAUDE.md를
-내 ~/.claude/ 폴더에 반영해줘
+https://github.com/jh941213/my-cc-harness 클론해서 설치해줘.
+단, settings.json은 덮어쓰지 말고 내 기존 설정과 병합해줘.
 ```
 
-### 설치 항목 비교
+> ⚠️ **주의**: `install.sh`는 `~/.claude/settings.json`을 교체한다. 기존 설정(훅·권한·모델)이 있다면 방법 3으로 병합 설치를 권장.
 
-| 항목 | 플러그인 설치 | 전체 설정 |
-|------|:---:|:---:|
-| Skills (39개) | ✅ | ✅ |
-| Commands (3개) | ✅ | ✅ |
-| Agents (12개) | ✅ | ✅ |
-| Hooks (14개 스크립트) | ✅ (핵심 10종 자동 등록) | ✅ (settings.json 전체) |
-| Rules (8개) | ❌ | ✅ |
-| TTH Team Roles (7개) | ❌ | ✅ |
-| Semgrep Rules (2개) | ❌ | ✅ |
-| Scripts (2개) | ❌ | ✅ |
-| MCP Servers (1개) | ❌ | ✅ |
-| Templates (3개) | ❌ | ✅ |
-| CLAUDE.md | ❌ | ✅ |
-| settings.json | ❌ | ✅ |
+<details>
+<summary><b>설치 항목 비교</b></summary>
+
+| 항목 | 방법 1 (스크립트) | 방법 2 (플러그인) | 방법 3 (병합) |
+|---|:---:|:---:|:---:|
+| CLAUDE.md | ✅ | ❌ | ✅ |
+| settings.json (권한·훅 배선) | ✅ 교체 | ❌ | ✅ 병합 |
+| skills / commands / agents | ✅ | ✅ | ✅ |
+| hooks 스크립트 | ✅ | ✅ | ✅ |
+| rules / templates / semgrep | ✅ | ❌ | ✅ |
+| team-roles (TTH) | ✅ | ❌ | ✅ |
+
+</details>
+
+### 사전 요구사항 (선택)
+
+```bash
+brew install jq ripgrep fd ast-grep difftastic scc gitleaks trivy   # 검증·보안 도구체인
+brew install tmux                                                    # TTH 멀티 에이전트용
+```
 
 ---
 
-## 📋 PRD Aletheia v3
+## 🧠 3계층 메모리 시스템
 
-<div align="center">
-<img src="assets/prd-banner.png" alt="PRD Aletheia v3" width="720" />
-</div>
+**원칙: 지식을 복사하지 않고 라우팅한다. 상시 로드는 인덱스뿐, 본문은 작업이 매칭될 때만.**
 
-> **CPS 세계관 정렬 + 인문학 프레임워크 + Six Thinking Hats = prd/ 디렉토리 8개 파일 자동 생성**
-
-`/prd "아이디어"` 한 줄로 CPS(Context-Problem-Solution) 정렬부터 PRD + SPEC 문서 생성까지 통합 자동화합니다.
-
-```
-/prd "개발자를 위한 AI 코드 리뷰 SaaS"
-```
-
-### v3 핵심 혁신
-
-| 요소 | 설명 |
-|------|------|
-| **CPS (Context-Problem-Solution)** | PRD 위의 메타 프레임워크 — 세계관 정렬 → 문제 정의 → 솔루션 방향 설정 |
-| **prd/ 디렉토리 구조** | 단일 PRD.md → 8개 파일 분리 (CPS, PRD, MARKET, USERS, FEATURES, RISKS, SPEC, APPENDIX) |
-| **PRD + SPEC 통합** | `/prd` 하나로 "무엇을, 왜" + "어떻게" 까지 한 번에 생성 → 바로 `/tth` 연결 |
-| **복잡도 게이트** | Low/Mid/High 자동 판정 → 프로세스 적응 (2~5라운드) |
-| **수렴 보드** | 6차원 진행 추적 (🔴→🟡→🟢) — 용어, 구조, 깊이, 일관성, 견고성, 시장 |
-| **인문학 프레임워크** | 비트겐슈타인(용어정렬) + 데카르트(방법적 회의) + 소크라테스(모순탐지) + 조하리(맹점) + 가다머(정합성) |
-
-### 파이프라인
-
-```
-Phase 0: 복잡도 판정 + 수렴 보드 초기화
-    ↓
-Phase 0.5: CPS (Context-Problem-Solution) 세계관 정렬
-    ↓
-Phase 1 (bg) ──┐  시장 리서치 서브에이전트 (Tavily/Exa/Gemini CLI)
-Phase 2 R1 ────┘  용어 정렬 + W6H 구조 스캔 (병렬)
-    ↓
-Phase 2 R2-5: 적응적 인터뷰 (리서치 합류)
-    ↓
-Phase 3: 기술 심층 인터뷰 → SPEC 초안 동시 생성
-    ↓
-Phase 4-6: prd-planner 서브에이전트에 위임
-    ├── Six Hats 합성 + 차별화 전략
-    ├── MVP 경계선 + 위험 분석
-    └── prd/ 디렉토리 8개 파일 작성
-    ↓
-Phase 7: 자가 검증 (8개 파일 완전성 체크)
+```mermaid
+flowchart LR
+    subgraph 단기["단기 — 세션"]
+        A["컨텍스트 + todo 패널<br/>tasks/todo.md"]
+    end
+    subgraph 중기["중기 — 컴팩션 생존"]
+        B["tasks/context.md<br/>목표 · 결정 · 다음단계"]
+    end
+    subgraph 장기["장기 — 세션 간"]
+        C["tasks/lessons.md<br/>시간순 교훈 (게이트 강제)"]
+        D["memory/INDEX.md<br/>작업유형 → docs 라우팅"]
+    end
+    P["프롬프트<br/>'배포해주세요'"] -->|"키워드 훅"| D
+    D -->|"매칭된 문서만 Read"| E["docs/ops/cicd.md"]
+    B -->|"컴팩션 후 자동 복원"| A
+    C -->|"세션 시작 시 자동 주입"| A
 ```
 
-### 출력 구조: `prd/` 디렉토리
+### 동작 예시
 
 ```
-prd/
-├── CPS.md          ← Context-Problem-Solution 세계관 정렬
-├── PRD.md          ← 핵심 제품 요구사항
-├── MARKET.md       ← 시장 분석 + 경쟁사
-├── USERS.md        ← 사용자 페르소나 + 여정
-├── FEATURES.md     ← 기능 목록 + 우선순위
-├── RISKS.md        ← 위험 분석 + 완화 전략
-├── SPEC.md         ← 기술 명세 (아키텍처 + API + DB)
-└── APPENDIX.md     ← 수렴 보드 + 인터뷰 로그
+사용자: "이제 배포해주세요"
+훅:     [auto-memory] "배포/CI" 유형 작업으로 보임 → 시작 전 Read: docs/ops/cicd.md
 ```
 
-### 복잡도별 적응
+| 계층 | 저장소 | 로드 시점 | 담당 |
+|---|---|---|---|
+| **단기** | 세션 컨텍스트 + `tasks/todo.md` | 항상 | todo 패널 병행 |
+| **중기** | `tasks/context.md` | 컴팩션 직후·세션 재시작 시 **자동 재주입** | `memory-postcompact.sh` |
+| **장기 · 일지** | `tasks/lessons.md` | 세션 시작 시 최근 항목 주입 | `lessons-recall.sh` + **Stop 게이트 강제** |
+| **장기 · 라우팅** | `memory/INDEX.md` + 기존 `docs/` | **작업 유형 매칭 시에만** 본문 Read | `memory-route-hint.sh` + `auto-memory` 스킬 |
 
-| 복잡도 | 예시 | Phase 1 | 인터뷰 |
-|--------|------|---------|--------|
-| **Low** | CLI 도구, 단순 기능 | 스킵 | 2라운드 |
-| **Mid** | 새 모듈, 라이브러리 | 서브에이전트 1개 | 3라운드 |
-| **High** | SaaS, 플랫폼 | 서브에이전트 3개 병렬 | 5라운드 |
+- **2중 라우팅**: 결정적 레이어(키워드 훅이 힌트 한 줄 주입 — 문서 본문은 주입 안 함) + 모델 레이어(스킬이 INDEX를 보고 분류)
+- **docs가 진실의 원천**: INDEX는 지도일 뿐, 작업 후 배운 것도 해당 docs를 갱신 (memory 복사 금지)
+- ASCII 키워드는 단어 경계 매칭("latest"가 test로 오탐되지 않음), 한글은 조사 대응 부분 매칭
 
-### PRD → 구현 (원커맨드 플로우)
+---
 
-```
-/prd [아이디어]  → prd/ 디렉토리 (CPS + PRD + SPEC 통합 생성)
-/tth             → prd/ 자동 읽기 → 멀티 에이전트로 자율 구현
-```
+## 🔒 Hooks 게이트 시스템 (20개)
+
+**검증은 모델의 선의가 아니라 결정적 게이트가 담당한다.**
+
+### 강제 게이트 (어기면 막힘)
+
+| 훅 | 이벤트 | 강제 내용 |
+|---|---|---|
+| `lessons-stop-gate.sh` | Stop | 파일 수정 후 `tasks/lessons.md` 미기록 시 **턴 종료 차단** (기록하면 자동 해제, 무한루프 가드) |
+| `verify-task-quality.sh` | TaskCompleted | 타입체크·린트·테스트·커버리지·보안 스캔 실패 시 **태스크 완료 차단** |
+| 커밋 가드 (인라인) | PreToolUse | `.env` 스테이징·`console.log` 포함 커밋을 **커밋 전** 차단 |
+| `config-change-guard.sh` | ConfigChange | 세션 중 CLAUDE.md/rules 변경 시 캐시 보존 경고 |
+
+### 메모리·컨텍스트 훅
+
+| 훅 | 이벤트 | 역할 |
+|---|---|---|
+| `work-protocol-prompt.sh` | UserPromptSubmit | todo·lessons·context 프로토콜 주입 |
+| `memory-route-hint.sh` | UserPromptSubmit | 프롬프트 키워드 → 로드할 docs 힌트 |
+| `lessons-recall.sh` | SessionStart | 최근 교훈·작업 상태·메모리 인덱스 주입 |
+| `memory-postcompact.sh` / `post-compact-guard.sh` | PostCompact | 중기 메모리 복원 + 컨텍스트 복구 안내 |
+| `lessons-track-edit.sh` | PostToolUse | 실작업 추적 (기록성 파일은 제외) |
+
+### 자율 루프·오케스트레이션 훅
+
+| 훅 | 이벤트 | 역할 |
+|---|---|---|
+| `ralph-loop.sh` | Stop | Ralph Loop 구동 — assistant 메시지에서만 완료 프로미스 감지, 연속 프롬프트 전문을 `reason`으로 전달 |
+| `subagent-tracker.sh` / `subagent-stop-tracker.sh` | SubagentStart/Stop | 팀원 스폰·완료 추적 (tmux 재사용) |
+| `check-remaining-tasks.sh` | TeammateIdle | 유휴 팀원에게 남은 태스크 배정 |
+| `failure-tracker.sh` | PostToolUseFailure | 실패 패턴 축적 |
+| `docs-sync.sh` | TaskCompleted | 코드 변경을 `.docs-queue`에 기록 → `/docs sync` |
+| `worktree-tracker.sh` | WorktreeCreate/Remove | 워크트리 상태 추적 |
+| `autodev-judge.sh` | (수동) | AutoDev 스코어 판정 |
+
+그 외: `notchi-hook.sh`(알림, 선택), `reset-home-memory.sh`(홈 디렉토리 세션 정리), prettier 자동 포맷(인라인).
 
 ---
 
 ## 🤖 TTH 멀티 에이전트 사일로
 
-<div align="center">
-<img src="assets/tth-banner.png" alt="TTH Multi-Agent Harness" width="720" />
-</div>
+<img src="assets/tth-banner.png" alt="TTH" width="720" />
 
-> **Toss 사일로 + Tesla 5-Step + Ralph Loop = 자율 멀티 에이전트 팀**
-
-`/tth "기능 설명"` 한 줄로 M7 CEO 페르소나 팀이 자율적으로 협업합니다.
+**Toss(사일로) + Tesla(제거 우선) + Halo(Ralph Loop) 3축 통합** — M7 CEO 페르소나 팀이 파일 경계를 나눠 병렬 협업한다.
 
 ```
-/tth "TODO 앱 만들어줘"
+/tth 결제 시스템 만들어줘
 ```
 
-### 3축 통합
-
-| 축 | 원출처 | 역할 |
+| 페르소나 | 역할 | 파일 경계 (배타적) |
 |---|---|---|
-| **Toss 사일로** | 토스 조직문화 | DRI 구조, 파일 경계, 자율 의사결정 |
-| **Tesla 5-Step** | 머스크 | 의심 → 삭제 → 단순화 → 가속 → 자동화 |
-| **Ralph Loop** | ghuntley/ralph | 반복 수렴, backpressure, progress.txt 학습 |
+| 사티아 (satya) | 오케스트레이터 | 통합·머지 조정 |
+| 피차이 (pichai) | 백엔드 | `api/**`, `package.json` **단독** |
+| 젠슨 (jensen) | 인프라·타입 | `**/types/**` **단독** |
+| 팀 쿡 (tim-cook) | 컴포넌트 인덱스 | `components/**/index.tsx`만 |
+| 저커버그 (zuckerberg) | 프론트 구현 | 나머지 `components/**` |
+| 베이조스 (bezos) | 데이터·API 계약 | 스키마·계약 |
+| 머스크 (musk) | **독립 평가자** | 코드 수정 없음 — 평가만 |
 
-### 팀 구성 (M7 CEO 매핑)
+- 팀원은 tmux 세션으로 상주, `SendMessage(to=이름)`로 재사용 (매 라운드 재스폰 금지)
+- `CHECKPOINT.md`(마일스톤+검증 커맨드) · `AUDIT.log`(상태 전이) · `progress.txt`(팀 공유 교훈)로 Long-Horizon 실행
+- 품질 게이트 실패 시 완료 불가 — 수정 후 재시도가 기본
 
-| 역할 | 이름 | CEO 철학 |
-|------|------|----------|
-| PO/Team Lead | **사티아** (Satya Nadella) | Growth Mindset, 팀 임파워먼트 |
-| Architect | **피차이** (Sundar Pichai) | Platform Thinking, 10x Thinking, Simplicity at Scale |
-| Designer/UX | **팀쿡** (Tim Cook) | Apple 디자인 철학, 완벽주의 |
-| Frontend | **저커버그** (Mark Zuckerberg) | Move Fast, 프로덕트 중심 |
-| Backend | **젠슨** (Jensen Huang) | Intellectual Honesty, 기술적 깊이 |
-| QA | **베조스** (Jeff Bezos) | Customer Obsession, "?" 이메일 |
-| **Evaluator** | **머스크** (Elon Musk) | 5-Step Engineering, 무자비한 품질 심판 |
+---
 
-### Long-Horizon 실행 패턴
+## 📋 PRD Aletheia v3
 
-3단계 이상 또는 멀티세션 작업 시, 내구성 있는 프로젝트 메모리를 자동 생성합니다:
+<img src="assets/prd-banner.png" alt="PRD" width="720" />
 
-| 파일 | 관리자 | 목적 |
-|------|--------|------|
-| `CHECKPOINT.md` | 사티아 (생성) + 피차이 (검증 커맨드) | 마일스톤 정의 + 검증 + done-when |
-| `AUDIT.log` | 사티아 (기록) + 베조스 (게이트) | append-only 이벤트 스트림 |
-| `progress.txt` | 전체 팀 | 패턴, gotcha, 실패 교훈 |
-
-### 파이프라인
+**인사이트 중심 기획** — 경쟁사·시장·사용자 분석 서브에이전트가 병렬로 조사하고, 근거 있는 PRD 세트를 생성한다.
 
 ```
-Phase 0: 사티아 활성화 (PO 모드)
-    ↓
-Phase 1: 요구사항 의심 (Musk Step 1) — prd/ 자동 읽기
-    ↓
-Phase 2: 동적 팀 선발 + 스토리 분해 + CHECKPOINT.md 생성
-    ↓
-Phase 3: Ralph Loop 병렬 실행
-         (자체 검증 → pass/fail → 재시도 → 학습 누적)
-         마일스톤마다 AUDIT.log 기록
-    ↓
-Phase 4: 5-Step Eval Pipeline ⭐ NEW
-    ├── 4-1: Hard Gates (typecheck/lint/test/coverage/security)
-    ├── 4-2: 머스크 독립 평가 (100점 채점 + PASS/FAIL)
-    ├── 4-3: 베조스 E2E 검증
-    ├── 4-4: AI 슬롭 정리 (불필요한 주석/추상화 제거)
-    └── 4-5: QUALITY_SCORE.md 자동 생성
-    ↓
-    ├── PASS (85+) → Phase 5
-    ├── CONDITIONAL (65-84) → 수정 후 재평가
-    └── FAIL (0-64) → Phase 3 Ralph Loop 재진입
-    ↓
-Phase 5: HANDOFF.md + TeamDelete + prd/SPEC.md 마일스톤 갱신
+/prd AI 회의록 요약 SaaS
 ```
 
-### 프로젝트 유형별 자동 팀 선발
+- 복잡도 자동 판단: Low(단일 PRD) / Mid(경쟁사 분석 1개 병행) / High(조사 서브에이전트 3개 병렬)
+- 출력: `prd/` 디렉토리에 8개 파일 (PRD 본문, 경쟁 분석, 페르소나, 로드맵, 리스크, 지표…)
+- `/tth`와 연결하면 PRD → 구현까지 원커맨드 플로우
 
-| 유형 | 팀원 |
-|------|------|
-| 백엔드 전용 | 피차이 + 젠슨 + 베조스 |
-| 프론트엔드 전용 | 팀쿡 + 저커버그 + 베조스 |
-| 풀스택 | 피차이 + 팀쿡 + 저커버그 + 젠슨 + 베조스 |
-| UI 리디자인 | 팀쿡 + 저커버그 |
-| 코드 리뷰/감사 | 베조스 단독 |
-| 아키텍처 리팩토링 | 피차이 + 베조스 |
+---
 
-### TTH 파일 구조
+## 🔬 AutoDev — Ralph Loop 자율 개발
 
-```
-~/.claude/
-├── commands/tth.md           ← /tth 슬래시 커맨드 (오케스트레이션)
-├── team-roles/
-│   ├── satya.md              ← PO/리드 (Opus) — CHECKPOINT.md, AUDIT.log 관리
-│   ├── pichai.md             ← 아키텍트 (Opus) — 마일스톤 검증 커맨드 정의
-│   ├── tim-cook.md           ← 디자이너 (Sonnet)
-│   ├── zuckerberg.md         ← 프론트엔드 (Sonnet)
-│   ├── jensen.md             ← 백엔드 (Sonnet)
-│   ├── bezos.md              ← QA (Sonnet) — 마일스톤 게이트 최종 검증
-│   └── musk.md               ← Evaluator (Opus) — 독립 평가 + PASS/FAIL 판정
-├── hooks/
-│   ├── verify-task-quality.sh ← TaskCompleted 품질 게이트
-│   ├── check-architecture.sh  ← 아키텍처 불변성 체크
-│   ├── check-remaining-tasks.sh ← TeammateIdle 유휴 방지
-│   ├── autodev-judge.sh       ← AutoDev 스코어 판정
-│   ├── ralph-loop.sh          ← Stop 자율 루프 (completion promise 감지)
-│   ├── notchi-hook.sh         ← 다중 이벤트 → Notchi 앱 연동
-│   ├── reset-home-memory.sh   ← SessionStart 홈 디렉토리 메모리 초기화
-│   └── docs-sync.sh           ← TaskCompleted docs 자동 동기화
-└── skills/
-    ├── autodev/SKILL.md       ← 자율 실험 루프
-    └── autodev-parallel/SKILL.md ← 병렬 워크트리 오케스트레이터
+<img src="assets/autodev-banner.png" alt="AutoDev" width="720" />
+
+**밤새 돌려놓으면 출근 시 PR이 올라와 있다.** Stop Hook이 세션 종료를 가로채 PRD 항목을 하나씩 소진한다.
+
+```mermaid
+flowchart LR
+    A["세션: PRD 항목 구현<br/>+ 검증 + 커밋"] --> B{"Stop Hook"}
+    B -->|"미완료 항목 있음"| C["연속 프롬프트(reason)<br/>새 세션 시작"]
+    C --> A
+    B -->|"promise 감지<br/>(assistant 메시지만)"| D["✅ 루프 종료<br/>완료 보고서"]
+    B -->|"max_iterations 도달"| D
 ```
 
-> **요구사항**: `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` 환경변수 필요 (settings.json에 포함됨)
+- **안전장치**: scope 밖 수정 금지 · 검증 실패 시 롤백 · `autodev/` 브랜치 격리 · max_iterations 상한(사용자 확인 없이 50 초과 금지)
+- 단일 완료 조건이면 Claude Code **내장 `/goal`**, PRD 다항목·품질 게이트가 필요하면 **autodev 스킬**
+- 병렬 모드(`autodev-parallel`): 워크트리 격리 + cherry-pick 라운드로 독립 항목 동시 구현 (/tth와 동시 사용 금지)
 
 ---
 
 ## 🚀 Musk Evaluator — 독립 평가 시스템
 
-<div align="center">
-<img src="assets/eval-banner.png" alt="Musk Evaluator" width="720" />
-</div>
+<img src="assets/eval-banner.png" alt="Eval" width="720" />
 
-> **Generator-Evaluator 분리 원칙: 구현자가 자신의 코드를 평가하면 문제를 과소평가한다.**
+**같은 모델이 만든 것을 같은 모델이 검증하지 않는다** — 생성자-평가자 분리 원칙.
 
-머스크(Elon Musk) 페르소나의 독립 평가자가 코드 산출물을 4축 100점 만점으로 채점합니다.
-
-```
-/eval
-```
-
-### 5-Step Engineering Process 기반 평가
-
-| Step | 평가 축 | 배점 | 핵심 질문 |
-|------|---------|------|-----------|
-| Step 1 (의심) | 기능 정확성 | 40점 | "진짜 동작하나? 테스트 통과하나?" |
-| Step 2 (삭제) | 독창성 — AI 슬롭 감지 | 20점 | "이 코드가 없어도 되지 않나?" |
-| Step 3 (단순화) | 코드 품질 | 25점 | "더 단순할 수 없나?" |
-| Step 4+5 (가속/자동화) | 사용성 & 보안 | 15점 | "안전하고 빠른가?" |
-
-### 판정 기준
-
-| 총점 | 판정 | 머스크 반응 | 액션 |
-|------|------|------------|------|
-| 85-100 | ✅ PASS | "Ship it." | 배포 승인 |
-| 65-84 | ⚠️ CONDITIONAL | "이것만 고쳐." | 수정 후 재평가 (1회) |
-| 0-64 | ❌ FAIL | "처음부터 다시 해." | Ralph Loop 재진입 |
-
-### AI 슬롭 감지 항목
-
-ast-grep(`sg`)으로 AST 기반 정밀 탐지: `console.log($$)`, `$A as any`, 불필요한 주석, 과도한 추상화, 사용하지 않는 import 등 **AI가 만든 전형적 패턴**을 자동 감지하고 삭제를 지시합니다.
-
-### Generator-Evaluator 분리 규칙
-
-- 머스크는 **코드를 직접 수정하지 않는다** (Read/Grep/Bash만 사용)
-- 구현자의 설명이 아닌 **실행 결과**만 판단 근거
-- FAIL 시 **구체적 수정 지시서** 전달 (파일:라인 + 기대값 vs 실제값)
+- 5-Step Engineering Process 기반: 요구사항 의심 → 삭제 → 단순화 → 가속 → 자동화
+- AI 슬롭 감지: 과도한 추상화, 죽은 코드, 그럴듯한 미구현
+- 판정: SHIP / CONDITIONAL(재평가 최대 3회) / REJECT
+- 실행: `/eval` 또는 TTH 파이프라인에서 자동 — gemini CLI·별도 세션·독립 서브에이전트 순으로 교차 모델 검증
 
 ---
 
-## 🔬 AutoDev 자율 실험 루프
+## 📄 고객 제출 산출물 (/client-docs)
 
-<div align="center">
-<img src="assets/autodev-banner.png" alt="AutoDev - AI works while you sleep" width="720" />
-</div>
-
-> **Karpathy의 [autoresearch](https://github.com/karpathy/autoresearch) 패턴을 일반 소프트웨어 개발에 적용**
-
-AI 에이전트가 코드를 수정하고, 테스트/빌드로 검증하고, keep/discard를 반복하며 **자율적으로 코드를 개선**합니다.
-사람이 자는 동안 수십 번의 실험을 자동으로 수행합니다.
+SI/AO 프로젝트의 검수·납품 문서를 **온디맨드로** 생성한다 — 요청한 산출물만, 실제 근거에서만.
 
 ```
-/autodev
-> goal: "실패하는 테스트 전부 통과시켜"
-> scope: ["src/**"]
-> budget: 50
+/client-docs test     # 단위/통합테스트결과서 — 실제 pytest/CI 실행 출력만 사용
+/client-docs arch     # 아키텍처설계서 ← docs/ARCHITECTURE.md + 구성도 + ERD
+/client-docs rtm      # 요구사항추적표 ← SPEC.md + 구현·테스트 매핑
+/client-docs report   # AO 운영보고서 ← AUDIT.log + 장애·변경 기록
 ```
 
-### autoresearch → AutoDev 매핑
+- **증거 기반**: 실행 안 한 테스트 결과 기재 절대 금지, 미확인 항목은 `[확인 필요]` 표시
+- **검수 수준**: 케이스별 상세 별첨, 커버리지 측정 범위 명시(소스 기준 병기), 결재란·추적성 골격 포함
+- 고객 양식이 `templates/client/`에 있으면 그 구조를 그대로 따름
+- 생성 후 별도 에이전트가 수치 재현으로 사실 대조 — 생성자가 자기 산출물을 채점하지 않는다
 
-| autoresearch | AutoDev |
+---
+
+## 🛠 스킬 (43개)
+
+<details>
+<summary><b>프로세스·워크플로우 (20개)</b> — plan, spec, tdd, review, verify, autodev …</summary>
+
+| 스킬 | 역할 |
 |---|---|
-| `val_bpb` (단일 지표) | `autodev-judge.sh` (빌드/테스트/린트 종합 스코어) |
-| `train.py` 1개 파일 | scope 내 파일들 |
-| `program.md` | `/autodev` 스킬 |
-| 5분 학습 | `npm test` / `pytest` |
-| `results.tsv` | `.autodev/results.tsv` |
-| NEVER STOP | budget 소진까지 NEVER STOP |
+| `brainstorming` | 모든 창작 작업 전 설계 확정 — 승인 전 구현 금지 게이트 |
+| `systematic-debugging` | 근본 원인 4단계 — 수정 3회 실패 시 아키텍처 의심 |
+| `plan` | 3단계+ 작업 계획 수립 → `docs/execute-plans/` 영속화 |
+| `spec` / `spec-verify` | 심층 인터뷰 → SPEC.md → 별도 세션 검증 |
+| `tdd` | RED-GREEN-REFACTOR 사이클 강제 |
+| `review` | Codex+Claude 듀얼 리뷰, 심각도 분류, False Positive 규칙 |
+| `verify` | 8단계 검증 파이프라인 (타입·린트·테스트·빌드·보안) |
+| `e2e-verify` / `e2e-agent-browser` | API/CLI E2E · 브라우저 자동화 E2E |
+| `build-fix` | 빌드 에러 복구 — 1회 실패 시 systematic-debugging 전환 |
+| `simplify` / `techdebt` | 코드 단순화 · 데드코드/의존성/기술부채 스캔 |
+| `commit-push-pr` | 민감 파일 검사 → 커밋 → PR 생성 |
+| `handoff` / `compact-guide` | 인수인계 문서 · 컨텍스트 관리 가이드 |
+| `frontend` | frontend-developer 컨텍스트로 UI 구현 |
+| `eval` | Musk Evaluator 실행 |
+| `autodev` / `autodev-parallel` | Ralph Loop 자율 개발 (단일/병렬) |
 
-### 실험 루프
+</details>
 
-```
-LOOP (budget 소진까지):
-  1. 코드 수정 (scope 내 파일만)
-  2. git commit
-  3. 테스트/빌드 실행
-  4. 스코어 계산 (autodev-judge.sh)
-  5. 향상 → KEEP (브랜치 전진)
-     악화 → DISCARD (git reset)
-  6. 반복
-```
+<details>
+<summary><b>메모리·문서화 (8개)</b> — auto-memory, docs 스위트, client-docs …</summary>
 
-### 병렬 모드 (`/autodev-parallel`)
+| 스킬 | 역할 |
+|---|---|
+| `auto-memory` | 작업 유형별 docs 라우팅 — 선택적 메모리 로드 |
+| `docs-architecture` | ARCHITECTURE.md + mermaid 구성도 + ADR + ERD |
+| `docs-interfaces` | OpenAPI/AsyncAPI 명세 + API CHANGELOG |
+| `docs-manuals` | 사용자 매뉴얼(Diátaxis) + 운영 런북 |
+| `docs-ci` | 문서 검증 파이프라인 (링크·mermaid·신선도) |
+| `client-docs` | 고객 제출 산출물 온디맨드 생성 |
+| `harness-audit` / `harness-diagnostics` | 전역 하네스 감사 · 프로젝트 진단 |
 
-여러 아이디어를 git worktree로 **동시에** 실험합니다.
+</details>
 
-```
-/autodev-parallel
-> goal: "API 응답시간 최적화"
-> scope: ["src/api/**"]
-> parallel: 3
-> rounds: 5
-```
+<details>
+<summary><b>디자인·스티치 (8개)</b> — stitch 파이프라인, ui-ux-pro-max, nano-banana …</summary>
 
-```
-main
- ├── worktree A ── Agent 1: 캐시 레이어 추가
- ├── worktree B ── Agent 2: 쿼리 최적화
- ├── worktree C ── Agent 3: 인덱스 변경
- └── Orchestrator: 결과 수집 → 최고 브랜치 cherry-pick
-```
+| 스킬 | 역할 |
+|---|---|
+| `stitch-design-md` → `stitch-loop` → `stitch-react` | 디자인 명세 → 반복 개선 → React 변환 파이프라인 |
+| `stitch-enhance-prompt` | 스티치 프롬프트 강화 |
+| `ui-ux-pro-max` | BM25 검색엔진 내장 디자인 DB (스타일 57·팔레트 95·차트 24·스택 12) |
+| `nano-banana` | Gemini 이미지 생성 연동 |
+| `tailwind-design-system` | Tailwind 디자인 시스템 (v3 기준) |
+| `shadcn-ui` | shadcn/ui 컴포넌트 레퍼런스 |
 
-### 적합한 사용 사례
+</details>
 
-| 시나리오 | 지표 |
-|----------|------|
-| 실패 테스트 일괄 수정 | 테스트 통과율 |
-| 성능 최적화 탐색 | 벤치마크 / Lighthouse |
-| TypeScript strict 마이그레이션 | 타입 에러 수 |
-| 의존성 메이저 업그레이드 | 빌드 + 테스트 통과 |
-| 레거시 리팩토링 | 테스트 유지 + 코드 줄 수 |
+<details>
+<summary><b>패턴 레퍼런스 (7개)</b> — react, fastapi, typescript …</summary>
 
-### AutoDev 파일 구조
+`api-design-principles` · `async-python-patterns` · `fastapi-templates`(pydantic v2) · `python-testing-patterns` · `react-patterns` · `typescript-advanced-types` · `vercel-react-best-practices`(47개 룰)
+
+</details>
+
+---
+
+## 🤝 에이전트 (12개)
+
+| 에이전트 | 역할 | | 에이전트 | 역할 |
+|---|---|---|---|---|
+| `planner` | 구현 계획 설계 | | `code-reviewer` | 코드 리뷰 |
+| `architect` | 아키텍처 설계 | | `security-reviewer` | 보안 검토 |
+| `prd-planner` | PRD 기획 | | `evaluator` | 독립 평가 (Musk) |
+| `frontend-developer` | UI 구현 | | `tdd-guide` | TDD 가이드 |
+| `docs-writer` | 문서 생성 | | `junior-mentor` | 온보딩 멘토링 |
+| `stitch-developer` | 스티치 개발 | | `langchain-specialist` | LangChain 전문 (스킬 별도 설치) |
+
+---
+
+## 📏 Rules (9개)
+
+경로 조건(`paths:`)으로 관련 파일 작업 시에만 로드되는 조건부 규칙:
+
+`coding-style` · `security` · `testing` · `performance` · `git-workflow` · `drift-control` · `cross-model-verification` · `tool-overlap` · `code-review-reception`
+
+> **code-review-reception**: 리뷰 피드백은 구현 전 코드베이스 대조 검증. 수행적 동의("맞습니다!") 금지, 근거 있는 반론 허용.
+
+---
+
+## 📐 CLAUDE.md 철학
+
+> **목표와 제약을 주면 스스로 일하는 동료다. 단, 증거 없는 완료 보고는 인정하지 않는다.**
+
+- **Simplicity First** — 최소 변경, 과도한 추상화 금지
+- **No Laziness** — 근본 원인 수정, 디버깅은 systematic-debugging 4단계
+- **Scope Discipline** — 조용히 좁히거나 넓히지 않는다
+- **Goal-Driven** — 단계 나열 대신 성공 기준 + 검증 루프
+- **Design Before Code** — 창작 작업은 brainstorming으로 설계 승인 후 구현
+- **증거 기반 완료 보고** — 이 세션의 도구 결과만 근거로. "스태프 엔지니어가 승인할까?"
+
+---
+
+## 📂 디렉토리 구조
 
 ```
 ~/.claude/
-├── skills/
-│   ├── autodev/SKILL.md          ← 단일 실험 루프
-│   └── autodev-parallel/SKILL.md ← 병렬 워크트리 오케스트레이터
-└── hooks/
-    └── autodev-judge.sh          ← 스코어 판정 함수
+├── CLAUDE.md              # 철학·워크플로우·Knowledge Map
+├── settings.json          # 권한 + Hooks 배선 (20개 이벤트)
+├── skills/       (43)     # 워크플로우·메모리·문서화·디자인·패턴
+├── agents/       (12)     # 역할별 서브에이전트
+├── commands/     ( 4)     # /tth /prd /docs /client-docs
+├── rules/        ( 9)     # 경로 조건부 규칙
+├── hooks/        (20)     # 게이트·메모리·루프 스크립트
+├── team-roles/   ( 7)     # TTH M7 CEO 페르소나
+├── templates/    ( 3)     # CHECKPOINT · AUDIT.log · execute-plan
+├── scripts/               # validate-harness.sh · sarif-to-jsonl.py
+└── semgrep-rules/         # SAST taint 룰 (ts-express · py-fastapi)
+
+{project}/                 # 프로젝트별 (자동 생성)
+├── tasks/                 # todo.md · lessons.md · context.md
+├── memory/                # INDEX.md (라우팅 테이블) + 주제 파일
+├── docs/                  # /docs 스위트 산출물
+└── deliverables/          # /client-docs 산출물
 ```
 
 ---
 
-## 📐 CLAUDE.md 최적화 철학
+## 🔍 품질 보증
 
-> ETH Zurich 논문 + Anthropic 공식 가이드 기반
-
-**"Claude가 코드를 읽어도 알 수 없는 것만 적어라."**
-
-- 200줄 이내 (현재 136줄)
-- 발견 가능한 정보 제거 (스킬 목록, 에이전트 목록, 코드베이스 개요)
-- 린터로 강제 가능한 규칙은 hooks로 이동
-- Auto Memory(MEMORY.md)와 역할 분리
+- `scripts/validate-harness.sh` — frontmatter·JSON·훅 문법·참조 경로·한/영 패리티 7종 검사 (CI 연동)
+- 모든 훅은 실제 stdin 페이로드 파이프 테스트를 거침 — "설치됨"과 "동작함"은 다르다
+- 전 스킬은 4축 검사 통과: 선언된 도구로 실행 가능한가 / 참조가 실존하는가 / 트리거가 겹치지 않는가 / 훅·CI가 실제 발동하는가
 
 ---
-
-## 🔒 Hooks 보장 시스템
-
-CLAUDE.md의 "제안"을 settings.json의 "보장"으로 격상:
-
-### 보호 규칙 Hook (기존)
-
-| 규칙 | 방식 | Hook 유형 |
-|------|------|-----------|
-| main/master push 금지 | 물리적 차단 | PreToolUse |
-| force push 금지 | 물리적 차단 | PreToolUse |
-| .env 커밋 금지 | 물리적 차단 | PreCommit |
-| console.log 커밋 금지 | 경고 + 차단 | PreCommit |
-| prettier 자동 포맷팅 | 자동 실행 | PostToolUse |
-| TTH 태스크 완료 시 typecheck/lint/test | 품질 게이트 | TaskCompleted |
-| 아키텍처 불변성 위반 감지 | 구조 보호 | TaskCompleted |
-| TTH 팀원 유휴 시 남은 태스크 확인 | 유휴 방지 | TeammateIdle |
-| 서브에이전트 완료 시 PRD.md 생성 확인 | 생성 알림 | SubagentStop |
-| AutoDev 스코어 판정 | 빌드/테스트/린트 종합 스코어 | autodev-judge.sh |
-
-### Hook 스크립트 (14개)
-
-| 파일 | 이벤트 | 설명 |
-|------|--------|------|
-| `verify-task-quality.sh` | TaskCompleted | TTH 태스크 완료 시 typecheck/lint/test/coverage/security 품질 게이트 |
-| `subagent-stop-tracker.sh` | SubagentStop | 서브에이전트 완료 추적 — prd/ 생성 확인 + 에이전트 카운터 정리 |
-| `check-architecture.sh` | TaskCompleted | 아키텍처 불변성 위반 감지 |
-| `check-remaining-tasks.sh` | TeammateIdle | TTH 팀원 유휴 시 남은 태스크 확인 |
-| `autodev-judge.sh` | AutoDev | 빌드/테스트/린트 종합 스코어 판정 + AI 슬롭 감지 |
-| `ralph-loop.sh` | Stop | Ralph Loop 자율 반복 — .ralph-loop/state.json 기반, 스토리 완료까지 자동 반복 |
-| `notchi-hook.sh` | 다중 이벤트 | Notchi 앱 연동 — Claude Code 이벤트를 Unix 소켓으로 전달 |
-| `reset-home-memory.sh` | SessionStart | 홈 디렉토리 메모리 초기화 |
-| `docs-sync.sh` | TaskCompleted | docs 자동 동기화 — 변경 파일을 .docs-queue에 기록 |
-| `failure-tracker.sh` | **PostToolUseFailure** | 도구 실패 패턴 추적 → progress.txt 자동 기록, 3회 연속 실패 시 에스컬레이션 |
-| `subagent-tracker.sh` | **SubagentStart** | 서브에이전트 스폰 추적 → AUDIT.log 기록, 동시 에이전트 수 모니터링 |
-| `post-compact-guard.sh` | **PostCompact** | 컨텍스트 압축 후 CHECKPOINT/progress/AUDIT/prd 존재 알림 |
-| `config-change-guard.sh` | **ConfigChange** | 캐시 보존 규칙 위반 감지 (CLAUDE.md/rules/agents 변경 경고) |
-| `worktree-tracker.sh` | **WorktreeCreate/Remove** | 워크트리 라이프사이클 추적 → AUDIT.log + 고아 워크트리 정리 |
-
-### settings.json Hook 이벤트 매핑
-
-settings.json에서 다음 이벤트에 hook이 등록되어 있습니다:
-
-| 이벤트 | 등록된 Hook |
-|--------|------------|
-| **Stop** | `ralph-loop.sh` (자율 루프), `notchi-hook.sh` |
-| **SessionStart** | `reset-home-memory.sh` (메모리 초기화), `notchi-hook.sh` |
-| **SessionEnd** | `notchi-hook.sh` |
-| **PreCompact** | `notchi-hook.sh` (auto/manual) |
-| **PostCompact** | `post-compact-guard.sh` (컨텍스트 복구 안내) |
-| **PermissionRequest** | `notchi-hook.sh` |
-| **UserPromptSubmit** | `notchi-hook.sh` |
-| **PreToolUse** | `notchi-hook.sh` |
-| **PostToolUse** | prettier 자동 포맷, git commit 검증, `notchi-hook.sh` |
-| **PostToolUseFailure** | `failure-tracker.sh` (실패 패턴 추적 + 에스컬레이션) |
-| **SubagentStart** | `subagent-tracker.sh` (에이전트 스폰 추적) |
-| **SubagentStop** | prd/ 생성 확인, 에이전트 카운터 정리, `notchi-hook.sh` |
-| **TaskCompleted** | `verify-task-quality.sh`, `docs-sync.sh` |
-| **TeammateIdle** | `check-remaining-tasks.sh` |
-| **ConfigChange** | `config-change-guard.sh` (캐시 보존 규칙 위반 경고) |
-| **WorktreeCreate** | `worktree-tracker.sh` (워크트리 생성 추적) |
-| **WorktreeRemove** | `worktree-tracker.sh` (워크트리 제거 + 정리) |
-
----
-
-## 🎯 Goal-Driven 실행 (/goal 연동)
-
-CLAUDE.md의 Goal-Driven 원칙을 Claude Code 내장 `/goal`과 연결합니다.
-`/goal <검증 가능한 조건>`을 등록하면 매 턴 종료 시 조건 충족 여부를 자동 평가(Haiku)하고, 미충족이면 계속 작업합니다.
-
-```
-# 예: 하네스 구조 검증 통과까지 자동 반복
-/goal bash scripts/validate-harness.sh 가 오류 0건으로 통과
-
-# 예: 테스트 전부 통과까지
-/goal npx vitest run 전체 통과 + tsc --noEmit 에러 0
-```
-
-| 상황 | 도구 |
-|------|------|
-| 단독 세션 장기 작업 | `/goal <조건>` — 세션 범위 Stop hook 기반 |
-| 멀티 에이전트 장기 작업 | `/tth` — Ralph Loop(ralph-loop.sh Stop hook) + 팀 사일로 |
-
-> 두 방식 모두 Stop hook 기반이라 공존 가능합니다. 조건은 "성공 기준을 커맨드로" 쓰는 것이 핵심 — 애매한 목표("좋게 만들어")가 아니라 검증 가능한 게이트를 등록하세요.
-
----
-
-## 🛠 스킬 (39개)
-
-### 자율 실험 스킬 (2개)
-
-| 스킬 | 용도 |
-|------|------|
-| `/my-cc-harness:autodev` | 자율 코드 실험 루프 (autoresearch 패턴) |
-| `/my-cc-harness:autodev-parallel` | 병렬 워크트리 실험 오케스트레이터 |
-
-### 워크플로우 스킬 (17개)
-
-| 스킬 | 용도 |
-|------|------|
-| `/my-cc-harness:plan` | 작업 계획 수립 |
-| `/my-cc-harness:spec` | SPEC 기반 개발 - 심층 인터뷰로 명세서 작성 |
-| `/my-cc-harness:spec-verify` | 명세서 기반 구현 검증 |
-| `/my-cc-harness:frontend` | 빅테크 스타일 UI 개발 |
-| `/my-cc-harness:verify` | 테스트, 린트, 빌드 + 순환참조/데드코드/시크릿/AI슬롭 검증 |
-| `/my-cc-harness:e2e-verify` | 피처 기반 E2E 테스트 검증 |
-| `/my-cc-harness:commit-push-pr` | 커밋 → 푸시 → PR |
-| `/my-cc-harness:review` | 코드 리뷰 (difftastic 구조적 diff + gitleaks + ast-grep) |
-| `/my-cc-harness:simplify` | 코드 단순화 (jscpd 중복 탐지 + ast-grep) |
-| `/my-cc-harness:tdd` | 테스트 주도 개발 |
-| `/my-cc-harness:build-fix` | 빌드 에러 수정 |
-| `/my-cc-harness:handoff` | HANDOFF.md 세션 인계 |
-| `/my-cc-harness:compact-guide` | 컨텍스트 관리 가이드 |
-| `/my-cc-harness:techdebt` | 기술 부채 정리 |
-| `/my-cc-harness:harness-diagnostics` | TTH 하네스 진단 및 디버깅 |
-| `/my-cc-harness:eval` | 머스크 독립 평가 — ast-grep/gitleaks/scc 자동 스캔 + 4축 100점 채점 |
-| `/my-cc-harness:harness-audit` | 하네스 건강도 진단 — 8차원 점수 + S~D 등급 |
-
-### 문서화 스킬 (4개) — docs 스위트
-
-> `/docs` 커맨드가 라우팅. 문서↔코드 매핑은 `docs/docs.yaml` 매니페스트로 관리 (드리프트 감지 계약)
-
-| 스킬 | 용도 |
-|------|------|
-| `/my-cc-harness:docs-architecture` | 아키텍처 구성도(C4 mermaid) + ARCHITECTURE.md 코드맵 + ADR(MADR) + ERD |
-| `/my-cc-harness:docs-interfaces` | API 구성도 + OpenAPI 3.1/AsyncAPI 3.0 명세 + 시퀀스 흐름도 + API CHANGELOG |
-| `/my-cc-harness:docs-manuals` | 사용자 매뉴얼(Diátaxis 4분면) + 운영자 매뉴얼/런북/배포 가이드/인시던트 플레이북 |
-| `/my-cc-harness:docs-ci` | docs 검증 파이프라인 — 링크/OpenAPI lint·breaking/mermaid/신선도 검사 + CHANGELOG 자동화 |
-
-### 기술 스킬 (10개)
-
-| 스킬 | 출처 | 용도 |
-|------|------|------|
-| `react-patterns` | skills.sh | React 19 전체 패턴 |
-| `vercel-react-best-practices` | Vercel | React/Next.js 성능 최적화 |
-| `typescript-advanced-types` | skills.sh | TypeScript 고급 타입 |
-| `shadcn-ui` | skills.sh | shadcn/ui 컴포넌트 |
-| `tailwind-design-system` | skills.sh | Tailwind CSS 디자인 시스템 |
-| `ui-ux-pro-max` | skills.sh | UI/UX 종합 가이드 |
-| `fastapi-templates` | skills.sh | FastAPI 템플릿 |
-| `api-design-principles` | skills.sh | REST/GraphQL API 설계 |
-| `async-python-patterns` | skills.sh | Python 비동기 패턴 |
-| `python-testing-patterns` | skills.sh | pytest 테스트 패턴 |
-
-### E2E & Stitch 스킬 (5개)
-
-| 스킬 | 용도 |
-|------|------|
-| `/my-cc-harness:e2e-agent-browser` | agent-browser CLI로 E2E 테스트 자동화 |
-| `/my-cc-harness:stitch-design-md` | Stitch 프로젝트 → DESIGN.md 생성 |
-| `/my-cc-harness:stitch-enhance-prompt` | UI 아이디어 → Stitch 최적화 프롬프트 변환 |
-| `/my-cc-harness:stitch-loop` | Stitch로 멀티 페이지 웹사이트 자율 생성 |
-| `/my-cc-harness:stitch-react` | Stitch 스크린 → React 컴포넌트 변환 |
-
-### 이미지 생성 스킬 (1개)
-
-| 스킬 | 용도 |
-|------|------|
-| `/my-cc-harness:nano-banana` | Gemini로 이미지 생성/편집 (썸네일, 아이콘, 다이어그램 등) |
-
----
-
-## 🤖 에이전트 (12개)
-
-> 에이전트는 플러그인으로 설치되지 않습니다. `~/.claude/agents/`에 직접 복사하세요.
-
-| 에이전트 | 용도 |
-|----------|------|
-| `evaluator` | **머스크 독립 평가자** — gitleaks/madge/knip/ast-grep/scc 자동 스캔 + 4축 100점 채점 |
-| `langchain-specialist` | LangChain/LangGraph/Deep Agents 프로젝트 구축 전문가 |
-| `prd-planner` | /prd Phase 4-6 전담 — Six Hats 합성 + 전략적 스코핑 + prd/ 디렉토리 8개 파일 생성 |
-| `docs-writer` | 코드 변경 감지 → /docs/ 자동 문서 생성 (구현과 병렬 실행) |
-| `planner` | 복잡한 기능 계획 수립 (docs-writer 병렬 실행 포함) |
-| `frontend-developer` | 빅테크 스타일 UI 구현 |
-| `stitch-developer` | Stitch MCP 기반 UI/웹사이트 생성 |
-| `junior-mentor` | 주니어 학습 하네스 - 코드 + EXPLANATION.md 생성 |
-| `code-reviewer` | 코드 품질/보안 리뷰 — difftastic diff + gitleaks + ast-grep + scc + Blast-Radius 분석 |
-| `architect` | 시스템 아키텍처 설계 |
-| `security-reviewer` | 보안 취약점 분석 — gitleaks + ast-grep + OWASP Top 10 + **SAST 기반 Discovery→Analysis 2단계 분석** |
-| `tdd-guide` | TDD 방식 안내 |
-
-<details>
-<summary><b>수동 설치 방법</b></summary>
-
-```bash
-curl -fsSL https://github.com/jh941213/my-cc-harness/archive/main.tar.gz | tar -xz -C /tmp
-cp /tmp/my-cc-harness-main/agents/*.md ~/.claude/agents/
-```
-
-</details>
-
----
-
-## 📝 Commands (3개)
-
-| 커맨드 | 용도 |
-|--------|------|
-| `/tth [설명]` | TTH 멀티 에이전트 사일로 (Toss + Tesla + Ralph Loop) |
-| `/prd [아이디어]` | Aletheia v3 — CPS 정렬 + 인문학 프레임워크 + prd/ 디렉토리 8개 파일 통합 생성 (PRD + SPEC) |
-| `/docs [유형]` | 문서 생성/동기화 라우터 — code/arch/api/manual/ops/ci/sync/all (docs 스위트 연동) |
-
----
-
-## 📏 Rules (8개, 조건부 로드)
-
-> YAML frontmatter로 관련 파일 작업 시에만 로드됩니다.
-
-| 규칙 파일 | 조건 | 용도 |
-|-----------|------|------|
-| `coding-style.md` | `**/*.ts`, `**/*.tsx`, `**/*.js` | 불변성, 파일 구성 |
-| `git-workflow.md` | 모든 파일 | Git 브랜치, 커밋 형식 |
-| `testing.md` | `**/*.test.*`, `**/*.spec.*` | 테스트 원칙, 커버리지 |
-| `performance.md` | `**/*.ts`, `**/*.tsx`, `**/*.py` | 성능 최적화 |
-| `security.md` | `**/*.ts`, `**/*.tsx`, `**/*.py`, `**/*.env*` | 보안 체크리스트 |
-| `cross-model-verification.md` | 모든 파일 | **교차 모델 검증** — Claude 작성 → Codex 검증 루프, 3단계 이상 계획 시 필수 |
-| `drift-control.md` | 모든 파일 | **3축 Drift 측정** — goal/constraint/scope drift + combined 가중평균, 임계값 초과 시 re-plan |
-| `tool-overlap.md` | 모든 파일 | **도구 역할 분리** — Tavily(웹검색), Exa(코드예제), Context7(문서), mgrep(시맨틱) |
-
----
-
-## 🔐 보안 도구체인 (SAST + MCP)
-
-> **출처: [토스 Security Research](https://toss.tech/article/ai-security-research) — "SAST를 취약점 탐지가 아닌 AI가 검토해야 할 모든 후보군 추출용으로 사용"**
-
-AI가 취약점을 못 찾는 이유는 이해 못 해서가 아니라, 그 코드를 **"못 봤기"** 때문. Semgrep으로 Untrusted Input 경로를 전수 추출하고, AI가 선별→심층 분석하는 2단계 파이프라인.
-
-### Semgrep Taint Rules (2개)
-
-| 파일 | 대상 | Sources |
-|------|------|---------|
-| `semgrep-rules/ts-express-taint.yaml` | TypeScript/Express + Next.js | `req.params`, `req.query`, `req.body`, `req.headers`, `req.cookies`, `request.json()` |
-| `semgrep-rules/py-fastapi-taint.yaml` | Python/FastAPI | Path params, Pydantic body, Query params |
-
-### Discovery → Analysis 파이프라인
-
-```
-1. semgrep scan --config semgrep-rules/ . --sarif   ← Untrusted Input 경로 전수 추출
-    ↓
-2. python3 scripts/sarif-to-jsonl.py output.sarif   ← MB 단위 SARIF → KB 단위 JSONL (연속 라인 병합)
-    ↓
-3. Discovery: JSONL 스니펫만 보고 가능성 판단     ← 미탐보다 과탐이 낫다
-    ↓
-4. Analysis: 선별된 경로만 깊게 분석              ← 데이터 흐름 추적 + 공격 시나리오 + 수정 코드
-```
-
-### SourceCode Browse MCP (프로젝트별 등록)
-
-ctags 인덱싱 + tree-sitter 함수 범위 감지로 AI에게 "Go to Definition / Find References" 능력을 부여합니다.
-
-| MCP 도구 | 용도 |
-|----------|------|
-| `read_definition(symbol)` | 심볼 정의 위치 + tree-sitter로 함수 전체 본문 반환 |
-| `find_references(pattern)` | ripgrep 기반 참조 검색 |
-| `read_source(path, line)` | 지정 라인 주변 소스 코드 |
-| `get_project_structure()` | 프로젝트 디렉터리 구조 |
-
-프로젝트의 `.claude/settings.json`에 등록:
-```json
-{
-  "mcpServers": {
-    "sourcecode-browse": {
-      "type": "stdio",
-      "command": "python3",
-      "args": ["~/.claude/mcp-servers/sourcecode-browse/server.py", "."]
-    }
-  }
-}
-```
-
-### 파일 구조
-
-```
-semgrep-rules/
-├── ts-express-taint.yaml    ← TypeScript/Express + Next.js taint 룰
-└── py-fastapi-taint.yaml    ← Python/FastAPI taint 룰
-scripts/
-└── sarif-to-jsonl.py        ← SARIF → 경량 JSONL 변환기
-mcp-servers/
-└── sourcecode-browse/
-    └── server.py            ← ctags + tree-sitter MCP 서버
-```
-
----
-
-## 📄 템플릿 (3개)
-
-Long-Horizon 실행 패턴에서 자동 생성되는 파일의 템플릿입니다.
-
-| 템플릿 | 생성 시점 | 용도 |
-|--------|----------|------|
-| `templates/CHECKPOINT.md.template` | /plan, /tth 시작 시 | 마일스톤 정의 + 검증 커맨드 + done-when + **3축 drift 추적** |
-| `templates/AUDIT.log.template` | 첫 마일스톤 시작 시 | append-only 이벤트 스트림 (15개 액션 종류 정의) |
-| `templates/execute-plan.md.template` | /plan 확정 시 | 실행 계획 문서 + **Codex 교차 검토 결과** + 회고 섹션 |
-
----
-
-## 💡 Boris Cherny 팁
-
-> Claude Code 창시자의 실전 팁
-
-| # | 팁 | 요약 |
-|---|---|---|
-| 1 | **병렬 실행** | 터미널 5개 + claude.ai/code 5-10개 동시 실행 |
-| 2 | **Opus 5** | 항상 Opus 사용. 스티어링이 적어서 결과적으로 빠름 |
-| 3 | **Plan 모드** | Shift+Tab 두 번 → Plan, 확정 후 Auto-accept로 1-shot 구현 |
-| 4 | **CLAUDE.md 공유** | 팀 전체가 git에 커밋, 실수할 때마다 규칙 추가 |
-| 5 | **즉시 재계획** | 잘못되면 Plan 모드 복귀, 무리하게 밀어붙이지 않기 |
-| 6 | **서브에이전트** | 프롬프트에 "use subagents" → 병렬 처리 |
-| 7 | **git worktree** | `claude --worktree` 또는 `claude -w`로 병렬 작업 |
-| 8 | **병렬 에이전트** | 독립 Task → 무조건 병렬, 겹치면 순차 |
-
----
-
-## 🔄 Codex CLI 버전
 
 <div align="center">
 
-**동일한 하네스를 OpenAI Codex CLI에서도 사용할 수 있습니다.**
+**MIT License** · Made with [Claude Code](https://claude.com/claude-code)
 
-[![Codex CLI Power Pack](https://img.shields.io/badge/Codex_CLI_Power_Pack-33_Skills-orange.svg?style=for-the-badge)](https://github.com/jh941213/my-codex-cli-asset)
+이슈·PR 환영합니다 🙌
 
 </div>
-
-| | My CC Harness | Codex CLI Power Pack |
-|---|:---:|:---:|
-| **Skills** | 39개 (`/my-cc-harness:skill`) | 33개 (`$skill`) |
-| **Agents** | 12개 (서브에이전트) | AGENTS.md 통합 |
-| **Rules** | 8개 (YAML 조건부 로드) | AGENTS.md 통합 |
-| **Hooks** | settings.json 물리 차단 | config.toml |
-| **PRD** | Aletheia v3 (CPS + prd/) | Six Thinking Hats |
-| **자동 문서** | docs 스위트 (4스킬) + docs-writer 병렬 실행 | $docs |
-| **모델** | Claude Opus 5 | Codex (최신) |
-
-```bash
-# Codex CLI 버전 설치
-curl -fsSL https://raw.githubusercontent.com/jh941213/my-codex-cli-asset/main/install.sh | bash
-```
-
-> **GitHub**: [jh941213/my-codex-cli-asset](https://github.com/jh941213/my-codex-cli-asset)
-
----
-
-## 📚 참고 자료
-
-- [Boris Cherny 트위터](https://x.com/bcherny)
-- [Claude Code Skills 공식 문서](https://code.claude.com/docs/en/skills)
-- [skills.sh](https://skills.sh/) - AI 에이전트 스킬 디렉토리
-- [ETH Zurich 논문 - AGENTS.md 효과 분석](https://arxiv.org/abs/2602.11988)
-- [Addy Osmani - Stop Using /init for AGENTS.md](https://addyosmani.com/blog/agents-md/)
-
----
-
-## 📋 Changelog
-
-<details open>
-<summary><b>v1.4.0 (2026-07-27) — 플러그인 정체성 재구성: ccpp → my-cc-harness</b></summary>
-
-**플러그인 rename (breaking, 플러그인 v1.2.0)**
-- 플러그인명 `ccpp` → `my-cc-harness`, 마켓플레이스명 `my-claude-code-asset` → `my-cc-harness` (레포명과 통일)
-- 스킬 호출 프리픽스 변경: `/ccpp:plan` → `/my-cc-harness:plan`
-- 설치 명령 변경: `claude plugin marketplace add jh941213/my-cc-harness` → `claude plugin install my-cc-harness@my-cc-harness`
-- homepage/repository/설치 URL 전부 새 레포 기준으로 교체 (install.sh clone 대상 포함)
-- 구 `ccpp` 플러그인 사용자는 제거 후 재설치: `claude plugin uninstall ccpp` → 위 설치 명령
-
-</details>
-
-<details>
-<summary><b>v1.3.0 (2026-07-27) — Opus 5 세대 최적화 + docs 스위트 + 하네스 자체 CI</b></summary>
-
-**Opus 5 프롬프트 현대화 (컨셉 유지, "unhobbling")**
-- Anthropic 가이드 반영: "하네스의 모든 구성요소는 '모델이 혼자 못 한다'는 가정을 인코딩한다 — 모델이 바뀔 때마다 스트레스 테스트하라"
-- `CLAUDE.md` 재작성 (136줄): 주니어 마인드셋 → 목표+제약 기반 자율 동료, Scope Discipline/커뮤니케이션/증거 기반 완료 보고 추가
-- 강제 재검증 스캐폴딩 제거 (Opus 5는 자가 검증 내장 — 검증은 결정적 게이트(hooks)가 담당)
-- 서브에이전트 "적극 활용" → 위임 기준 명시 (Opus 5는 위임 과다 방향이라 역방향 캡)
-- 200k 시대 컨텍스트 수치 제거: `compact-guide`/`handoff` 신호 기반 재작성, settings.json `AUTO_COMPACT_WINDOW` 하드코딩 삭제
-- GPT-5.4 등 상대 모델 버전 하드코딩 제거 (버전 독립 표기)
-- rules 8개 전부 frontmatter 완비 (조건부 로드 일관성)
-
-**docs 스위트 신설 (4스킬 + /docs 라우터 확장)**
-- `docs-architecture` — 아키텍처 구성도(C4 mermaid) + ARCHITECTURE.md 코드맵 + ADR(MADR) + ERD
-- `docs-interfaces` — API 구성도 + OpenAPI 3.1/AsyncAPI 3.0 + 시퀀스 흐름도 + API CHANGELOG
-- `docs-manuals` — 사용자 매뉴얼(Diátaxis) + 운영자 매뉴얼/런북/배포 가이드/인시던트 플레이북
-- `docs-ci` — docs 검증 파이프라인(링크/OpenAPI/mermaid/신선도) + `docs/docs.yaml` 드리프트 매니페스트
-- `/docs` 커맨드: code/arch/api/manual/ops/ci/sync/all 라우팅
-
-**하네스 자체 검증 (Goal-Driven 루프)**
-- `scripts/validate-harness.sh` — frontmatter/JSON/hooks/참조 무결성/한영 패리티 7종 검사
-- `.github/workflows/validate.yml` — 하네스 자체 CI (구조 검증 + shellcheck)
-- 한/영 패리티 갭 해소 (evaluator, eval, harness-audit, rules 3종, musk 번역 추가)
-
-</details>
-
-<details>
-<summary><b>v1.2.0 (2026-04-11) — 보안 도구체인 + 교차 모델 검증 + 템플릿</b></summary>
-
-**보안 도구체인 (토스 Security Research 패턴)**
-- **Semgrep Taint Rules**: TypeScript/Express + Next.js (`ts-express-taint.yaml`), Python/FastAPI (`py-fastapi-taint.yaml`) — Untrusted Input 경로 전수 추출용
-- **SARIF → JSONL 변환기** (`scripts/sarif-to-jsonl.py`): MB 단위 SARIF → KB 단위로 경량화, 연속 라인 병합
-- **SourceCode Browse MCP** (`mcp-servers/sourcecode-browse/server.py`): ctags 인덱싱 + tree-sitter 함수 범위 감지 → "Go to Definition" 능력 부여 (프로젝트별 등록)
-
-**Rules 추가 (5 → 8개)**
-- `cross-model-verification.md` — Claude 작성 → Codex 검증 교차 루프, 3단계 이상 계획 시 필수
-- `drift-control.md` — 3축 drift 측정 (goal×50% + constraint×30% + scope×20%), combined > 0.30이면 re-plan
-- `tool-overlap.md` — 도구 역할 분리 (Tavily/Exa/Context7/mgrep), 에러 처리, 결과 컨텍스트 관리
-
-**템플릿 추가 (3개)**
-- `templates/CHECKPOINT.md.template` — drift 필드 포함 마일스톤 템플릿
-- `templates/AUDIT.log.template` — 15개 액션 종류 정의
-- `templates/execute-plan.md.template` — Codex 교차 검토 + 회고 섹션
-
-**CLAUDE.md 업데이트**
-- 교차 모델 검증 섹션 추가 (Claude→Codex→Claude→Codex 루프)
-- 실행 계획 영속화 섹션 추가 (`docs/execute-plans/`에 저장)
-- 검색 도구 역할 분리 (로컬: Grep/Glob/mgrep, 외부: Tavily/Exa/Context7)
-- Knowledge Map 확장 (템플릿, 보안분석, 스크립트 행 추가)
-
-**에이전트 강화**
-- `security-reviewer` — SAST 기반 Discovery→Analysis 2단계 분석 패턴 추가 (semgrep 없이도 적용 가능)
-
-</details>
-
-<details>
-<summary><b>v1.1.0 (2026-04-04) — CLI 도구 통합: AST 기반 분석 + 시크릿 스캔</b></summary>
-
-**CLI 도구 통합 (brew install)**
-- **ast-grep** (`sg`): regex 기반 `grep` → AST 기반 구조적 코드 검색으로 대체. `console.log($$)`, `$A as any`, `eval($$)` 등 정확한 패턴 매칭
-- **difftastic** (`difft`): `git diff` → AST 기반 구조적 diff로 대체. 포매팅 노이즈 제거, 로직 변경만 표시
-- **gitleaks**: 수동 `grep 'password|secret'` → 800+ 패턴 자동 시크릿 스캔으로 대체
-- **scc**: `wc -l` → 코드 통계 + 복잡도 분석으로 대체
-
-**npx 기반 도구 (자동 설치)**
-- **madge**: 순환참조 자동 탐지 (`npx madge --circular`)
-- **knip**: 데드코드/미사용 export/의존성 탐지
-- **jscpd**: 복사-붙여넣기 중복 코드 탐지
-
-**스킬 강화 (3개)**
-- `/verify` — 4개 검사 추가: 순환참조(madge), 데드코드(knip), 시크릿(gitleaks), AI슬롭(ast-grep)
-- `/review` — difftastic 구조적 diff + gitleaks + ast-grep + madge + scc 자동 분석 통합
-- `/simplify` — jscpd 중복 탐지 + ast-grep 패턴 분석 추가
-
-**에이전트 강화 (3개)**
-- `evaluator` — grep 기반 슬롭 감지 → ast-grep/gitleaks/madge/knip/scc 자동 스캔으로 전면 교체
-- `code-reviewer` — difftastic diff + gitleaks 보안 스캔 + ast-grep 품질 분석 + scc 복잡도 통합
-- `security-reviewer` — `grep -r` → gitleaks 자동 스캔 + ast-grep 보안 패턴(`eval($$)`, `innerHTML`, `exec($$)`) 추가
-
-**settings.json 확장**
-- allow 리스트: 34 → 97 규칙 (sg, difft, gitleaks, scc, delta, sd 등 CLI 도구 + 기본 셸 명령어)
-- bypassPermissions 모드에서 모든 통합 도구가 권한 프롬프트 없이 실행
-
-</details>
-
-<details>
-<summary><b>v1.0.0 (2026-03-26) — Musk Evaluator + CPS + Eval Pipeline</b></summary>
-
-**Musk Evaluator (Generator-Evaluator 분리)**
-- 머스크 페르소나 독립 평가자 에이전트 신규 (`agents/evaluator.md`)
-- 5-Step Engineering Process 기반 4축 100점 채점 (기능40 + 독창성20 + 품질25 + 보안15)
-- PASS(85+)/CONDITIONAL(65-84)/FAIL(0-64) 판정 → FAIL 시 Ralph Loop 재진입
-- AI 슬롭 감지 (불필요한 주석, 과도한 추상화, 사용하지 않는 import 등)
-- `team-roles/musk.md` 신규 — M7 팀 완성 (6명 → 7명)
-
-**PRD Aletheia v3 (CPS + prd/ 디렉토리)**
-- Phase 0.5: CPS (Context-Problem-Solution) 세계관 정렬 프레임워크 추가
-- 단일 PRD.md → prd/ 디렉토리 8개 파일 분리 (CPS, PRD, MARKET, USERS, FEATURES, RISKS, SPEC, APPENDIX)
-- /prd + /spec 통합 — 한 커맨드로 PRD + SPEC 동시 생성
-- prd-planner 에이전트 출력 형식 변경 (8개 파일 디렉토리)
-
-**TTH Phase 4 — 5-Step Eval Pipeline**
-- 4-1: Hard Gates (typecheck/lint/test/coverage 80%+/security)
-- 4-2: 머스크 독립 평가 (evaluator 에이전트 스폰)
-- 4-3: 베조스 E2E 검증
-- 4-4: AI 슬롭 정리
-- 4-5: QUALITY_SCORE.md 자동 생성
-- Phase 1: prd/ 디렉토리 자동 읽기 지원
-
-**새로운 스킬 (2개)**
-- `/eval` — 머스크 독립 평가 스킬 (4축 채점 + pass@k 멱등성 테스트)
-- `/harness-audit` — 하네스 건강도 진단 (8차원 점수, S~D 등급)
-
-**에이전트 강화**
-- `code-reviewer` — Blast-Radius 구조적 영향 분석 추가 (code-review-graph MCP 연동)
-- `security-reviewer` — OWASP Top 10 체크리스트 + 공격 시나리오 추가
-- `architect`, `planner`, `tdd-guide` — Write/Edit 도구 권한 추가
-
-**Hooks 강화**
-- `verify-task-quality.sh` — 커버리지 80% 게이트 + 보안 스캔 추가
-- `autodev-judge.sh` — 커버리지 보너스 + 보안 패널티 + AI 슬롭 감지 패널티
-
-**변경사항**
-- Skills: 33 → 35 (+eval, +harness-audit)
-- Agents: 11 → 12 (+evaluator)
-- Team Roles: 6 → 7 (+musk)
-
-</details>
-
-<details>
-<summary><b>v0.9.0 (2026-03-16) — /prd v2: Aletheia 엔진 흡수</b></summary>
-
-**/prd v2 전면 재작성**
-- Aletheia 엔진 흡수: 수렴 보드(6차원 진행 추적) + 복잡도 게이트(Low/Mid/High)
-- 인문학 프레임워크 5가지 원칙 (비트겐슈타인, 데카르트, 소크라테스, 조하리, 가다머)
-- Phase 1 리서치 + Phase 2 R1 병렬 실행으로 시간 단축
-- Graceful Exit: 중간 이탈 시 PRD.partial.md 저장 후 이어서 진행 가능
-- Gemini CLI 교차 검증 추가 (Tavily/Exa와 병행)
-
-**prd-planner 에이전트 역할 재정의**
-- "모든 것을 하는 에이전트" → "Phase 3-5 전담 (합성 + 스코핑 + PRD 작성)"
-- 메인 세션 컨텍스트 보호를 위한 위임 구조
-
-**Hooks 추가**
-- `SubagentStop` — 서브에이전트 완료 시 PRD.md 생성 확인
-
-**settings.json 변경**
-- `Bash(gemini:*)` permission 추가
-- `SubagentStop` hook 추가
-
-**삭제**
-- `commands/aletheia.md` — /prd v2에 완전 흡수
-
-</details>
-
-<details>
-<summary><b>v0.8.0 (2026-03-11) — AutoDev 자율 실험 루프</b></summary>
-
-**AutoDev (autoresearch 패턴)**
-- Karpathy의 autoresearch에서 영감: AI 에이전트가 코드를 수정 → 검증 → keep/discard 자율 반복
-- `/autodev` 단일 실험 루프: scope 제한 + budget 기반 자율 실행
-- `/autodev-parallel` 병렬 오케스트레이터: git worktree로 다중 실험 동시 실행
-- `autodev-judge.sh` 판정 함수: 빌드/테스트/린트/코드 복잡도 종합 스코어
-
-**새로운 파일**
-- `skills/autodev/SKILL.md` - 자율 실험 루프 스킬
-- `skills/autodev-parallel/SKILL.md` - 병렬 워크트리 오케스트레이터
-- `hooks/autodev-judge.sh` - AutoDev 스코어 판정 함수
-- `agents/langchain-specialist.md` - LangChain/LangGraph 전문 에이전트
-
-**변경사항**
-- Skills: 31 → 33 (+autodev, +autodev-parallel)
-- Agents: 10 → 11 (+langchain-specialist)
-- Hooks: 3 → 4 (+autodev-judge.sh)
-- Hooks: 4 → 8 (+ralph-loop.sh, +notchi-hook.sh, +reset-home-memory.sh, +docs-sync.sh)
-
-</details>
-
-<details>
-<summary><b>v0.7.0 (2026-03-09) — Long-Horizon 실행 패턴 + 마일스톤 게이트</b></summary>
-
-**Skills 2.0 마이그레이션**
-- 전체 30개 스킬 SKILL.md frontmatter 업데이트
-- `user-invocable` 필드 명시 추가 (슬래시 커맨드 호출 가능 여부)
-- description 구조화: 트리거/안티-트리거 분리 (한 줄 → 멀티라인 블록)
-- `allowed-tools` 정리
-
-**Long-Horizon 실행 패턴**
-- CLAUDE.md에 CHECKPOINT.md / AUDIT.log 내구성 파일 스택 추가
-- Knowledge Map 테이블 추가 (에이전트/스킬/팀역할/프로젝트 문서 참조 위치)
-
-**TTH 마일스톤 게이트**
-- satya: CHECKPOINT.md 생성/관리 + AUDIT.log 프로토콜 (9개 이벤트 타입)
-- pichai: 마일스톤별 실행 가능한 검증 커맨드 정의
-- bezos: 마일스톤 게이트 최종 검증 (CHECKPOINT.md 실행 → AUDIT.log 기록)
-
-**새로운 파일**
-- `hooks/check-architecture.sh` - 아키텍처 불변성 체크
-- `skills/harness-diagnostics/SKILL.md` - TTH 하네스 진단 스킬
-
-**변경사항**
-- `settings.json` - TEAMMATE_MODE tmux, hook matcher 개선, extraKnownMarketplaces
-- `commands/tth.md` - 태스크 분해 섹션 확장
-- `hooks/verify-task-quality.sh` - check-architecture 연동
-
-**삭제**
-- `skills/docs/`, `skills/prd/` - 커맨드(/docs, /prd)로 완전 이전
-
-</details>
-
-<details>
-<summary><b>v0.6.0 (2026-03-03) — TTH 멀티 에이전트 사일로</b></summary>
-
-**TTH (Toss-Tesla Harness)**
-- `/tth` 커맨드로 M7 CEO 페르소나 멀티 에이전트 팀 자동 구성
-- Toss 사일로 (DRI, 파일 경계) + Tesla 5-Step (의심→삭제→단순화→가속→자동화)
-- Ralph Loop 반복 수렴 메커니즘 통합 (backpressure, progress.txt 학습 누적)
-- 프로젝트 유형별 동적 팀 선발 (백엔드/프론트/풀스택/리디자인/리뷰)
-- 서브에이전트 기반 컨텍스트 보호 전략
-
-**새로운 파일**
-- `commands/tth.md` - 메인 오케스트레이션 (5 Phase 파이프라인)
-- `team-roles/` - 6개 CEO 페르소나 역할 정의 (satya, pichai, tim-cook, zuckerberg, jensen, bezos)
-- `hooks/verify-task-quality.sh` - TaskCompleted 품질 게이트 (Node.js/Python 자동 감지)
-- `hooks/check-remaining-tasks.sh` - TeammateIdle 유휴 방지
-
-**Hooks 추가**
-- `TaskCompleted` - 태스크 완료 시 typecheck/lint/test 자동 실행, 실패 시 차단
-- `TeammateIdle` - 미완료 태스크 있으면 팀원 유휴 방지
-
-**settings.json 변경**
-- `env.CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS` 추가 (Agent Teams 활성화)
-
-</details>
-
-<details>
-<summary><b>v0.5.0 (2026-03-02) — CLAUDE.md 최적화 + PRD + 자동 문서</b></summary>
-
-**CLAUDE.md 논문 기반 최적화**
-- 277줄 → 94줄 (ETH Zurich 논문 + Anthropic 가이드 기반)
-- 발견 가능한 정보 제거 (스킬/에이전트/기술 테이블)
-- Karpathy 원칙 추가: Think Before Coding, Goal-Driven Execution
-
-**Hooks 보장 시스템**
-- main/master push → PreToolUse hook 차단
-- force push → PreToolUse hook 차단
-- .env 커밋 → PreCommit hook 차단
-- console.log 커밋 → PreCommit hook 차단
-- prettier → PostToolUse hook 자동 실행
-
-**Rules 조건부 로드**
-- 모든 rules에 YAML frontmatter 추가
-- 관련 파일 작업 시에만 로드 (토큰 절약)
-
-**새로운 에이전트 (2개)**
-- `prd-planner` - Six Thinking Hats 기반 인사이트 PRD 생성
-- `docs-writer` - 코드 변경 자동 문서 생성
-
-**새로운 커맨드 (2개)**
-- `/prd [아이디어]` - 인사이트 중심 PRD 생성
-- `/docs [유형]` - 코드 변경 기반 자동 문서 생성
-
-</details>
-
-<details>
-<summary><b>v0.4.0 (2026-02-24) — E2E 검증 + Worktree 지원</b></summary>
-
-- `/my-cc-harness:e2e-verify` - 피처 기반 E2E 테스트 검증
-- 세션 초기화 시 Worktree 사용 여부 자동 질문
-- 병렬 에이전트 실행 규칙 추가
-- `langfuse` 스킬 제거
-- Boris 팁 확장, Prompt Caching 규칙 추가
-
-</details>
-
-<details>
-<summary><b>v0.3.1 (2026-02-06) — 버그 수정</b></summary>
-
-- `settings.json` 플러그인 마켓플레이스 참조 오류 수정
-- `install.sh` 에이전트/스킬 개수 업데이트
-- Opus 4.5 → Opus 4.6 반영
-
-</details>
-
-<details>
-<summary><b>v0.3.0 (2025-02-03) — Stitch + 이미지 생성</b></summary>
-
-- E2E agent-browser, Stitch 스킬 5개 추가
-- `stitch-developer`, `junior-mentor` 에이전트 추가
-- `nano-banana` 이미지 생성 스킬 추가
-
-</details>
-
-<details>
-<summary><b>v0.2.0 (2025-02-03) — SPEC 기반 개발</b></summary>
-
-- `/spec`, `/spec-verify` 스킬 추가
-
-</details>
-
-<details>
-<summary><b>v0.1.0 (2025-01-22) — 초기 릴리스</b></summary>
-
-- 초기 릴리스
-
-</details>
-
----
-
-## 라이선스
-
-MIT
