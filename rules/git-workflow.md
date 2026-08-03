@@ -11,6 +11,7 @@ paths:
 ## 커밋 메시지
 - `[타입] 제목` (50자 이내)
 - 타입: feat, fix, docs, style, refactor, test, chore
+- 예외: /tth 커밋은 `[tth] S{N}: 제목` 형식 사용
 - Co-Authored-By: Claude <noreply@anthropic.com>
 
 ## PR 전 확인

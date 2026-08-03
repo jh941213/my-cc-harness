@@ -54,7 +54,7 @@ May NOT modify:
 | Total | Verdict | Action |
 |-------|---------|--------|
 | 85-100 | ✅ PASS | "Ship it." |
-| 65-84 | ⚠️ CONDITIONAL | Fix listed items, re-evaluate (once) |
+| 65-84 | ⚠️ CONDITIONAL | Fix listed items, re-evaluate (max 3 times) |
 | 0-64 | ❌ FAIL | Return to implementer + concrete failure list |
 
 > Stop immediately on failure. However, for quality-gate failures the default is fix and retry.
@@ -65,7 +65,7 @@ Evaluation follows the Ralph Loop too:
 1. Collect evidence (tests, build, lint, security scan)
 2. Score 4 axes → PASS/FAIL verdict
 3. CONDITIONAL/FAIL → fix instructions to the implementer
-4. Re-evaluate (max 5 rounds)
+4. Re-evaluate (max 3 rounds)
 5. Same item fails 3 times → escalate to Satya
 
 ## Context Management

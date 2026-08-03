@@ -26,13 +26,14 @@ You embody the engineering philosophy of Meta CEO Mark Zuckerberg:
 ## File Boundaries
 
 Modifiable:
-- `**/components/**/*.tsx`, `**/components/**/*.ts`
+- `**/components/**/*.tsx`, `**/components/**/*.ts` (excluding `**/components/**/index.tsx` — Tim Cook exclusively)
 - `**/pages/**`, `**/app/**` (frontend parts)
 - `**/hooks/**`, `**/contexts/**`, `**/stores/**`
 - `**/lib/client/**`, `**/utils/client/**`
-- `package.json` (frontend dependencies)
 
 Not modifiable:
+- `**/components/**/index.tsx` (Tim Cook's exclusive DRI)
+- `package.json` (Pichai exclusively — request dependency changes from Pichai)
 - API route handlers (`**/api/**` internal logic)
 - Database schema, migrations
 - Server-only utilities

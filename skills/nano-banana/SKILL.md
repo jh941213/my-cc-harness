@@ -2,7 +2,7 @@
 name: nano-banana
 description: REQUIRED for all image generation requests. Generate and edit images using Gemini CLI with image models. Handles blog featured images, YouTube thumbnails, icons, diagrams, patterns, illustrations, photos, visual assets, graphics, artwork, pictures. Use this skill whenever the user asks to create, generate, make, draw, design, or edit any image or visual content.
 user-invocable: true
-allowed-tools: Bash(gemini:*)
+allowed-tools: Bash(gemini:*), Read
 ---
 
 # Nano Banana Image Generation
@@ -132,7 +132,7 @@ gemini -y -m gemini-3.1-flash-image-preview \
 
 | 문제 | 해결 |
 |------|------|
-| gemini: command not found | `npm i -g @anthropic-ai/gemini-cli` 또는 `brew install gemini` |
+| gemini: command not found | `npm i -g @google/gemini-cli` 또는 `brew install gemini-cli` |
 | 인증 오류 | `gemini auth login`으로 재인증 |
 | 이미지 미생성 (텍스트만 응답) | 프롬프트에 "Generate an image:" 접두사 + "Save as X.png" 확인 |
 | 400 Bad Request | 프롬프트에 정책 위반 내용 확인, 단순화 시도 |

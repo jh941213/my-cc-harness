@@ -25,7 +25,7 @@ Session start → Read PRD → Process next item → Commit → Session end
                                                     ↓
                                         Done? → Yes → Exit
                                           ↓ No
-                                   inject_prompt → New session starts
+                                   continuation prompt (reason) → new session starts
                                                     ↓
                                               Read PRD → ...
 ```

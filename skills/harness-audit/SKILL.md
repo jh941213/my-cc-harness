@@ -1,6 +1,6 @@
 ---
 name: harness-audit
-description: "하네스(hooks, skills, agents, rules) 전체 건강도를 진단하고 점수 산출. Triggers on: harness audit, 하네스 진단, 설정 점검, 하네스 점검. NOT for: 코드 작성, 구현."
+description: "하네스(hooks, skills, agents, rules) 전체 건강도를 진단하고 점수 산출. 대상: ~/.claude 전역 하네스 (프로젝트 진단은 harness-diagnostics). Triggers on: harness audit, 하네스 진단, 설정 점검, 하네스 점검. NOT for: 코드 작성, 구현."
 user-invocable: true
 disable-model-invocation: false
 allowed-tools: Read, Bash, Grep, Glob

@@ -1,7 +1,6 @@
 ---
 name: docs-manuals
-description: "Generate user manuals (Diátaxis) and operator manuals (runbooks, deployment guide, configuration reference, incident playbook)"
-when_to_use: "Writing user manuals/guides/tutorials, operator manuals, runbooks, deployment guides, on-call/incident response docs. API specs → docs-interfaces; architecture docs → docs-architecture; docs CI pipeline → docs-ci"
+description: "Generate user manuals (Diátaxis) and operator manuals (runbooks, deployment guide, configuration reference, incident playbook). Use when writing user manuals/guides/tutorials, operator manuals, runbooks, deployment guides, on-call/incident response docs. API specs → docs-interfaces; architecture docs → docs-architecture; docs CI pipeline → docs-ci"
 user-invocable: true
 disable-model-invocation: false
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash

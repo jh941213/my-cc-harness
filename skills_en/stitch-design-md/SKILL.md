@@ -3,10 +3,11 @@ name: stitch-design-md
 description: "Analyzes a Stitch project to generate a DESIGN.md file -- documents the design system in semantic, natural language to support consistent UI generation. Triggers on: Stitch, design system, DESIGN.md, Stitch design analysis. NOT for: React component conversion, code implementation."
 user-invocable: true
 allowed-tools:
-  - "stitch*:*"
+  - "mcp__stitch__*"
   - "mcp__stitch*"
   - "Read"
   - "Write"
+  - "Bash(curl:*)"
   - "mcp__tavily__tavily_extract"
 ---
 
@@ -67,7 +68,7 @@ Returned information:
 ### 5. Download Assets
 
 ```
-Download HTML code from htmlCode.downloadUrl via web_fetch or read_url_content
+Download HTML code from htmlCode.downloadUrl via Bash curl
 Optionally download screenshot from screenshot.downloadUrl
 Parse HTML to extract Tailwind classes, custom CSS, component patterns
 ```

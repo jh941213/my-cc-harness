@@ -1,12 +1,12 @@
 ---
 name: ui-ux-pro-max
-description: "UI/UX design intelligence. 50 styles, 21 palettes, 50 font pairings, 20 charts, 9 stacks (React, Next.js, Vue, Svelte, SwiftUI, React Native, Flutter, Tailwind, shadcn/ui). Actions: plan, build, create, design, implement, review, fix, improve, optimize, enhance, refactor, check UI/UX code. Projects: website, landing page, dashboard, admin panel, e-commerce, SaaS, portfolio, blog, mobile app, .html, .tsx, .vue, .svelte. Elements: button, modal, navbar, sidebar, card, table, form, chart. Styles: glassmorphism, claymorphism, minimalism, brutalism, neumorphism, bento grid, dark mode, responsive, skeuomorphism, flat design. Topics: color palette, accessibility, animation, layout, typography, font pairing, spacing, hover, shadow, gradient. Integrations: shadcn/ui MCP for component search and examples."
+description: "UI/UX design intelligence. 57 styles, 95 palettes, 56 font pairings, 24 charts, 12 stacks (React, Next.js, Vue, Nuxt, Nuxt UI, Svelte, SwiftUI, React Native, Flutter, Jetpack Compose, Tailwind, shadcn/ui). Actions: plan, build, create, design, implement, review, fix, improve, optimize, enhance, refactor, check UI/UX code. Projects: website, landing page, dashboard, admin panel, e-commerce, SaaS, portfolio, blog, mobile app, .html, .tsx, .vue, .svelte. Elements: button, modal, navbar, sidebar, card, table, form, chart. Styles: glassmorphism, claymorphism, minimalism, brutalism, neumorphism, bento grid, dark mode, responsive, skeuomorphism, flat design. Topics: color palette, accessibility, animation, layout, typography, font pairing, spacing, hover, shadow, gradient. Integrations: shadcn/ui MCP for component search and examples."
 user-invocable: false
 ---
 
 # UI/UX Pro Max - Design Intelligence
 
-Comprehensive design guide for web and mobile applications. Contains 50+ styles, 97 color palettes, 57 font pairings, 99 UX guidelines, and 25 chart types across 9 technology stacks. Searchable database with priority-based recommendations.
+Comprehensive design guide for web and mobile applications. Contains 57 styles, 95 color palettes, 56 font pairings, 98 UX guidelines, and 24 chart types across 12 technology stacks. Searchable database with priority-based recommendations.
 
 ## When to Apply
 
@@ -100,7 +100,29 @@ Extract key information from user request:
 
 ### Step 2: Design System 생성
 
-위 Quick Reference와 아래 데이터를 기반으로 디자인 시스템을 직접 구성합니다:
+먼저 `scripts/search.py`로 `data/` 디렉토리의 CSV 데이터베이스를 검색합니다 (스킬 디렉토리에서 실행):
+
+```bash
+# 도메인 검색 — 색상(color) | 타이포(typography) | 차트(chart) | 스타일(style) 등
+python3 scripts/search.py "<질의>" --domain color
+python3 scripts/search.py "<질의>" --domain typography
+python3 scripts/search.py "<질의>" --domain chart
+python3 scripts/search.py "<질의>" --domain style
+# 전체 도메인: style, prompt, color, chart, landing, product, ux, typography, icons, react, web
+
+# 스택별 가이드라인 검색 (12개 스택)
+python3 scripts/search.py "<질의>" --stack html-tailwind
+
+# 디자인 시스템 일괄 생성 (내부적으로 scripts/design_system.py 사용 —
+# product/style/color/landing/typography 5개 도메인 검색 결과를 통합)
+python3 scripts/search.py "<제품유형> <산업> <키워드>" --design-system -p "프로젝트명"
+
+# 세션 간 재사용을 위한 영속화 (design-system/MASTER.md + pages/ 오버라이드 생성)
+python3 scripts/search.py "<질의>" --design-system --persist -p "프로젝트명" [--page "dashboard"]
+```
+
+검색 결과와 위 Quick Reference를 기반으로 디자인 시스템을 구성합니다.
+Python 미설치 등으로 검색이 불가하면 아래 데이터로 직접 구성:
 
 1. **스타일 선택**: 제품 유형 + 산업에 맞는 스타일 (glassmorphism, minimalism, brutalism 등)
 2. **색상 팔레트**: 산업별 추천 팔레트 매칭
@@ -141,6 +163,8 @@ Extract key information from user request:
 | vue | Composition API, Pinia, Vue Router |
 | svelte | Runes, stores, SvelteKit |
 | shadcn | shadcn/ui 컴포넌트, 테마, 폼, 패턴 |
+
+전체 12개 스택(`html-tailwind`, `react`, `nextjs`, `vue`, `nuxtjs`, `nuxt-ui`, `svelte`, `swiftui`, `react-native`, `flutter`, `shadcn`, `jetpack-compose`)은 `python3 scripts/search.py "<질의>" --stack <스택>`으로 조회합니다.
 
 ### Step 4: 구현 + Pre-Delivery Checklist 검증
 

@@ -34,8 +34,8 @@ Google CEO 순다르 피차이의 엔지니어링 철학을 체화한다:
 ## 파일 경계
 
 수정 가능:
-- 프로젝트 루트 설정 파일 (`tsconfig.json`, `next.config.*`, `vite.config.*`, `package.json`)
-- `**/types/**`, `**/interfaces/**` (공유 타입 정의)
+- 프로젝트 루트 설정 파일 (`tsconfig.json`, `next.config.*`, `vite.config.*`, `package.json` — `package.json`은 팀 내 피차이 단독 수정)
+- `**/interfaces/**` (공유 인터페이스 정의)
 - `**/lib/**`, `**/utils/**` (공유 유틸리티 구조)
 - `**/config/**`, `**/constants/**`
 - 디렉토리 구조 생성 (`mkdir -p`)
@@ -46,6 +46,7 @@ Google CEO 순다르 피차이의 엔지니어링 철학을 체화한다:
 - `docs/references/**`
 
 수정 불가:
+- `**/types/**` (젠슨 단독 DRI — 타입 변경은 젠슨에게 요청)
 - 컴포넌트 내부 구현 (저커버그 DRI)
 - API 엔드포인트 내부 로직 (젠슨 DRI)
 - 스타일/디자인 파일 (팀쿡 DRI)

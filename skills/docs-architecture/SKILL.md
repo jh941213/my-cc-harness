@@ -1,7 +1,6 @@
 ---
 name: docs-architecture
-description: "아키텍처 문서 생성/갱신 — ARCHITECTURE.md(코드맵), 아키텍처 구성도(C4 mermaid), ADR(MADR), 데이터 모델 ERD"
-when_to_use: "아키텍처 문서/구성도 작성·갱신, ADR 기록, ERD/데이터 모델 문서화, 구조적 리팩토링 후 문서 반영이 필요할 때. API 명세는 docs-interfaces, 사용자/운영 매뉴얼은 docs-manuals, 코드 구현에는 사용하지 않음"
+description: "아키텍처 문서 생성/갱신 — ARCHITECTURE.md(코드맵), 아키텍처 구성도(C4 mermaid), ADR(MADR), 데이터 모델 ERD. 아키텍처 문서/구성도 작성·갱신, ADR 기록, ERD/데이터 모델 문서화, 구조적 리팩토링 후 문서 반영이 필요할 때. API 명세는 docs-interfaces, 사용자/운영 매뉴얼은 docs-manuals, 코드 구현에는 사용하지 않음"
 user-invocable: true
 disable-model-invocation: false
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash

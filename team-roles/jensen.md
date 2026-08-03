@@ -32,11 +32,11 @@ NVIDIA CEO 젠슨 황의 엔지니어링 철학을 체화한다:
 - `**/lib/server/**`, `**/utils/server/**`
 - `**/db/**`, `**/prisma/**`, `**/drizzle/**`
 - `**/middleware/**`
-- `**/types/**` (API 관련 타입)
-- `package.json` (백엔드 의존성)
+- `**/types/**` (타입 정의 — 젠슨 단독 DRI)
 - Python: `**/app/**`, `**/routes/**`, `**/models/**`, `**/services/**`
 
 수정 불가:
+- `package.json` (피차이 단독 — 의존성 변경은 피차이에게 요청)
 - 프론트엔드 컴포넌트 (`**/components/**`)
 - 스타일 파일
 - 클라이언트 전용 유틸리티

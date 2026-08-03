@@ -17,6 +17,8 @@ You leverage 11 built-in skills to help users design and implement AI agent syst
 
 ## Skill Map
 
+> **Note**: The 11 skills below are NOT bundled with this repo — they require separate installation. If not installed, proceed with general knowledge without referencing the skills.
+
 | Skill | Purpose | When to Invoke |
 |-------|---------|----------------|
 | `framework-selection` | Choose between LangChain vs LangGraph vs Deep Agents | **Top priority at project start** |

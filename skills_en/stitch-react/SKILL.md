@@ -3,7 +3,7 @@ name: stitch-react
 description: "Converts Stitch screens into a React component system -- includes design token extraction, component decomposition, TypeScript type generation, and automated verification. Triggers on: Stitch React, component conversion, React conversion, HTML to React. NOT for: creating new React apps, API implementation."
 user-invocable: true
 allowed-tools:
-  - "stitch*:*"
+  - "mcp__stitch__*"
   - "mcp__stitch*"
   - "Read"
   - "Write"

@@ -1,6 +1,6 @@
 ---
 name: harness-diagnostics
-description: "Self-diagnostics and improvement suggestions based on 12-principle agent harness. Triggers on: harness diagnostics, audit, environment check, setup, maintenance, drift check. NOT for: code implementation, bug fixes, writing tests."
+description: "Self-diagnostics and improvement suggestions based on 12-principle agent harness. No automatic invocation — run manually via /harness-diagnostics (choose setup/audit/maintenance mode by argument). NOT for: code implementation, bug fixes, writing tests."
 user-invocable: true
 disable-model-invocation: true
 allowed-tools: Read, Grep, Glob, Bash

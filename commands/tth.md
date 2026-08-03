@@ -63,6 +63,7 @@ Growth Mindset으로 팀을 이끌되, 결과에 집중한다.
 | 풀스택 | 프론트엔드 + 백엔드 모두 필요 |
 | UI 리디자인 | 기존 UI의 디자인 변경. 로직 변경 없음 |
 | 코드 리뷰/감사 | 품질 점검, 리팩토링, 삭제 분석 |
+| 아키텍처 리팩토링 | 구조 재설계/의존성 정리 중심. 신규 기능 없음 |
 
 ### 2-2. 팀원 선발
 
@@ -157,6 +158,7 @@ docs/
 
 1. **TeamCreate**로 팀 생성
 2. 각 팀원의 역할 파일(`~/.claude/team-roles/[이름].md`)을 스폰 프롬프트에 포함
+   - 역할 파일명 매핑: 사티아=satya.md, 피차이=pichai.md, 팀쿡=tim-cook.md, 저커버그=zuckerberg.md, 젠슨=jensen.md, 베조스=bezos.md, 머스크=musk.md
 3. **베조스의 첫 번째 스토리는 항상 "삭제 분석"** (Musk Step 2)
 4. **TaskCreate**로 의존성 체인이 있는 스토리 목록 생성
 5. 각 팀원을 **Agent()** 로 스폰
@@ -186,7 +188,7 @@ data['teammates']['<반환된_agentId>']['name'] = '피차이'  # 실제 이름
 json.dump(data, open(f, 'w'), indent=2, ensure_ascii=False)
 ```
 
-이름이 매핑되면 ralph-loop.sh의 inject_prompt에 `⚡ 활성 팀원: 피차이, 젠슨 — SendMessage(to=이름)로 재사용`이 표시된다.
+이름이 매핑되면 ralph-loop.sh의 연속 프롬프트(reason)에 `⚡ 활성 팀원: 피차이, 젠슨 — SendMessage(to=이름)로 재사용`이 표시된다.
 
 ---
 
@@ -228,7 +230,7 @@ docs-writer는 **스토리 완료마다 자동 트리거**된다. 수동 스폰 
   ↓
 ralph-loop.sh 다음 반복 시
   ↓ .docs-queue/ 감지
-  ↓ inject_prompt에 docs-writer 트리거 포함
+  ↓ 연속 프롬프트(reason)에 docs-writer 트리거 포함
   ↓
 사티아가 docs-writer 서브에이전트 스폰:
   Agent(subagent_type="general-purpose",
@@ -242,12 +244,12 @@ ralph-loop.sh 다음 반복 시
 
 **수동 트리거** (peers 활용):
 ```
-사티아 → send_message(docs_writer_id, "docs/ 즉시 동기화 필요: ARCHITECTURE.md")
+사티아 → SendMessage(to="docs-writer", "docs/ 즉시 동기화 필요: ARCHITECTURE.md")
 ```
 
 **관련 hook 파일:**
 - `~/.claude/hooks/docs-sync.sh` — TaskCompleted 시 .docs-queue에 기록
-- `~/.claude/hooks/ralph-loop.sh` — 다음 반복 시 큐 감지 → inject_prompt에 포함
+- `~/.claude/hooks/ralph-loop.sh` — 다음 반복 시 큐 감지 → 연속 프롬프트(reason)에 포함
 
 ### Ralph Loop 프로토콜 (모든 팀원 공통)
 

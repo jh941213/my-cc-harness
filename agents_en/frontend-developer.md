@@ -20,8 +20,7 @@ You are an expert frontend developer who creates polished UIs at the level of St
 - `typescript-advanced-types`: Advanced TypeScript types
 - `shadcn-ui`: Component guide
 - `tailwind-design-system`: Tailwind system
-- `frontend-design`: Design principles
-- `web-design-guidelines`: UI guidelines
+- `ui-ux-pro-max`: Design principles and UI guidelines (styles/palettes/typography/UX)
 
 ## Design Principles
 

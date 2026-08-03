@@ -2,8 +2,8 @@
 name: autodev-parallel
 description: >
   Ralph Loop 병렬 버전. 여러 에이전트가 worktree에서 동시에 PRD 항목을 처리한다.
-  트리거: "병렬 실험", "autodev parallel", "동시에 실험", "워크트리 실험", "병렬 랄프"
-  안티-트리거: "순차 실험", "하나씩"
+  트리거: "PRD 항목 병렬 구현", "병렬 구현", "autodev parallel", "워크트리 병렬 개발", "병렬 랄프"
+  안티-트리거: "순차 구현", "하나씩"
 user-invocable: true
 disable-model-invocation: false
 allowed-tools: Read, Write, Edit, Bash, Grep, Glob, Agent
@@ -42,6 +42,13 @@ rounds: 5                             # 라운드 수 (기본 5)
 max_iterations: 100                    # Stop Hook 최대 반복 (기본 100)
 completion_promise: "DONE"
 ```
+
+## Phase 0.5: 루프 초기화 (state.json)
+
+autodev 스킬의 Phase 1과 동일한 절차로 루프 상태를 초기화한다:
+autodev 브랜치 생성 → `.ralph-loop/` 생성 → `.ralph-loop/state.json` 작성
+(`max_iterations`, `completion_promise` 등 Phase 0 설정값 반영) → `.gitignore`에 `.ralph-loop/` 추가 → 베이스라인 검증.
+이후 단계의 `max_iterations`·`completion_promise` 참조는 이 state.json 값을 사용한다.
 
 ## Phase 1: 항목 분류
 

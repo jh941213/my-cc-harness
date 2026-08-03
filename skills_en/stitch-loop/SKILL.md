@@ -3,9 +3,9 @@ name: stitch-loop
 description: "Iterative build loop pattern for autonomously generating multi-page websites using Stitch -- continuous website development via baton system. Triggers on: Stitch loop, website generation, multi-page, build loop. NOT for: single page, React apps."
 user-invocable: true
 allowed-tools:
-  - "stitch*:*"
+  - "mcp__stitch__*"
   - "mcp__stitch*"
-  - "chrome*:*"
+  - "mcp__chrome-devtools__*"
   - "Read"
   - "Write"
   - "Bash"

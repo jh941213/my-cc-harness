@@ -92,7 +92,7 @@ CPS 확정 후 `prd/CPS.md`에 즉시 저장:
 
 복잡도별 적응:
 - **High**: 서브에이전트 3개 병렬
-- **Mid**: 서브에이전트 1개
+- **Mid**: 서브에이전트 1개 (서브에이전트 A: 경쟁사 분석만 실행)
 - **Low**: 스킵
 
 **서브에이전트 A: 경쟁사 & 유사 제품** (subagent_type: general-purpose)
@@ -192,7 +192,7 @@ Agent 호출:
     ## 수렴 보드 현재 상태
     [수렴 보드 테이블]
 
-    prd/ 디렉토리에 7개 파일을 생성해주세요:
+    prd/ 디렉토리에 8개 파일을 생성해주세요:
     CPS.md, PRD.md, MARKET.md, USERS.md, FEATURES.md, RISKS.md, SPEC.md, APPENDIX.md
 ```
 

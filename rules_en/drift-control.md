@@ -1,6 +1,7 @@
 ---
-description: "CHECKPOINT.md-based work drift tracking rules"
-globs: ["**/CHECKPOINT.md", "**/progress.txt"]
+paths:
+  - "**/CHECKPOINT.md"
+  - "**/progress.txt"
 ---
 
 # Drift Control

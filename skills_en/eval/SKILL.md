@@ -3,7 +3,7 @@ name: eval
 description: "Evaluate code output on 4 axes (functionality/quality/originality/security) with scoring. Spawns an independent Evaluator agent. Triggers on: eval, evaluate, quality score, code evaluation. NOT for: writing code, implementation, review."
 user-invocable: true
 disable-model-invocation: false
-allowed-tools: Read, Bash, Grep, Glob
+allowed-tools: Read, Bash, Grep, Glob, Agent
 ---
 
 # Code Eval (independent evaluation)
@@ -39,7 +39,7 @@ Originality: [N]/20 | Usability & security: [N]/15
 ### Step 3: On CONDITIONAL/FAIL
 
 List the required fixes concretely and ask whether to re-evaluate after fixing.
-Re-evaluation applies the same criteria (max 5 rounds).
+Re-evaluation applies the same criteria (max 3 rounds).
 
 ## pass@k idempotency test (optional)
 

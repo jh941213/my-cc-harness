@@ -3,7 +3,7 @@ name: eval
 description: "코드 산출물을 4축(기능/품질/독창성/보안)으로 평가하고 점수 산출. Evaluator 에이전트를 스폰하여 독립 평가 실행. Triggers on: eval, 평가, 품질 점수, 코드 평가, quality score. NOT for: 코드 작성, 구현, 리뷰."
 user-invocable: true
 disable-model-invocation: false
-allowed-tools: Read, Bash, Grep, Glob
+allowed-tools: Read, Bash, Grep, Glob, Agent
 ---
 
 # 코드 Eval (독립 평가)
@@ -39,7 +39,7 @@ Evaluator가 완료되면 EVAL_REPORT.md를 읽고 사용자에게 요약 보고
 ### Step 3: CONDITIONAL/FAIL 시
 
 수정 필요 항목을 구체적으로 안내하고, 수정 후 재평가할지 질문.
-재평가 시 동일 기준 적용 (최대 5라운드).
+재평가 시 동일 기준 적용 (최대 3라운드).
 
 ## pass@k 멱등성 테스트 (선택)
 

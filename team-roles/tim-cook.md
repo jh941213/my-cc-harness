@@ -28,11 +28,12 @@
 수정 가능:
 - `**/*.css`, `**/*.scss`, `**/*.module.css`
 - `**/styles/**`, `**/theme/**`
-- `**/components/**/index.tsx` (스타일 관련 부분만)
+- `**/components/**/index.tsx` (팀쿡 단독 — components 중 이 파일만, 스타일 관련 부분)
 - `tailwind.config.*`, `postcss.config.*`
 - 디자인 토큰 파일
 
 수정 불가:
+- `index.tsx`를 제외한 나머지 `**/components/**` (저커버그 단독 DRI)
 - API 라우트, 서버 로직
 - 데이터베이스 스키마
 - 비즈니스 로직

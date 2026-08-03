@@ -11,6 +11,7 @@ paths:
 ## Commit Messages
 - `[type] title` (50 characters or fewer)
 - Types: feat, fix, docs, style, refactor, test, chore
+- Exception: /tth commits use the `[tth] S{N}: title` format
 - Co-Authored-By: Claude <noreply@anthropic.com>
 
 ## Pre-PR Checklist

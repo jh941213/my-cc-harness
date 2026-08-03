@@ -1,6 +1,6 @@
 ---
-description: "Tool role-separation policy — search/exploration tool selection and error handling"
-globs: ["**/*"]
+paths:
+  - "**/*"
 ---
 
 # Tool Overlap Minimization Policy

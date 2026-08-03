@@ -20,8 +20,7 @@ model: sonnet
 - `typescript-advanced-types`: TypeScript 고급 타입
 - `shadcn-ui`: 컴포넌트 가이드
 - `tailwind-design-system`: Tailwind 시스템
-- `frontend-design`: 디자인 원칙
-- `web-design-guidelines`: UI 가이드라인
+- `ui-ux-pro-max`: 디자인 원칙·UI 가이드라인 (스타일/팔레트/타이포/UX)
 
 ## 디자인 원칙
 

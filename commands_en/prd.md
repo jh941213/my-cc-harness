@@ -47,7 +47,7 @@ After determining complexity, notify the user. Accept adjustment requests.
 
 Adapts by complexity:
 - **High**: 3 sub-agents in parallel
-- **Mid**: 1 sub-agent
+- **Mid**: 1 sub-agent (run Sub-agent A: competitor analysis only)
 - **Low**: Skip
 
 **Sub-agent A: Competitors & Similar Products** (subagent_type: general-purpose)

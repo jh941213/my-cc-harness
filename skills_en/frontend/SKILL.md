@@ -24,7 +24,7 @@ Builds big-tech style (Stripe, Vercel, Apple) frontend UI from **planning to imp
     |
 2. User confirmation
     |
-3. Implement with frontend-developer agent
+3. Implement in the frontend-developer context
     |
 4. Verify results
 ```
@@ -68,7 +68,7 @@ Builds big-tech style (Stripe, Vercel, Apple) frontend UI from **planning to imp
 
 ## Phase 2: Implementation
 
-Calls the `frontend-developer` agent for implementation.
+This skill runs in the `frontend-developer` context (via `context: fork` + `agent` in the frontmatter). Proceed with the implementation directly — do not spawn the agent again.
 
 ### Implementation Order
 1. CSS variables (globals.css)

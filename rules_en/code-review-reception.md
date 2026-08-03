@@ -1,3 +1,7 @@
+---
+paths:
+  - "**/*"
+---
 # Code Review Reception
 
 Review feedback is a subject for technical evaluation, not emotional performance.

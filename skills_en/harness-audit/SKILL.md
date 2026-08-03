@@ -1,6 +1,6 @@
 ---
 name: harness-audit
-description: "Diagnose the overall health of the harness (hooks, skills, agents, rules) with scoring. Triggers on: harness audit, harness diagnosis, config check, harness check. NOT for: writing code, implementation."
+description: "Diagnose the overall health of the harness (hooks, skills, agents, rules) with scoring. Scope: the global ~/.claude harness (use harness-diagnostics for project-level diagnostics). Triggers on: harness audit, harness diagnosis, config check, harness check. NOT for: writing code, implementation."
 user-invocable: true
 disable-model-invocation: false
 allowed-tools: Read, Bash, Grep, Glob

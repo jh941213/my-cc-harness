@@ -1,7 +1,6 @@
 ---
 name: docs-architecture
-description: "Generate/update architecture docs — ARCHITECTURE.md (codemap), architecture diagrams (C4 mermaid), ADRs (MADR), data model ERD"
-when_to_use: "Writing/updating architecture docs or diagrams, recording ADRs, documenting ERD/data models, reflecting structural refactors in docs. Not for API specs (docs-interfaces), user/ops manuals (docs-manuals), or code implementation"
+description: "Generate/update architecture docs — ARCHITECTURE.md (codemap), architecture diagrams (C4 mermaid), ADRs (MADR), data model ERD. Use when writing/updating architecture docs or diagrams, recording ADRs, documenting ERD/data models, reflecting structural refactors in docs. Not for API specs (docs-interfaces), user/ops manuals (docs-manuals), or code implementation"
 user-invocable: true
 disable-model-invocation: false
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash

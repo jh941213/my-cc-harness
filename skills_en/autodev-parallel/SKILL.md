@@ -1,57 +1,60 @@
 ---
 name: autodev-parallel
 description: >
-  AutoDeveloper orchestrator that runs multiple experiments in parallel using worktrees.
-  Triggers: "parallel experiments", "autodev parallel", "simultaneous experiments", "worktree experiments"
+  Parallel version of the Ralph Loop. Multiple agents process PRD items simultaneously in worktrees.
+  Triggers: "parallel experiments", "autodev parallel", "simultaneous experiments", "worktree experiments", "parallel ralph"
   Anti-triggers: "sequential experiments", "one at a time"
 user-invocable: true
 disable-model-invocation: false
 allowed-tools: Read, Write, Edit, Bash, Grep, Glob, Agent
 ---
 
-# AutoDeveloper Parallel -- Parallel Experiment Orchestrator
+# AutoDev Parallel — Ralph Loop Parallel Orchestrator
 
-Runs multiple experiments simultaneously via git worktrees and selects the best result.
+Multiple agents process PRD items in parallel within worktree-isolated environments.
+Maximizes completion speed by working on independent items simultaneously.
 
 ## Core Concept
 
 ```
 main (or current branch)
- |
- +-- worktree A -- Agent 1: Experiment idea 1
- +-- worktree B -- Agent 2: Experiment idea 2
- +-- worktree C -- Agent 3: Experiment idea 3
- |
- +-- Orchestrator (this skill)
-      - Generate & assign ideas
-      - Collect & compare results
-      - Select best branch
+ │
+ ├── worktree A ── Agent 1: PRD item 1
+ ├── worktree B ── Agent 2: PRD item 2
+ ├── worktree C ── Agent 3: PRD item 3
+ │
+ └── Orchestrator (this skill)
+      - Classify & assign independent items
+      - Collect & verify results
+      - Integrate via cherry-pick
       - Repeat for next round
 ```
 
 ## Phase 0: Configuration Collection
 
-Confirm with user:
-
 ```yaml
 goal: "What to achieve"
+prd: "Path to PRD or checklist file"    # e.g., "PRD.md"
 scope: ["Modifiable file patterns"]
-metric: "Evaluation command"
-parallel: 3                       # Concurrent execution count (default 3)
-rounds: 5                         # Number of rounds (default 5, total experiments = parallel * rounds)
+verify: "Verification command"
+parallel: 3                            # Number of concurrent agents (default 3)
+rounds: 5                             # Number of rounds (default 5)
+max_iterations: 100                    # Stop Hook maximum iterations (default 100)
+completion_promise: "DONE"
 ```
 
-## Phase 1: Baseline
+## Phase 1: Item Classification
 
-```bash
-# Measure baseline from current state
-mkdir -p .autodev
-{metric_command} > .autodev/baseline.log 2>&1
-bash ~/.claude/hooks/autodev-judge.sh
-BASELINE_SCORE=$(cat .autodev-score)
+Read the PRD and analyze item dependencies:
 
-# Initialize results file
-echo -e "round\tagent\tcommit\tscore\tstatus\tdescription" > .autodev/results.tsv
+```markdown
+## Independent items (parallelizable)
+- [ ] Item A: API endpoint — src/api/
+- [ ] Item B: UI component — src/components/
+- [ ] Item C: Write tests — tests/
+
+## Dependent items (require sequencing)
+- [ ] Item D: after A completes → integration tests
 ```
 
 ## Phase 2: Round Loop
@@ -59,10 +62,9 @@ echo -e "round\tagent\tcommit\tscore\tstatus\tdescription" > .autodev/results.ts
 ```
 for round in 1..rounds:
 
-  1. BRAINSTORM
-     - Generate {parallel} ideas based on scope file analysis + goal
-     - Reference previous round results (build on kept changes)
-     - Ideas must be independent of each other (avoid conflicts)
+  1. SELECT
+     - Pick up to {parallel} independent items among the incomplete ones
+     - Items with dependencies are selected only after their prerequisites complete
 
   2. LAUNCH (parallel)
      - Invoke {parallel} Agents simultaneously
@@ -70,105 +72,101 @@ for round in 1..rounds:
      - Prompt passed to each Agent:
 
      """
-     Perform a single AutoDeveloper experiment.
+     Implement the PRD item.
 
-     Goal: {goal}
+     Item: {specific_item}
      Scope: {scope}
-     Metric: {metric}
-     Idea: {specific_idea}
+     Verify: {verify}
 
      Procedure:
-     1. Read files within scope and apply the idea
-     2. git commit -m "[autodev] {idea_summary}"
-     3. Run {metric} -> .autodev/run.log
-     4. Run bash ~/.claude/hooks/autodev-judge.sh
-     5. Return score as final message:
-        AUTODEV_RESULT: score={N}, commit={hash}, description="{desc}"
-
-     On build failure, attempt recovery once. On 2nd failure, give up:
-        AUTODEV_RESULT: score=-999, commit=none, description="{desc} (crash)"
+     1. Read files within scope and implement the item
+     2. Verify by running {verify}
+     3. On failure, attempt build-fix once
+     4. On success, git commit -m "[autodev] {item_summary}"
+     5. Return the result as the final message:
+        AUTODEV_RESULT: status={success|fail}, commit={hash}, item="{desc}"
      """
 
   3. COLLECT
      - Wait for each Agent to complete
-     - Parse score from results
-     - Record in results.tsv
+     - Parse results (status, commit hash)
 
-  4. SELECT
-     - Identify the worktree/branch of the highest-scoring Agent
-     - If highest score > current best_score:
-       - Cherry-pick changes from that branch to current branch
-       - Update best_score
-     - Remaining worktrees are cleaned up (Agent tool handles automatically)
+  4. INTEGRATE
+     - Cherry-pick the changes of successful Agents
+     - On cherry-pick conflict:
+       - Attempt conflict resolution (once)
+       - On failure, defer the item to the next round
+     - Check off completed items as [x] in the PRD
 
-  5. REPORT (per round)
+  5. VERIFY ALL
+     - Full verification after integration: {verify}
+     - On failure, revert the last cherry-pick and defer the item
+
+  6. REPORT (per round)
      Round {round}/{rounds} complete:
-     - Agent 1: score={n1} ({status1}) -- {desc1}
-     - Agent 2: score={n2} ({status2}) -- {desc2}
-     - Current best: score={best}
+     - Agent 1: {status} — {item}
+     - Agent 2: {status} — {item}
+     - Remaining incomplete items: {remaining}
 
-  6. CONTINUE
-     Proceed to next round (apply new ideas on top of previous best)
+  7. CHECK COMPLETION
+     - All items complete? → <promise>DONE</promise>
+     - Otherwise → next round
 ```
 
-## Phase 3: Final Report
+## Phase 3: Completion Report
 
 ```markdown
-# AutoDev Parallel Experiment Report
+# AutoDev Parallel Completion Report
 
 ## Summary
 - Total rounds: {rounds}
-- Total experiments: {rounds * parallel}
-- Keep: {K} / Discard: {D} / Crash: {C}
-- Baseline -> Final: {baseline} -> {best} ({improvement}%)
+- Total items: {total} (completed: {done}, failed: {failed})
+- Parallel agents: {parallel}
 
-## Per-Round Results
-| Round | Best Experiment | Score | Description |
-|-------|-----------------|-------|-------------|
-| 1 | Agent 2 | 85 | Added cache layer |
-| 2 | Agent 1 | 120 | Query batching |
-| ... | ... | ... | ... |
+## Results by Round
+| Round | Completed items | Failed | Cumulative completion |
+|-------|-----------------|--------|-----------------------|
+| 1 | A, B | - | 2/10 (20%) |
+| 2 | C, D, E | F | 5/10 (50%) |
 
-## Cumulative Kept Changes
-1. [commit1] Added cache layer
-2. [commit2] Query batching
+## Incomplete Items (if any)
+- [ ] Item F: reason
 
-## Next Steps
-- Additional optimization areas: ...
-- Ready to merge into main: `git merge autodev/{tag}`
+## Branch
+autodev/{tag} — ready to merge into main
 ```
 
-## Parallel Count Guidelines
+## Parallelism Guidelines
 
 | Situation | Recommended parallel |
-|-----------|---------------------|
+|-----------|----------------------|
 | Independent files/modules | 5 (maximum) |
 | Changes within the same file | 1-2 (conflict risk) |
-| Includes performance benchmarks | 2-3 (resource sharing) |
-| Tests only for evaluation | 3-5 |
+| Includes performance benchmarks | 2-3 (shared resources) |
+| Test-only judgment | 3-5 |
 
-## Safety Measures
+## Safeguards
 
-1. **Worktree isolation**: Uses Agent tool's isolation: "worktree". No mutual interference
-2. **Main protection**: Uses cherry-pick only. No force push
-3. **Existing test protection**: Unconditionally discard if broken
-4. **Resource limits**: Do not exceed the parallel count
-5. **Cross-round synchronization**: Use previous round's best as the next round's base
-6. **TTH mutual exclusion**: Do not use concurrently with TTH (/tth) -- Stop hook loop conflict
+1. **Worktree isolation**: use the Agent tool's `isolation: "worktree"`
+2. **Cherry-pick only**: force push is strictly forbidden
+3. **Protect existing tests**: roll back when full verification fails after integration
+4. **Respect dependencies**: process dependent items only after prerequisites complete
+5. **Synchronize between rounds**: start the next round only after the previous round's integration completes
+6. **max_iterations**: Stop Hook safety mechanism
+7. **TTH mutual exclusion**: do not use simultaneously with TTH (/tth) (Stop hook loop conflict)
 
-## Leveraging Existing Agents (Optional)
+## TTH Team Member Utilization (optional)
 
-TTH team members can be used as experiment agents:
-
-| Team Member | Suitable Experiment Types |
-|-------------|--------------------------|
-| pichai (architect) | Structural changes, module separation |
-| jensen (backend) | API optimization, DB query improvement |
-| zuckerberg (frontend) | Component optimization, bundle reduction |
-| bezos (QA) | Code deletion, removing unnecessary abstractions |
-
-Include the team role file path in the prompt to provide expertise:
+```yaml
+# Assign specialty areas per team member
+pichai: architecture changes, module separation
+jensen: API optimization, DB query improvements
+zuckerberg: frontend components
+bezos: code deletion, removing unnecessary abstractions
 ```
-Read the role file for the team member and perform the experiment from that perspective:
+
+Include the team role file in the prompt to grant expertise:
+```
+Read the team member's role file and implement from that perspective:
 ~/.claude/team-roles/{role}.md
 ```

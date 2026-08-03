@@ -1,7 +1,6 @@
 ---
 name: docs-interfaces
-description: "Generate interface/API docs — OpenAPI 3.1/AsyncAPI 3.0 specs, API topology diagrams, interface flow (sequence) diagrams, API changelog"
-when_to_use: "Writing API docs/specs (OpenAPI, swagger, AsyncAPI), interface/API topology diagrams, endpoint docs, API changelogs. Whole-system diagrams → docs-architecture; user manuals → docs-manuals; API design principles themselves → api-design-principles"
+description: "Generate interface/API docs — OpenAPI 3.1/AsyncAPI 3.0 specs, API topology diagrams, interface flow (sequence) diagrams, API changelog. Use when writing API docs/specs (OpenAPI, swagger, AsyncAPI), interface/API topology diagrams, endpoint docs, API changelogs. Whole-system diagrams → docs-architecture; user manuals → docs-manuals; API design principles themselves → api-design-principles"
 user-invocable: true
 disable-model-invocation: false
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash

@@ -24,15 +24,18 @@ jobs:
   openapi:
     name: OpenAPI lint + breaking
     runs-on: ubuntu-latest
-    if: ${{ hashFiles('docs/api/openapi.yaml') != '' }}
+    # job 레벨 if: hashFiles()는 checkout 전(빈 워크스페이스)에 평가돼 항상 skip — checkout 후 step에서 셸로 검사
     steps:
       - uses: actions/checkout@v4
         with: { fetch-depth: 0 }
       - name: Lint
-        run: npx --yes @redocly/cli lint docs/api/openapi.yaml
+        run: |
+          [ -f docs/api/openapi.yaml ] || { echo "openapi.yaml 없음 — skip"; exit 0; }
+          npx --yes @redocly/cli lint docs/api/openapi.yaml
       - name: Breaking changes vs base
         if: github.event_name == 'pull_request'
         run: |
+          [ -f docs/api/openapi.yaml ] || exit 0
           git show origin/${{ github.base_ref }}:docs/api/openapi.yaml > /tmp/base-openapi.yaml 2>/dev/null || exit 0
           npx --yes oasdiff breaking /tmp/base-openapi.yaml docs/api/openapi.yaml --fail-on ERR
 
@@ -43,9 +46,10 @@ jobs:
       - uses: actions/checkout@v4
       - name: Extract & validate mermaid blocks
         run: |
-          mkdir -p /tmp/mmd && i=0
+          mkdir -p /tmp/mmd
+          # 내장변수 FILENAME 할당 금지 — 별도 변수(out) + 괄호 리다이렉트. 추출 실패는 step 실패로 드러나야 함
           find docs -name "*.md" -print0 2>/dev/null | while IFS= read -r -d '' f; do
-            awk '/^```mermaid/{flag=1;n++;next}/^```/{flag=0}flag{print > "/tmp/mmd/b_" FILENAME "_" n ".mmd"}' FILENAME="$(basename "$f")" "$f" || true
+            awk -v out="/tmp/mmd/$(basename "$f")" '/```mermaid/{n++; f2=1; next} /```/{f2=0} f2{print > (out "_" n ".mmd")}' "$f"
           done
           count=$(find /tmp/mmd -name "*.mmd" 2>/dev/null | wc -l)
           [ "$count" -eq 0 ] && { echo "mermaid 블록 없음"; exit 0; }
@@ -59,12 +63,14 @@ jobs:
   freshness:
     name: 문서 신선도
     runs-on: ubuntu-latest
-    if: ${{ hashFiles('docs/docs.yaml') != '' }}
+    # job 레벨 if: hashFiles()는 checkout 전 평가로 항상 skip — checkout 후 step에서 셸로 검사
     steps:
       - uses: actions/checkout@v4
         with: { fetch-depth: 0 }
       - name: Freshness check
-        run: bash scripts/check-docs-freshness.sh docs/docs.yaml
+        run: |
+          [ -f docs/docs.yaml ] || { echo "docs.yaml 없음 — skip"; exit 0; }
+          bash scripts/check-docs-freshness.sh docs/docs.yaml
         continue-on-error: true # stale = 경고. 강제하려면 제거
 
   doc-touch-policy:

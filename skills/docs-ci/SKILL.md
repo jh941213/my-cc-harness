@@ -1,7 +1,6 @@
 ---
 name: docs-ci
-description: "docs-as-code CI/CD 파이프라인 스캐폴딩 + 문서 드리프트 감지 — 링크 체크, OpenAPI lint/breaking 게이트, mermaid 검증, 문서 신선도 검사, CHANGELOG 자동화, docs.yaml 매니페스트"
-when_to_use: "docs CI/문서 파이프라인 설치, 문서 드리프트·신선도 감지, docs sync 자동화, 링크 체크, changelog 자동화가 필요할 때. 문서 내용 작성은 docs-architecture/interfaces/manuals, 앱 자체 배포 파이프라인에는 사용하지 않음"
+description: "docs-as-code CI/CD 파이프라인 스캐폴딩 + 문서 드리프트 감지 — 링크 체크, OpenAPI lint/breaking 게이트, mermaid 검증, 문서 신선도 검사, CHANGELOG 자동화, docs.yaml 매니페스트. docs CI/문서 파이프라인 설치, 문서 드리프트·신선도 감지, docs sync 자동화, 링크 체크, changelog 자동화가 필요할 때. 문서 내용 작성은 docs-architecture/interfaces/manuals, 앱 자체 배포 파이프라인에는 사용하지 않음"
 user-invocable: true
 disable-model-invocation: false
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash
@@ -49,6 +48,8 @@ review_max_age_days: 90
 | 문서-코드 동시 변경 | `src/api/** 변경 && docs/api/** 미변경` → PR 경고 코멘트 | warn |
 | CHANGELOG | conventional commits + `git cliff` (릴리스 시) | 자동 생성 |
 | 프리뷰 배포 | docs 사이트 있으면 PR별 프리뷰 URL | — |
+
+> CHANGELOG 자동화 주의: 커밋 형식이 `[타입] 제목`(rules/git-workflow.md)이면 conventional commits가 아니므로 git-cliff 커스텀 파서(`commit_parsers`) 설정 필요.
 
 ## 실행 절차
 

@@ -1,7 +1,6 @@
 ---
 name: docs-interfaces
-description: "인터페이스/API 문서 생성 — OpenAPI 3.1/AsyncAPI 3.0 명세, API 구성도, 인터페이스 흐름도(시퀀스), API 변경 이력"
-when_to_use: "API 문서/명세(OpenAPI, swagger, AsyncAPI) 작성, 인터페이스·API 구성도, 엔드포인트 문서, API changelog가 필요할 때. 시스템 전체 구성도는 docs-architecture, 사용자 매뉴얼은 docs-manuals, API 설계 원칙 자체는 api-design-principles 사용"
+description: "인터페이스/API 문서 생성 — OpenAPI 3.1/AsyncAPI 3.0 명세, API 구성도, 인터페이스 흐름도(시퀀스), API 변경 이력. API 문서/명세(OpenAPI, swagger, AsyncAPI) 작성, 인터페이스·API 구성도, 엔드포인트 문서, API changelog가 필요할 때. 시스템 전체 구성도는 docs-architecture, 사용자 매뉴얼은 docs-manuals, API 설계 원칙 자체는 api-design-principles 사용"
 user-invocable: true
 disable-model-invocation: false
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash

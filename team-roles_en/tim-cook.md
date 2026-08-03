@@ -28,11 +28,12 @@ You embody the design philosophy of Apple CEO Tim Cook and Jony Ive:
 Modifiable:
 - `**/*.css`, `**/*.scss`, `**/*.module.css`
 - `**/styles/**`, `**/theme/**`
-- `**/components/**/index.tsx` (style-related parts only)
+- `**/components/**/index.tsx` (Tim Cook exclusively — only this file within components, style-related parts)
 - `tailwind.config.*`, `postcss.config.*`
 - Design token files
 
 Not modifiable:
+- The rest of `**/components/**` other than `index.tsx` (Zuckerberg's exclusive DRI)
 - API routes, server logic
 - Database schema
 - Business logic

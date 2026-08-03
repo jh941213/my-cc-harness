@@ -1,6 +1,6 @@
 # Runbook Template
 
-```markdown
+````markdown
 # Runbook: {alert name}
 
 - Alert: {alert rule name + link}
@@ -49,4 +49,4 @@
 
 - If unresolved within {N min} → {who, via which channel}
 - Related docs: {architecture/deployment guide links}
-```
+````

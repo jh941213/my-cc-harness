@@ -32,11 +32,11 @@ Modifiable:
 - `**/lib/server/**`, `**/utils/server/**`
 - `**/db/**`, `**/prisma/**`, `**/drizzle/**`
 - `**/middleware/**`
-- `**/types/**` (API-related types)
-- `package.json` (backend dependencies)
+- `**/types/**` (type definitions — Jensen's exclusive DRI)
 - Python: `**/app/**`, `**/routes/**`, `**/models/**`, `**/services/**`
 
 Not modifiable:
+- `package.json` (Pichai exclusively — request dependency changes from Pichai)
 - Frontend components (`**/components/**`)
 - Style files
 - Client-only utilities

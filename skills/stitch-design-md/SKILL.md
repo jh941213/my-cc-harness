@@ -3,10 +3,11 @@ name: stitch-design-md
 description: "Stitch 프로젝트를 분석하여 DESIGN.md 파일을 생성합니다 — 디자인 시스템을 시맨틱하고 자연스러운 언어로 문서화하여 일관된 UI 생성을 지원합니다. Triggers on: Stitch, 디자인 시스템, DESIGN.md, Stitch 디자인 분석. NOT for: React 컴포넌트 변환, 코드 구현."
 user-invocable: true
 allowed-tools:
-  - "stitch*:*"
+  - "mcp__stitch__*"
   - "mcp__stitch*"
   - "Read"
   - "Write"
+  - "Bash(curl:*)"
   - "mcp__tavily__tavily_extract"
 ---
 
@@ -67,7 +68,7 @@ Stitch 프로젝트를 분석하려면 Stitch MCP 서버 도구를 사용하여 
 ### 5. 자산 다운로드
 
 ```
-web_fetch 또는 read_url_content로 htmlCode.downloadUrl에서 HTML 코드 다운로드
+Bash curl로 htmlCode.downloadUrl에서 HTML 코드 다운로드
 선택적으로 screenshot.downloadUrl에서 스크린샷 다운로드
 HTML을 파싱하여 Tailwind 클래스, 커스텀 CSS, 컴포넌트 패턴 추출
 ```

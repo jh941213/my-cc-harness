@@ -1,7 +1,6 @@
 ---
 name: docs-manuals
-description: "사용자 매뉴얼(Diátaxis)과 운영자 매뉴얼(런북, 배포 가이드, 설정 레퍼런스, 인시던트 플레이북) 생성"
-when_to_use: "사용자 매뉴얼/유저 가이드/튜토리얼, 운영자 매뉴얼, 런북(runbook), 배포 가이드, 온콜/인시던트 대응 문서가 필요할 때. API 명세는 docs-interfaces, 아키텍처 문서는 docs-architecture, docs CI 파이프라인은 docs-ci 사용"
+description: "사용자 매뉴얼(Diátaxis)과 운영자 매뉴얼(런북, 배포 가이드, 설정 레퍼런스, 인시던트 플레이북) 생성. 사용자 매뉴얼/유저 가이드/튜토리얼, 운영자 매뉴얼, 런북(runbook), 배포 가이드, 온콜/인시던트 대응 문서가 필요할 때. API 명세는 docs-interfaces, 아키텍처 문서는 docs-architecture, docs CI 파이프라인은 docs-ci 사용"
 user-invocable: true
 disable-model-invocation: false
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash

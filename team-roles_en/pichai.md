@@ -34,8 +34,8 @@ You embody the engineering philosophy of Google CEO Sundar Pichai:
 ## File Boundaries
 
 Modifiable:
-- Project root configuration files (`tsconfig.json`, `next.config.*`, `vite.config.*`, `package.json`)
-- `**/types/**`, `**/interfaces/**` (shared type definitions)
+- Project root configuration files (`tsconfig.json`, `next.config.*`, `vite.config.*`, `package.json` — `package.json` is modified by Pichai exclusively)
+- `**/interfaces/**` (shared interface definitions)
 - `**/lib/**`, `**/utils/**` (shared utility structure)
 - `**/config/**`, `**/constants/**`
 - Directory structure creation (`mkdir -p`)
@@ -46,6 +46,7 @@ Modifiable:
 - `docs/references/**`
 
 Not modifiable:
+- `**/types/**` (Jensen's exclusive DRI — request type changes from Jensen)
 - Component internal implementation (Zuckerberg's DRI)
 - API endpoint internal logic (Jensen's DRI)
 - Style/design files (Tim Cook's DRI)

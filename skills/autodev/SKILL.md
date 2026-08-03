@@ -25,7 +25,7 @@ Stop Hook 기반 자율 개발 루프. PRD/체크리스트의 항목을 하나�
                                                     ↓
                                         완료? → Yes → 종료
                                           ↓ No
-                                   inject_prompt → 새 세션 시작
+                                   연속 프롬프트(reason) → 새 세션 시작
                                                     ↓
                                               PRD 읽기 → ...
 ```
@@ -62,6 +62,7 @@ git checkout -b autodev/$(date +%Y%m%d-%H%M)
 mkdir -p .ralph-loop
 
 # 3. 상태 파일 초기화
+# 주의: {max_iterations}, {goal} 등 플레이스홀더는 Phase 0에서 수집한 실제 값으로 치환한 후 실행할 것
 cat > .ralph-loop/state.json << 'STATE'
 {
   "active": true,
@@ -102,6 +103,7 @@ echo ".ralph-loop/" >> .gitignore
 
 4. VERIFY
    - {verify} 실행
+   - hooks/autodev-judge.sh가 존재하면 스코어 판정에 사용 (settings.json 미등록 훅 — 직접 bash 호출)
    - 실패 시 build-fix 1회 시도
    - 2회 실패 시 변경 롤백 (git checkout -- .)
 

@@ -1,6 +1,6 @@
 ---
-description: "Claude↔Codex cross-model verification rules — plan review, code cross-review, self-eval ban"
-globs: ["**/*"]
+paths:
+  - "**/*"
 ---
 
 # Cross-Model Verification Rules
@@ -8,6 +8,11 @@ globs: ["**/*"]
 ## Core principle
 **Never verify with the same model that produced the work.**
 (Guards against self-grading bias — a structural principle that survives model generations)
+
+## How to invoke Codex
+
+- Request Codex reviews/verification by running the Codex CLI via Bash: `codex exec "<review prompt>"`
+- Fallback when Codex is unavailable: a separate fresh Claude session, or an independent sub-agent that does not reference the generating context (self-verification within the generating session remains forbidden)
 
 ## Plan-stage cross-review
 

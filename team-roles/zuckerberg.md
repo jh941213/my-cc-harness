@@ -26,13 +26,14 @@
 ## 파일 경계
 
 수정 가능:
-- `**/components/**/*.tsx`, `**/components/**/*.ts`
+- `**/components/**/*.tsx`, `**/components/**/*.ts` (`**/components/**/index.tsx` 제외 — 팀쿡 단독)
 - `**/pages/**`, `**/app/**` (프론트엔드 부분)
 - `**/hooks/**`, `**/contexts/**`, `**/stores/**`
 - `**/lib/client/**`, `**/utils/client/**`
-- `package.json` (프론트엔드 의존성)
 
 수정 불가:
+- `**/components/**/index.tsx` (팀쿡 단독 DRI)
+- `package.json` (피차이 단독 — 의존성 변경은 피차이에게 요청)
 - API 라우트 핸들러 (`**/api/**` 내부 로직)
 - 데이터베이스 스키마, 마이그레이션
 - 서버 전용 유틸리티

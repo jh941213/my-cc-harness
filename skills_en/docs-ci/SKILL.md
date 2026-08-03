@@ -1,7 +1,6 @@
 ---
 name: docs-ci
-description: "Scaffold a docs-as-code CI/CD pipeline + docs drift detection — link check, OpenAPI lint/breaking gate, mermaid validation, docs freshness check, CHANGELOG automation, docs.yaml manifest"
-when_to_use: "Installing docs CI/pipelines, detecting docs drift/freshness, docs sync automation, link checks, changelog automation. Writing doc content → docs-architecture/interfaces/manuals; not for the app's own deploy pipeline"
+description: "Scaffold a docs-as-code CI/CD pipeline + docs drift detection — link check, OpenAPI lint/breaking gate, mermaid validation, docs freshness check, CHANGELOG automation, docs.yaml manifest. Use when installing docs CI/pipelines, detecting docs drift/freshness, docs sync automation, link checks, changelog automation. Writing doc content → docs-architecture/interfaces/manuals; not for the app's own deploy pipeline"
 user-invocable: true
 disable-model-invocation: false
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash
@@ -49,6 +48,8 @@ review_max_age_days: 90
 | Code+doc co-change | `src/api/** changed && docs/api/** untouched` → PR warning comment | warn |
 | CHANGELOG | conventional commits + `git cliff` (on release) | auto-generated |
 | Preview deploys | per-PR preview URL if a docs site exists | — |
+
+> CHANGELOG automation note: if commits use the `[type] title` format (rules/git-workflow.md), that is not conventional commits, so git-cliff needs a custom parser (`commit_parsers`) configuration.
 
 ## Procedure
 

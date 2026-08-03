@@ -50,6 +50,7 @@ Analyze user responses and the existing codebase to determine the project type:
 | Full-stack | Both frontend + backend needed |
 | UI redesign | Design changes to existing UI. No logic changes |
 | Code review/audit | Quality inspection, refactoring, deletion analysis |
+| Architecture refactoring | Structural redesign/dependency cleanup focused. No new features |
 
 ### 2-2. Team Member Selection
 
@@ -144,6 +145,7 @@ Remaining stories:
 
 1. Create team with **TeamCreate**
 2. Include each member's role file (`~/.claude/team-roles/[name].md`) in the spawn prompt
+   - Role file name mapping: Satya=satya.md, Pichai=pichai.md, Tim Cook=tim-cook.md, Zuckerberg=zuckerberg.md, Jensen=jensen.md, Bezos=bezos.md, Musk=musk.md
 3. **Bezos's first story is always "deletion analysis"** (Musk Step 2)
 4. Create story list with dependency chains via **TaskCreate**
 5. Spawn each team member with **Agent()**

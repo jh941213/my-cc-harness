@@ -24,7 +24,7 @@ allowed-tools: Read, Write, Edit, Bash, Glob, Grep
     ↓
 2. 사용자 확인
     ↓
-3. frontend-developer 에이전트로 구현
+3. frontend-developer 컨텍스트에서 구현
     ↓
 4. 결과 검증
 ```
@@ -68,7 +68,7 @@ allowed-tools: Read, Write, Edit, Bash, Glob, Grep
 
 ## Phase 2: 구현
 
-`frontend-developer` 에이전트를 호출하여 구현합니다.
+이 스킬은 `frontend-developer` 컨텍스트로 실행됩니다 (frontmatter의 `context: fork` + `agent` 지정). 별도 에이전트를 다시 호출하지 않고 그대로 구현을 진행합니다.
 
 ### 구현 순서
 1. CSS 변수 (globals.css)
