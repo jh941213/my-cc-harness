@@ -2,760 +2,416 @@
 
 **🌐 English | [한국어](README.md)**
 
-# My CC Harness
+# MY Claude Code Harness
 
 <img src="assets/banner.png" alt="My CC Harness" width="720" />
 
-[![Version](https://img.shields.io/badge/version-0.9.0-7C3AED.svg?style=for-the-badge)](https://github.com/jh941213/my-cc-harness)
+[![Version](https://img.shields.io/badge/version-1.3.0-7C3AED.svg?style=for-the-badge)](https://github.com/jh941213/my-cc-harness)
 [![License](https://img.shields.io/badge/license-MIT-E87C3E.svg?style=for-the-badge)](LICENSE)
-[![Skills](https://img.shields.io/badge/skills-33-blue.svg?style=for-the-badge)](#-skills-33)
-[![Agents](https://img.shields.io/badge/agents-11-green.svg?style=for-the-badge)](#-agents-11)
-[![PRD](https://img.shields.io/badge/PRD-Aletheia_v2-9333ea.svg?style=for-the-badge)](#-prd-aletheia-v2)
+[![Skills](https://img.shields.io/badge/skills-43-blue.svg?style=for-the-badge)](#-skills-43)
+[![Agents](https://img.shields.io/badge/agents-12-green.svg?style=for-the-badge)](#-agents-12)
+[![Hooks](https://img.shields.io/badge/hooks-20-ff6b6b.svg?style=for-the-badge)](#-hooks-gate-system-20)
+[![Memory](https://img.shields.io/badge/memory-3--tier-00d4aa.svg?style=for-the-badge)](#-3-tier-memory-system)
 [![TTH](https://img.shields.io/badge/TTH-Multi--Agent-ff6b35.svg?style=for-the-badge)](#-tth-multi-agent-silo)
-[![AutoDev](https://img.shields.io/badge/AutoDev-Autonomous-00d4aa.svg?style=for-the-badge)](#-autodev-autonomous-experiment-loop)
 
-**Production-ready optimal agent harness for Claude Code**
+### Enforce, don't instruct — gates, memory, and autonomous loops in one harness
 
-`Skills` `Agents` `Hooks` `Rules` `Commands` `TTH` All-in-One
+`Skills 43` · `Agents 12` · `Commands 4` · `Rules 9` · `Hooks 20` · `3-Tier Memory` · `TTH M7` · `SAST`
+
+</div>
 
 ---
 
-**33 Skills** | **11 Agents** | **5 Conditional Rules** | **Hooks Guarantee System** | **TTH Multi-Agent** | **AutoDev Autonomous Experiments**
+## Why This Harness
 
-</div>
+Writing "always do X" in CLAUDE.md is not enough — the model forgets. This harness solves that structurally with three layers:
+
+| Layer | What it does | Example |
+|---|---|---|
+| 🔒 **Gates (Hooks)** | Violations get **blocked** — enforcement, not instruction | Turn end blocked until lessons are recorded, `.env` commits blocked before they happen, quality gate on task completion |
+| 🧠 **Memory (3-tier)** | Nothing gets forgotten — load only what's needed | "deploy this" → CI/CD docs auto-routed, working state auto-restored after compaction |
+| 🔁 **Autonomous loops (Ralph Loop)** | Runs overnight — until the done-condition holds | PRD items auto-drained (AutoDev), M7 CEO team collaboration (TTH) |
 
 ---
 
 ## Table of Contents
 
 - [Installation](#-installation)
-- [PRD Aletheia v2](#-prd-aletheia-v2)
+- [3-Tier Memory System](#-3-tier-memory-system)
+- [Hooks Gate System (20)](#-hooks-gate-system-20)
 - [TTH Multi-Agent Silo](#-tth-multi-agent-silo)
-- [AutoDev Autonomous Experiment Loop](#-autodev-autonomous-experiment-loop)
-- [CLAUDE.md Optimization Philosophy](#-claudemd-optimization-philosophy)
-- [Hooks Guarantee System](#-hooks-guarantee-system)
-- [Skills (33)](#-skills-33)
-- [Agents (11)](#-agents-11)
-- [Commands (3)](#-commands-3)
-- [Rules (5)](#-rules-5-conditional-loading)
-- [Boris Cherny Tips](#-boris-cherny-tips)
-- [Codex CLI Version](#-codex-cli-version)
-- [References](#-references)
-- [Changelog](#-changelog)
+- [PRD Aletheia v3](#-prd-aletheia-v3)
+- [AutoDev — Ralph Loop](#-autodev--ralph-loop)
+- [Musk Evaluator](#-musk-evaluator--independent-evaluation)
+- [Client Deliverables (/client-docs)](#-client-deliverables-client-docs)
+- [Skills (43)](#-skills-43)
+- [Agents (12)](#-agents-12)
+- [Rules (9)](#-rules-9)
+- [CLAUDE.md Philosophy](#-claudemd-philosophy)
+- [Directory Structure](#-directory-structure)
 
 ---
 
 ## 🚀 Installation
 
-### Method 1: One-Click Full Installation (Recommended)
+### Method 1: One-click install (recommended)
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/jh941213/my-cc-harness/main/install.sh | bash
 ```
 
-### Method 2: Plugin Installation (Skills Only)
+Pick a language (한국어/English) and everything installs into `~/.claude/`.
+
+### Method 2: Plugin install
 
 ```bash
 claude plugin marketplace add jh941213/my-cc-harness
 claude plugin install my-cc-harness@my-cc-harness
 ```
 
-> **Note**: The plugin system only supports **skills**. Agents, rules, and TTH require separate configuration.
-
-### Method 3: Ask Claude Directly
+### Method 3: Ask Claude directly
 
 ```
-Copy agents/, rules/, commands/, and CLAUDE.md from
-https://github.com/jh941213/my-cc-harness to my ~/.claude/ folder
+Clone https://github.com/jh941213/my-cc-harness and install it.
+Do NOT overwrite settings.json — merge it with my existing settings.
 ```
 
-### Installation Comparison
+> ⚠️ **Warning**: `install.sh` replaces `~/.claude/settings.json`. If you have existing settings (hooks, permissions, model), prefer Method 3 for a merge install.
 
-| Item | Plugin Install | Full Setup |
-|------|:---:|:---:|
-| Skills (33) | ✅ | ✅ |
-| Agents (11) | ❌ | ✅ |
-| Rules (5) | ❌ | ✅ |
-| Commands (3) | ❌ | ✅ |
-| TTH Team Roles (6) | ❌ | ✅ |
-| TTH Hooks (2) | ❌ | ✅ |
-| CLAUDE.md | ❌ | ✅ |
-| settings.json | ❌ | ✅ |
+<details>
+<summary><b>What each method installs</b></summary>
+
+| Item | Method 1 (script) | Method 2 (plugin) | Method 3 (merge) |
+|---|:---:|:---:|:---:|
+| CLAUDE.md | ✅ | ❌ | ✅ |
+| settings.json (permissions + hook wiring) | ✅ replace | ❌ | ✅ merge |
+| skills / commands / agents | ✅ | ✅ | ✅ |
+| hook scripts | ✅ | ✅ | ✅ |
+| rules / templates / semgrep | ✅ | ❌ | ✅ |
+| team-roles (TTH) | ✅ | ❌ | ✅ |
+
+</details>
+
+### Prerequisites (optional)
+
+```bash
+brew install jq ripgrep fd ast-grep difftastic scc gitleaks trivy   # verification & security toolchain
+brew install tmux                                                    # for TTH multi-agent
+```
 
 ---
 
-## 📋 PRD Aletheia v2
+## 🧠 3-Tier Memory System
 
-<div align="center">
-<img src="assets/tth-banner.png" alt="PRD Aletheia v2" width="720" />
-</div>
+**Principle: route knowledge, don't copy it. Only the index is always loaded; bodies are read only when the task matches.**
 
-> **Humanities Framework + Six Thinking Hats + Convergence Board = Insight-Driven PRD**
-
-Automate everything from complexity-adaptive interviews to PRD document generation with a single line: `/prd "idea"`.
-
-```
-/prd "AI Code Review SaaS for Developers"
-```
-
-### Key Innovations
-
-| Element | Description |
-|---------|-------------|
-| **Complexity Gate** | Auto-classify Low/Mid/High → adaptive process (2–5 rounds) |
-| **Convergence Board** | 6-dimension progress tracking (🔴→🟡→🟢) — Terminology, Structure, Depth, Consistency, Robustness, Market |
-| **Humanities Framework** | Wittgenstein (terminology alignment) + Descartes (methodical doubt) + Socrates (contradiction detection) + Johari (blind spots) + Gadamer (coherence) |
-| **Graceful Exit** | Exit anytime → saves PRD.partial.md → resume in next session |
-
-### Pipeline
-
-```
-Phase 0: Complexity assessment + Convergence board init
-    ↓
-Phase 1 (bg) ──┐  Market research subagent (Tavily/Exa/Gemini CLI)
-Phase 2 R1 ────┘  Terminology alignment + W6H structure scan (parallel)
-    ↓
-Phase 2 R2-5: Adaptive interview (research joins)
-    ↓
-Phase 3-5: Delegated to prd-planner subagent
-    ├── Six Hats synthesis + differentiation strategy
-    ├── MVP boundary + risk analysis
-    └── PRD.md generation (with convergence board appendix)
-    ↓
-Phase 6: Self-verification → /spec connection
+```mermaid
+flowchart LR
+    subgraph short["Short-term — session"]
+        A["context + todo panel<br/>tasks/todo.md"]
+    end
+    subgraph mid["Mid-term — survives compaction"]
+        B["tasks/context.md<br/>goal · decisions · next"]
+    end
+    subgraph long["Long-term — across sessions"]
+        C["tasks/lessons.md<br/>chronological lessons (gate-enforced)"]
+        D["memory/INDEX.md<br/>task type → docs routing"]
+    end
+    P["prompt<br/>'deploy this'"] -->|"keyword hook"| D
+    D -->|"Read only matched docs"| E["docs/ops/cicd.md"]
+    B -->|"auto-restored post-compact"| A
+    C -->|"auto-injected at session start"| A
 ```
 
-### Complexity-Based Adaptation
-
-| Complexity | Example | Phase 1 | Interview |
-|------------|---------|---------|-----------|
-| **Low** | CLI tool, simple feature | Skip | 2 rounds |
-| **Mid** | New module, library | 1 subagent | 3 rounds |
-| **High** | SaaS, platform | 3 subagents (parallel) | 5 rounds |
-
-### PRD → SPEC → Implementation
+### In action
 
 ```
-/prd [idea]  → PRD.md (what & why)
-/spec        → SPEC.md (how — technical details)
-/tth         → Autonomous implementation via multi-agent
+User: "deploy this to staging"
+Hook: [auto-memory] Looks like a "Deploy/CI" task → Read first: docs/ops/cicd.md
 ```
+
+| Tier | Store | Loaded when | Owner |
+|---|---|---|---|
+| **Short** | session context + `tasks/todo.md` | always | alongside todo panel |
+| **Mid** | `tasks/context.md` | **auto-reinjected** right after compaction & on restart | `memory-postcompact.sh` |
+| **Long · journal** | `tasks/lessons.md` | recent entries injected at session start | `lessons-recall.sh` + **Stop gate enforcement** |
+| **Long · routing** | `memory/INDEX.md` + existing `docs/` | bodies read **only on task-type match** | `memory-route-hint.sh` + `auto-memory` skill |
+
+- **Dual routing**: deterministic layer (keyword hook injects a one-line hint — never document bodies) + model layer (skill classifies against INDEX)
+- **Docs own the truth**: INDEX is just a map; post-task knowledge updates the doc itself (no copying into memory)
+- ASCII keywords use word-boundary matching ("latest" never false-triggers "test"); Korean keywords match as substrings (particles attach)
+
+---
+
+## 🔒 Hooks Gate System (20)
+
+**Verification belongs to deterministic gates, not the model's good intentions.**
+
+### Enforcement gates (violations get blocked)
+
+| Hook | Event | Enforces |
+|---|---|---|
+| `lessons-stop-gate.sh` | Stop | **Blocks turn end** until `tasks/lessons.md` is updated after file-modifying work (auto-clears on write, infinite-loop guard) |
+| `verify-task-quality.sh` | TaskCompleted | **Blocks task completion** on typecheck/lint/test/coverage/security failures |
+| commit guard (inline) | PreToolUse | Blocks `.env` staging and `console.log` commits **before** the commit happens |
+| `config-change-guard.sh` | ConfigChange | Cache-preservation warning on mid-session CLAUDE.md/rules changes |
+
+### Memory & context hooks
+
+| Hook | Event | Role |
+|---|---|---|
+| `work-protocol-prompt.sh` | UserPromptSubmit | Injects the todo·lessons·context protocol |
+| `memory-route-hint.sh` | UserPromptSubmit | Prompt keywords → docs-to-read hint |
+| `lessons-recall.sh` | SessionStart | Injects recent lessons, working state, memory index |
+| `memory-postcompact.sh` / `post-compact-guard.sh` | PostCompact | Restores mid-term memory + recovery guidance |
+| `lessons-track-edit.sh` | PostToolUse | Tracks real work (bookkeeping files excluded) |
+
+### Autonomous loop & orchestration hooks
+
+| Hook | Event | Role |
+|---|---|---|
+| `ralph-loop.sh` | Stop | Drives the Ralph Loop — detects the completion promise in assistant messages only, delivers the full continuation prompt via `reason` |
+| `subagent-tracker.sh` / `subagent-stop-tracker.sh` | SubagentStart/Stop | Teammate spawn/finish tracking (tmux reuse) |
+| `check-remaining-tasks.sh` | TeammateIdle | Assigns remaining tasks to idle teammates |
+| `failure-tracker.sh` | PostToolUseFailure | Accumulates failure patterns |
+| `docs-sync.sh` | TaskCompleted | Queues code changes into `.docs-queue` → `/docs sync` |
+| `worktree-tracker.sh` | WorktreeCreate/Remove | Worktree state tracking |
+| `autodev-judge.sh` | (manual) | AutoDev score judging |
+
+Also: `notchi-hook.sh` (notifications, optional), `reset-home-memory.sh` (home-dir session cleanup), inline prettier auto-format.
 
 ---
 
 ## 🤖 TTH Multi-Agent Silo
 
-<div align="center">
-<img src="assets/tth-banner.png" alt="TTH Multi-Agent Harness" width="720" />
-</div>
+<img src="assets/tth-banner.png" alt="TTH" width="720" />
 
-> **Toss Silo + Tesla 5-Step + Ralph Loop = Autonomous Multi-Agent Team**
-
-A single line `/tth "feature description"` activates an M7 CEO persona team that collaborates autonomously.
+**Toss (silos) + Tesla (delete first) + Halo (Ralph Loop), unified** — an M7 CEO persona team collaborates in parallel with exclusive file boundaries.
 
 ```
-/tth "Build a TODO app"
+/tth build a payment system
 ```
 
-### Three-Axis Integration
+| Persona | Role | File boundary (exclusive) |
+|---|---|---|
+| satya | Orchestrator | integration & merge coordination |
+| pichai | Backend | `api/**`, `package.json` **solo** |
+| jensen | Infra & types | `**/types/**` **solo** |
+| tim-cook | Component indexes | `components/**/index.tsx` only |
+| zuckerberg | Frontend impl | the rest of `components/**` |
+| bezos | Data & API contracts | schemas, contracts |
+| musk | **Independent evaluator** | no code edits — evaluation only |
 
-| Axis | Origin | Role |
-|------|--------|------|
-| **Toss Silo** | Toss org culture | DRI structure, file boundaries, autonomous decision-making |
-| **Tesla 5-Step** | Musk | Question → Delete → Simplify → Accelerate → Automate |
-| **Ralph Loop** | ghuntley/ralph | Iterative convergence, backpressure, progress.txt learning |
-
-### Team Composition (M7 CEO Mapping)
-
-| Role | Name | CEO Philosophy |
-|------|------|----------------|
-| PO/Team Lead | **Satya** (Satya Nadella) | Growth Mindset, Team Empowerment |
-| Architect | **Pichai** (Sundar Pichai) | Platform Thinking, 10x Thinking, Simplicity at Scale |
-| Designer/UX | **Tim Cook** (Tim Cook) | Apple Design Philosophy, Perfectionism |
-| Frontend | **Zuckerberg** (Mark Zuckerberg) | Move Fast, Product-Centric |
-| Backend | **Jensen** (Jensen Huang) | Intellectual Honesty, Technical Depth |
-| QA | **Bezos** (Jeff Bezos) | Customer Obsession, "?" Email |
-
-### Long-Horizon Execution Pattern
-
-For tasks with 3+ steps or multi-session work, durable project memory is automatically created:
-
-| File | Manager | Purpose |
-|------|---------|---------|
-| `CHECKPOINT.md` | Satya (create) + Pichai (verification commands) | Milestone definition + verification + done-when |
-| `AUDIT.log` | Satya (record) + Bezos (gate) | Append-only event stream |
-| `progress.txt` | Entire team | Patterns, gotchas, lessons learned |
-
-### Pipeline
-
-```
-Phase 0: Satya activation (PO mode)
-    ↓
-Phase 1: Question requirements (Musk Step 1)
-    ↓
-Phase 2: Dynamic team selection + story decomposition + CHECKPOINT.md creation
-    ↓
-Phase 3: Ralph Loop parallel execution
-         (self-verification → pass/fail → retry → accumulated learning)
-         AUDIT.log recorded at each milestone
-    ↓
-Phase 4: Integration & review (Bezos milestone gate verification)
-    ↓
-Phase 5: HANDOFF.md + TeamDelete
-```
-
-### Automatic Team Selection by Project Type
-
-| Type | Team Members |
-|------|-------------|
-| Backend only | Pichai + Jensen + Bezos |
-| Frontend only | Tim Cook + Zuckerberg + Bezos |
-| Full-stack | Pichai + Tim Cook + Zuckerberg + Jensen + Bezos |
-| UI redesign | Tim Cook + Zuckerberg |
-| Code review/audit | Bezos solo |
-| Architecture refactoring | Pichai + Bezos |
-
-### TTH File Structure
-
-```
-~/.claude/
-├── commands/tth.md           ← /tth slash command (orchestration)
-├── team-roles/
-│   ├── satya.md              ← PO/Lead (Opus) — CHECKPOINT.md, AUDIT.log management
-│   ├── pichai.md             ← Architect (Opus) — milestone verification command definition
-│   ├── tim-cook.md           ← Designer (Sonnet)
-│   ├── zuckerberg.md         ← Frontend (Sonnet)
-│   ├── jensen.md             ← Backend (Sonnet)
-│   └── bezos.md              ← QA (Sonnet) — milestone gate final verification
-├── hooks/
-│   ├── verify-task-quality.sh ← TaskCompleted quality gate
-│   ├── check-architecture.sh  ← Architecture invariant check
-│   ├── check-remaining-tasks.sh ← TeammateIdle idle prevention
-│   └── autodev-judge.sh       ← AutoDev score evaluation
-└── skills/
-    ├── autodev/SKILL.md       ← Autonomous experiment loop
-    └── autodev-parallel/SKILL.md ← Parallel worktree orchestrator
-```
-
-> **Requirement**: `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` environment variable required (included in settings.json)
+- Teammates persist as tmux sessions, reused via `SendMessage(to=name)` (no respawning every round)
+- Long-horizon execution via `CHECKPOINT.md` (milestones + verify commands), `AUDIT.log` (state transitions), `progress.txt` (team lessons)
+- Quality-gate failures block completion — fix and retry is the default
 
 ---
 
-## 🔬 AutoDev Autonomous Experiment Loop
+## 📋 PRD Aletheia v3
 
-<div align="center">
-<img src="assets/autodev-banner.png" alt="AutoDev - AI works while you sleep" width="720" />
-</div>
+<img src="assets/prd-banner.png" alt="PRD" width="720" />
 
-> **Applying Karpathy's [autoresearch](https://github.com/karpathy/autoresearch) pattern to general software development**
-
-An AI agent modifies code, validates with tests/builds, and iterates keep/discard decisions to **autonomously improve code**.
-It automatically runs dozens of experiments while you sleep.
+**Insight-driven planning** — competitor/market/user research subagents investigate in parallel and produce an evidence-backed PRD set.
 
 ```
-/autodev
-> goal: "Make all failing tests pass"
-> scope: ["src/**"]
-> budget: 50
+/prd AI meeting-notes summarization SaaS
 ```
 
-### autoresearch → AutoDev Mapping
+- Automatic complexity triage: Low (single PRD) / Mid (one competitor-analysis subagent) / High (3 research subagents in parallel)
+- Output: 8 files in `prd/` (PRD body, competitive analysis, personas, roadmap, risks, metrics…)
+- Chain with `/tth` for a one-command PRD → implementation flow
 
-| autoresearch | AutoDev |
+---
+
+## 🔬 AutoDev — Ralph Loop
+
+<img src="assets/autodev-banner.png" alt="AutoDev" width="720" />
+
+**Leave it running overnight; a PR is waiting in the morning.** The Stop Hook intercepts session end and drains PRD items one by one.
+
+```mermaid
+flowchart LR
+    A["session: implement PRD item<br/>+ verify + commit"] --> B{"Stop Hook"}
+    B -->|"items remain"| C["continuation prompt (reason)<br/>new session starts"]
+    C --> A
+    B -->|"promise detected<br/>(assistant messages only)"| D["✅ loop ends<br/>completion report"]
+    B -->|"max_iterations reached"| D
+```
+
+- **Safeguards**: no edits outside scope · rollback on verify failure · isolated `autodev/` branch · max_iterations cap (never above 50 without user confirmation)
+- Single done-condition → Claude Code's **built-in `/goal`**; PRD multi-item + quality gates → the **autodev skill**
+- Parallel mode (`autodev-parallel`): worktree isolation + cherry-pick rounds for independent items (never combine with /tth)
+
+---
+
+## 🚀 Musk Evaluator — Independent Evaluation
+
+<img src="assets/eval-banner.png" alt="Eval" width="720" />
+
+**Never verify with the same model that produced the work** — the generator–evaluator separation principle.
+
+- Based on the 5-Step Engineering Process: question requirements → delete → simplify → accelerate → automate
+- AI-slop detection: over-abstraction, dead code, plausible-but-unimplemented stubs
+- Verdicts: SHIP / CONDITIONAL (max 3 re-evaluations) / REJECT
+- Runs via `/eval` or automatically in the TTH pipeline — cross-model verification via gemini CLI → separate session → independent subagent, in that order
+
+---
+
+## 📄 Client Deliverables (/client-docs)
+
+Generates SI/AO acceptance & delivery documents **on demand** — only what was requested, only from real evidence.
+
+```
+/client-docs test     # unit/integration test report — actual pytest/CI output only
+/client-docs arch     # architecture design doc ← docs/ARCHITECTURE.md + diagrams + ERD
+/client-docs rtm      # requirements traceability matrix ← SPEC.md + impl/test mapping
+/client-docs report   # AO operations report ← AUDIT.log + incident/change records
+```
+
+- **Evidence-based**: recording results of tests that never ran is absolutely forbidden; unverified items are marked `[NEEDS CONFIRMATION]`
+- **Acceptance-grade**: per-case detail appendix, coverage measurement scope stated (source-only figure alongside), approval box + traceability skeleton
+- If a client template exists in `templates/client/`, its structure is followed exactly
+- After generation, a separate agent cross-checks every number — the generator never grades its own deliverable
+
+---
+
+## 🛠 Skills (43)
+
+<details>
+<summary><b>Process & workflow (20)</b> — plan, spec, tdd, review, verify, autodev …</summary>
+
+| Skill | Role |
 |---|---|
-| `val_bpb` (single metric) | `autodev-judge.sh` (composite score: build/test/lint) |
-| `train.py` single file | Files within scope |
-| `program.md` | `/autodev` skill |
-| 5-min training | `npm test` / `pytest` |
-| `results.tsv` | `.autodev/results.tsv` |
-| NEVER STOP | NEVER STOP until budget exhausted |
+| `brainstorming` | Design settled before any creative work — no implementation before approval |
+| `systematic-debugging` | 4-phase root-cause discipline — question the architecture after 3 failed fixes |
+| `plan` | Plans for 3+ step work → persisted to `docs/execute-plans/` |
+| `spec` / `spec-verify` | Deep interview → SPEC.md → verification in a separate session |
+| `tdd` | Enforced RED-GREEN-REFACTOR cycle |
+| `review` | Codex+Claude dual review, severity classification, false-positive rules |
+| `verify` | 8-stage verification pipeline (types·lint·tests·build·security) |
+| `e2e-verify` / `e2e-agent-browser` | API/CLI E2E · browser-automation E2E |
+| `build-fix` | Build-error recovery — hands off to systematic-debugging after 1 failed attempt |
+| `simplify` / `techdebt` | Code simplification · dead code/deps/debt scanning |
+| `commit-push-pr` | Sensitive-file check → commit → PR |
+| `handoff` / `compact-guide` | Handover docs · context management guide |
+| `frontend` | UI implementation in the frontend-developer context |
+| `eval` | Runs the Musk Evaluator |
+| `autodev` / `autodev-parallel` | Ralph Loop autonomous development (single/parallel) |
 
-### Experiment Loop
+</details>
 
-```
-LOOP (until budget exhausted):
-  1. Modify code (only files within scope)
-  2. git commit
-  3. Run tests/build
-  4. Calculate score (autodev-judge.sh)
-  5. Improved → KEEP (branch advances)
-     Degraded → DISCARD (git reset)
-  6. Repeat
-```
+<details>
+<summary><b>Memory & documentation (8)</b> — auto-memory, docs suite, client-docs …</summary>
 
-### Parallel Mode (`/autodev-parallel`)
+| Skill | Role |
+|---|---|
+| `auto-memory` | Task-type docs routing — selective memory loading |
+| `docs-architecture` | ARCHITECTURE.md + mermaid diagrams + ADR + ERD |
+| `docs-interfaces` | OpenAPI/AsyncAPI specs + API CHANGELOG |
+| `docs-manuals` | User manuals (Diátaxis) + ops runbooks |
+| `docs-ci` | Docs verification pipeline (links·mermaid·freshness) |
+| `client-docs` | On-demand client deliverables |
+| `harness-audit` / `harness-diagnostics` | Global harness audit · project diagnostics |
 
-Run multiple ideas **simultaneously** using git worktrees.
+</details>
 
-```
-/autodev-parallel
-> goal: "Optimize API response time"
-> scope: ["src/api/**"]
-> parallel: 3
-> rounds: 5
-```
+<details>
+<summary><b>Design & Stitch (8)</b> — stitch pipeline, ui-ux-pro-max, nano-banana …</summary>
 
-```
-main
- ├── worktree A ── Agent 1: Add caching layer
- ├── worktree B ── Agent 2: Query optimization
- ├── worktree C ── Agent 3: Index changes
- └── Orchestrator: Collect results → cherry-pick best branch
-```
+| Skill | Role |
+|---|---|
+| `stitch-design-md` → `stitch-loop` → `stitch-react` | Design spec → iterative refinement → React conversion pipeline |
+| `stitch-enhance-prompt` | Stitch prompt enhancement |
+| `ui-ux-pro-max` | Design DB with built-in BM25 search (57 styles · 95 palettes · 24 charts · 12 stacks) |
+| `nano-banana` | Gemini image generation |
+| `tailwind-design-system` | Tailwind design system (v3 baseline) |
+| `shadcn-ui` | shadcn/ui component reference |
 
-### Suitable Use Cases
+</details>
 
-| Scenario | Metric |
-|----------|--------|
-| Batch-fix failing tests | Test pass rate |
-| Performance optimization exploration | Benchmark / Lighthouse |
-| TypeScript strict migration | Type error count |
-| Major dependency upgrade | Build + test pass |
-| Legacy refactoring | Tests maintained + LOC count |
+<details>
+<summary><b>Pattern references (7)</b> — react, fastapi, typescript …</summary>
 
-### AutoDev File Structure
+`api-design-principles` · `async-python-patterns` · `fastapi-templates` (pydantic v2) · `python-testing-patterns` · `react-patterns` · `typescript-advanced-types` · `vercel-react-best-practices` (47 rules)
+
+</details>
+
+---
+
+## 🤝 Agents (12)
+
+| Agent | Role | | Agent | Role |
+|---|---|---|---|---|
+| `planner` | Implementation planning | | `code-reviewer` | Code review |
+| `architect` | Architecture design | | `security-reviewer` | Security review |
+| `prd-planner` | PRD planning | | `evaluator` | Independent evaluation (Musk) |
+| `frontend-developer` | UI implementation | | `tdd-guide` | TDD guidance |
+| `docs-writer` | Documentation | | `junior-mentor` | Onboarding mentorship |
+| `stitch-developer` | Stitch development | | `langchain-specialist` | LangChain (skills installed separately) |
+
+---
+
+## 📏 Rules (9)
+
+Conditional rules loaded only when matching files are touched (`paths:`):
+
+`coding-style` · `security` · `testing` · `performance` · `git-workflow` · `drift-control` · `cross-model-verification` · `tool-overlap` · `code-review-reception`
+
+> **code-review-reception**: verify review feedback against the codebase before implementing. No performative agreement ("You're right!"); reasoned pushback is allowed.
+
+---
+
+## 📐 CLAUDE.md Philosophy
+
+> **A colleague who works autonomously given goals and constraints. But completion claims without evidence don't count.**
+
+- **Simplicity First** — minimal changes, no over-abstraction
+- **No Laziness** — fix root causes; debugging follows systematic-debugging's 4 phases
+- **Scope Discipline** — never quietly narrow or widen scope
+- **Goal-Driven** — success criteria + verification loops over step lists
+- **Design Before Code** — creative work goes through brainstorming approval first
+- **Evidence-based completion** — only this session's tool results count. "Would a staff engineer approve this?"
+
+---
+
+## 📂 Directory Structure
 
 ```
 ~/.claude/
-├── skills/
-│   ├── autodev/SKILL.md          ← Single experiment loop
-│   └── autodev-parallel/SKILL.md ← Parallel worktree orchestrator
-└── hooks/
-    └── autodev-judge.sh          ← Score evaluation function
+├── CLAUDE.md              # philosophy · workflows · Knowledge Map
+├── settings.json          # permissions + hook wiring (20 events)
+├── skills/       (43)     # workflow · memory · docs · design · patterns
+├── agents/       (12)     # role subagents
+├── commands/     ( 4)     # /tth /prd /docs /client-docs
+├── rules/        ( 9)     # path-conditional rules
+├── hooks/        (20)     # gate · memory · loop scripts
+├── team-roles/   ( 7)     # TTH M7 CEO personas
+├── templates/    ( 3)     # CHECKPOINT · AUDIT.log · execute-plan
+├── scripts/               # validate-harness.sh · sarif-to-jsonl.py
+└── semgrep-rules/         # SAST taint rules (ts-express · py-fastapi)
+
+{project}/                 # per-project (auto-created)
+├── tasks/                 # todo.md · lessons.md · context.md
+├── memory/                # INDEX.md (routing table) + topic files
+├── docs/                  # /docs suite output
+└── deliverables/          # /client-docs output
 ```
 
 ---
 
-## 📐 CLAUDE.md Optimization Philosophy
+## 🔍 Quality Assurance
 
-> Based on ETH Zurich paper + Anthropic official guide
-
-**"Only write what Claude can't discover by reading the code."**
-
-- Under 200 lines (currently 140 lines)
-- Remove discoverable information (skill lists, agent lists, codebase overview)
-- Move linter-enforceable rules to hooks
-- Separate roles between Auto Memory (MEMORY.md) and instructions
+- `scripts/validate-harness.sh` — 7 checks: frontmatter, JSON, hook syntax, reference paths, KO/EN parity (CI-wired)
+- Every hook is pipe-tested with real stdin payloads — "installed" and "working" are different things
+- Every skill passes the 4-axis check: executable with its declared tools / references exist / triggers don't overlap / hooks & CI actually fire
 
 ---
-
-## 🔒 Hooks Guarantee System
-
-Elevate CLAUDE.md "suggestions" to settings.json "guarantees":
-
-| Rule | Method | Hook Type |
-|------|--------|-----------|
-| Block push to main/master | Physical block | PreToolUse |
-| Block force push | Physical block | PreToolUse |
-| Block .env commits | Physical block | PreCommit |
-| Block console.log commits | Warning + block | PreCommit |
-| Auto prettier formatting | Auto execution | PostToolUse |
-| TTH task completion typecheck/lint/test | Quality gate | TaskCompleted |
-| Architecture invariant violation detection | Structure protection | TaskCompleted |
-| TTH teammate idle remaining task check | Idle prevention | TeammateIdle |
-| Subagent completion PRD.md generation check | Generation notification | SubagentStop |
-| AutoDev score evaluation | Build/test/lint composite score | autodev-judge.sh |
-
----
-
-## 🛠 Skills (39)
-
-### Autonomous Experiment Skills (2)
-
-| Skill | Purpose |
-|-------|---------|
-| `/my-cc-harness:autodev` | Autonomous code experiment loop (autoresearch pattern) |
-| `/my-cc-harness:autodev-parallel` | Parallel worktree experiment orchestrator |
-
-### Workflow Skills (17)
-
-| Skill | Purpose |
-|-------|---------|
-| `/my-cc-harness:plan` | Task planning |
-| `/my-cc-harness:spec` | SPEC-based development - deep interview for specification writing |
-| `/my-cc-harness:spec-verify` | Specification-based implementation verification |
-| `/my-cc-harness:frontend` | Big-tech style UI development |
-| `/my-cc-harness:verify` | Test, lint, build verification |
-| `/my-cc-harness:e2e-verify` | Feature-based E2E test verification |
-| `/my-cc-harness:commit-push-pr` | Commit → Push → PR |
-| `/my-cc-harness:review` | Code review |
-| `/my-cc-harness:simplify` | Code simplification |
-| `/my-cc-harness:tdd` | Test-driven development |
-| `/my-cc-harness:build-fix` | Build error fix |
-| `/my-cc-harness:handoff` | HANDOFF.md session handover |
-| `/my-cc-harness:compact-guide` | Context management guide |
-| `/my-cc-harness:techdebt` | Technical debt cleanup |
-| `/my-cc-harness:harness-diagnostics` | TTH harness diagnostics and debugging |
-| `/my-cc-harness:eval` | Musk independent evaluation — ast-grep/gitleaks/scc auto-scan + 4-axis 100-point scoring |
-| `/my-cc-harness:harness-audit` | Harness health audit — 8 dimensions + S~D grades |
-
-### Documentation Skills (4) — docs suite
-
-> Routed by the `/docs` command. Doc↔code mapping managed via the `docs/docs.yaml` manifest (drift-detection contract)
-
-| Skill | Purpose |
-|-------|---------|
-| `/my-cc-harness:docs-architecture` | Architecture diagrams (C4 mermaid) + ARCHITECTURE.md codemap + ADRs (MADR) + ERD |
-| `/my-cc-harness:docs-interfaces` | API topology + OpenAPI 3.1/AsyncAPI 3.0 specs + sequence flows + API CHANGELOG |
-| `/my-cc-harness:docs-manuals` | User manual (Diátaxis quadrants) + operator manual/runbooks/deployment guide/incident playbook |
-| `/my-cc-harness:docs-ci` | Docs validation pipeline — link/OpenAPI lint·breaking/mermaid/freshness checks + CHANGELOG automation |
-
-### Technical Skills (10)
-
-| Skill | Source | Purpose |
-|-------|--------|---------|
-| `react-patterns` | skills.sh | React 19 complete patterns |
-| `vercel-react-best-practices` | Vercel | React/Next.js performance optimization |
-| `typescript-advanced-types` | skills.sh | TypeScript advanced types |
-| `shadcn-ui` | skills.sh | shadcn/ui components |
-| `tailwind-design-system` | skills.sh | Tailwind CSS design system |
-| `ui-ux-pro-max` | skills.sh | Comprehensive UI/UX guide |
-| `fastapi-templates` | skills.sh | FastAPI templates |
-| `api-design-principles` | skills.sh | REST/GraphQL API design |
-| `async-python-patterns` | skills.sh | Python async patterns |
-| `python-testing-patterns` | skills.sh | pytest testing patterns |
-
-### E2E & Stitch Skills (5)
-
-| Skill | Purpose |
-|-------|---------|
-| `/my-cc-harness:e2e-agent-browser` | E2E test automation with agent-browser CLI |
-| `/my-cc-harness:stitch-design-md` | Stitch project → DESIGN.md generation |
-| `/my-cc-harness:stitch-enhance-prompt` | UI idea → Stitch-optimized prompt transformation |
-| `/my-cc-harness:stitch-loop` | Autonomous multi-page website generation with Stitch |
-| `/my-cc-harness:stitch-react` | Stitch screens → React component conversion |
-
-### Image Generation Skill (1)
-
-| Skill | Purpose |
-|-------|---------|
-| `/my-cc-harness:nano-banana` | Image generation/editing with Gemini (thumbnails, icons, diagrams, etc.) |
-
----
-
-## 🤖 Agents (11)
-
-> Agents are not installed via plugins. Copy them directly to `~/.claude/agents/`.
-
-| Agent | Purpose |
-|-------|---------|
-| `langchain-specialist` | LangChain/LangGraph/Deep Agents project building expert |
-| `prd-planner` | /prd Phase 3-5 specialist — Six Hats synthesis + strategic scoping + PRD writing (humanities framework based) |
-| `docs-writer` | Code change detection → auto /docs/ documentation generation (runs parallel to implementation) |
-| `planner` | Complex feature planning (includes docs-writer parallel execution) |
-| `frontend-developer` | Big-tech style UI implementation |
-| `stitch-developer` | Stitch MCP-based UI/website generation |
-| `junior-mentor` | Junior developer learning harness - code + EXPLANATION.md generation |
-| `code-reviewer` | Code quality/security review |
-| `architect` | System architecture design |
-| `security-reviewer` | Security vulnerability analysis |
-| `tdd-guide` | TDD methodology guidance |
-
-<details>
-<summary><b>Manual Installation</b></summary>
-
-```bash
-curl -fsSL https://github.com/jh941213/my-cc-harness/archive/main.tar.gz | tar -xz -C /tmp
-cp /tmp/my-cc-harness-main/agents/*.md ~/.claude/agents/
-```
-
-</details>
-
----
-
-## 📝 Commands (3)
-
-| Command | Purpose |
-|---------|---------|
-| `/tth [description]` | TTH multi-agent silo (Toss + Tesla + Ralph Loop) |
-| `/prd [idea]` | Aletheia v2 — complexity gate + humanities framework adaptive interview + convergence board-based PRD generation |
-| `/docs [type]` | Auto documentation generation based on code changes |
-
----
-
-## 📏 Rules (5, Conditional Loading)
-
-> Loaded only when working with relevant files via YAML frontmatter.
-
-| Rule File | Condition | Purpose |
-|-----------|-----------|---------|
-| `coding-style.md` | `**/*.ts`, `**/*.tsx`, `**/*.js` | Immutability, file organization |
-| `git-workflow.md` | All files | Git branching, commit format |
-| `testing.md` | `**/*.test.*`, `**/*.spec.*` | Testing principles, coverage |
-| `performance.md` | `**/*.ts`, `**/*.tsx`, `**/*.py` | Performance optimization |
-| `security.md` | `**/*.ts`, `**/*.tsx`, `**/*.py`, `**/*.env*` | Security checklist |
-
----
-
-## 💡 Boris Cherny Tips
-
-> Practical tips from the creator of Claude Code
-
-| # | Tip | Summary |
-|---|-----|---------|
-| 1 | **Parallel Execution** | 5 terminals + 5-10 claude.ai/code sessions simultaneously |
-| 2 | **Opus 5** | Always use Opus. Less steering needed, so faster overall |
-| 3 | **Plan Mode** | Shift+Tab twice → Plan, then Auto-accept for 1-shot implementation |
-| 4 | **Share CLAUDE.md** | Entire team commits to git, add rules for every mistake |
-| 5 | **Immediate Re-plan** | If things go wrong, return to Plan mode — don't force it |
-| 6 | **Subagents** | Add "use subagents" to prompt → parallel processing |
-| 7 | **git worktree** | `claude --worktree` or `claude -w` for parallel work |
-| 8 | **Parallel Agents** | Independent tasks → always parallel, overlapping → sequential |
-
----
-
-## 🔄 Codex CLI Version
 
 <div align="center">
 
-**The same harness is also available for OpenAI Codex CLI.**
+**MIT License** · Made with [Claude Code](https://claude.com/claude-code)
 
-[![Codex CLI Power Pack](https://img.shields.io/badge/Codex_CLI_Power_Pack-33_Skills-orange.svg?style=for-the-badge)](https://github.com/jh941213/my-codex-cli-asset)
+Issues & PRs welcome 🙌
 
 </div>
-
-| | My CC Harness | Codex CLI Power Pack |
-|---|:---:|:---:|
-| **Skills** | 39 (`/my-cc-harness:skill`) | 33 (`$skill`) |
-| **Agents** | 12 (subagents) | AGENTS.md integrated |
-| **Rules** | 8 (YAML conditional loading) | AGENTS.md integrated |
-| **Hooks** | settings.json physical block | config.toml |
-| **PRD** | Six Thinking Hats | Six Thinking Hats |
-| **Auto Docs** | docs suite (4 skills) + docs-writer parallel execution | $docs |
-| **Model** | Claude Opus 5 | Codex (latest) |
-
-```bash
-# Codex CLI version installation
-curl -fsSL https://raw.githubusercontent.com/jh941213/my-codex-cli-asset/main/install.sh | bash
-```
-
-> **GitHub**: [jh941213/my-codex-cli-asset](https://github.com/jh941213/my-codex-cli-asset)
-
----
-
-## 📚 References
-
-- [Boris Cherny Twitter](https://x.com/bcherny)
-- [Claude Code Skills Official Docs](https://code.claude.com/docs/en/skills)
-- [skills.sh](https://skills.sh/) - AI Agent Skill Directory
-- [ETH Zurich Paper - AGENTS.md Effectiveness Analysis](https://arxiv.org/abs/2602.11988)
-- [Addy Osmani - Stop Using /init for AGENTS.md](https://addyosmani.com/blog/agents-md/)
-
----
-
-## 📋 Changelog
-
-<details open>
-<summary><b>v1.4.0 (2026-07-27) — Plugin identity rebuild: ccpp → my-cc-harness</b></summary>
-
-**Plugin rename (breaking, plugin v1.2.0)**
-- Plugin name `ccpp` → `my-cc-harness`, marketplace name `my-claude-code-asset` → `my-cc-harness` (unified with the repo name)
-- Skill invocation prefix: `/ccpp:plan` → `/my-cc-harness:plan`
-- Install commands: `claude plugin marketplace add jh941213/my-cc-harness` → `claude plugin install my-cc-harness@my-cc-harness`
-- homepage/repository/install URLs all point to the new repo (including the install.sh clone target)
-- Existing `ccpp` users: `claude plugin uninstall ccpp`, then reinstall with the commands above
-
-</details>
-
-<details>
-<summary><b>v1.3.0 (2026-07-27) — Opus 5 generation optimization + docs suite + harness self-CI</b></summary>
-
-**Opus 5 prompt modernization (concept preserved, "unhobbling")**
-- CLAUDE.md rewritten (136 lines): junior mindset → goal+constraints autonomous colleague; Scope Discipline / Communication / evidence-based completion reporting added
-- Forced re-verification scaffolding removed (Opus 5 self-verifies — verification belongs to deterministic hooks)
-- Subagent guidance flipped to delegation criteria + caps (Opus 5 over-delegates by default)
-- 200k-era context numbers removed: signal-based `compact-guide`/`handoff`, `AUTO_COMPACT_WINDOW` hardcode dropped
-- All 8 rules now have frontmatter (consistent conditional loading); model-version hardcodes made version-agnostic
-
-**New docs suite (4 skills + expanded /docs router)**
-- `docs-architecture` (C4 diagrams + ARCHITECTURE.md codemap + MADR ADRs + ERD), `docs-interfaces` (OpenAPI 3.1/AsyncAPI 3.0 + API topology + sequence flows + API CHANGELOG), `docs-manuals` (Diátaxis user manual + operator manual/runbooks/deployment guide/incident playbook), `docs-ci` (link/OpenAPI/mermaid/freshness checks + `docs/docs.yaml` drift manifest)
-- `/docs` routing: code/arch/api/manual/ops/ci/sync/all
-
-**Harness self-validation (Goal-Driven loop)**
-- `scripts/validate-harness.sh` (7 structural checks) + `.github/workflows/validate.yml` (self-CI)
-- Plugin v1.1.0 now ships skills + commands + agents + hooks (hooks/hooks.json); KO/EN parity gaps closed
-
-</details>
-
-<details>
-<summary><b>v0.9.0 (2026-03-16) — /prd v2: Aletheia Engine Absorption</b></summary>
-
-**/prd v2 Complete Rewrite**
-- Aletheia engine absorption: Convergence board (6-dimension progress tracking) + Complexity gate (Low/Mid/High)
-- 5 humanities framework principles (Wittgenstein, Descartes, Socrates, Johari, Gadamer)
-- Phase 1 research + Phase 2 R1 parallel execution for time reduction
-- Graceful Exit: saves PRD.partial.md on mid-session exit, resume later
-- Gemini CLI cross-validation added (alongside Tavily/Exa)
-
-**prd-planner Agent Role Redefinition**
-- "Agent that does everything" → "Phase 3-5 specialist (synthesis + scoping + PRD writing)"
-- Delegation structure for main session context protection
-
-**Hooks Added**
-- `SubagentStop` — PRD.md generation check on subagent completion
-
-**settings.json Changes**
-- `Bash(gemini:*)` permission added
-- `SubagentStop` hook added
-
-**Deleted**
-- `commands/aletheia.md` — fully absorbed into /prd v2
-
-</details>
-
-<details>
-<summary><b>v0.8.0 (2026-03-11) — AutoDev Autonomous Experiment Loop</b></summary>
-
-**AutoDev (autoresearch Pattern)**
-- Inspired by Karpathy's autoresearch: AI agent modifies code → validates → autonomous keep/discard loop
-- `/autodev` single experiment loop: scope-limited + budget-based autonomous execution
-- `/autodev-parallel` parallel orchestrator: multiple experiments via git worktree
-- `autodev-judge.sh` evaluation function: composite score for build/test/lint/code complexity
-
-**New Files**
-- `skills/autodev/SKILL.md` - Autonomous experiment loop skill
-- `skills/autodev-parallel/SKILL.md` - Parallel worktree orchestrator
-- `hooks/autodev-judge.sh` - AutoDev score evaluation function
-- `agents/langchain-specialist.md` - LangChain/LangGraph specialist agent
-
-**Changes**
-- Skills: 31 → 33 (+autodev, +autodev-parallel)
-- Agents: 10 → 11 (+langchain-specialist)
-- Hooks: 3 → 4 (+autodev-judge.sh)
-
-</details>
-
-<details>
-<summary><b>v0.7.0 (2026-03-09) — Long-Horizon Execution Pattern + Milestone Gates</b></summary>
-
-**Skills 2.0 Migration**
-- Updated SKILL.md frontmatter for all 30 skills
-- Added explicit `user-invocable` field (slash command invocability)
-- Structured descriptions: trigger/anti-trigger separation (single line → multiline block)
-- `allowed-tools` cleanup
-
-**Long-Horizon Execution Pattern**
-- Added CHECKPOINT.md / AUDIT.log durable file stack to CLAUDE.md
-- Added Knowledge Map table (reference locations for agents/skills/team-roles/project docs)
-
-**TTH Milestone Gates**
-- satya: CHECKPOINT.md creation/management + AUDIT.log protocol (9 event types)
-- pichai: Executable verification command definition per milestone
-- bezos: Milestone gate final verification (CHECKPOINT.md execution → AUDIT.log recording)
-
-**New Files**
-- `hooks/check-architecture.sh` - Architecture invariant check
-- `skills/harness-diagnostics/SKILL.md` - TTH harness diagnostics skill
-
-**Changes**
-- `settings.json` - TEAMMATE_MODE tmux, hook matcher improvements, extraKnownMarketplaces
-- `commands/tth.md` - Task decomposition section expansion
-- `hooks/verify-task-quality.sh` - check-architecture integration
-
-**Deleted**
-- `skills/docs/`, `skills/prd/` - Fully migrated to commands (/docs, /prd)
-
-</details>
-
-<details>
-<summary><b>v0.6.0 (2026-03-03) — TTH Multi-Agent Silo</b></summary>
-
-**TTH (Toss-Tesla Harness)**
-- `/tth` command for automatic M7 CEO persona multi-agent team composition
-- Toss silo (DRI, file boundaries) + Tesla 5-Step (Question→Delete→Simplify→Accelerate→Automate)
-- Ralph Loop iterative convergence mechanism integration (backpressure, progress.txt accumulated learning)
-- Dynamic team selection by project type (backend/frontend/full-stack/redesign/review)
-- Subagent-based context protection strategy
-
-**New Files**
-- `commands/tth.md` - Main orchestration (5 Phase pipeline)
-- `team-roles/` - 6 CEO persona role definitions (satya, pichai, tim-cook, zuckerberg, jensen, bezos)
-- `hooks/verify-task-quality.sh` - TaskCompleted quality gate (auto-detect Node.js/Python)
-- `hooks/check-remaining-tasks.sh` - TeammateIdle idle prevention
-
-**Hooks Added**
-- `TaskCompleted` - Auto-run typecheck/lint/test on task completion, block on failure
-- `TeammateIdle` - Prevent teammate idle when incomplete tasks remain
-
-**settings.json Changes**
-- `env.CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS` added (Agent Teams activation)
-
-</details>
-
-<details>
-<summary><b>v0.5.0 (2026-03-02) — CLAUDE.md Optimization + PRD + Auto Docs</b></summary>
-
-**CLAUDE.md Paper-Based Optimization**
-- 277 lines → 94 lines (based on ETH Zurich paper + Anthropic guide)
-- Removed discoverable information (skill/agent/tech tables)
-- Added Karpathy principles: Think Before Coding, Goal-Driven Execution
-
-**Hooks Guarantee System**
-- main/master push → PreToolUse hook block
-- force push → PreToolUse hook block
-- .env commit → PreCommit hook block
-- console.log commit → PreCommit hook block
-- prettier → PostToolUse hook auto-execution
-
-**Rules Conditional Loading**
-- Added YAML frontmatter to all rules
-- Load only when working with relevant files (token savings)
-
-**New Agents (2)**
-- `prd-planner` - Six Thinking Hats insight-based PRD generation
-- `docs-writer` - Auto documentation generation from code changes
-
-**New Commands (2)**
-- `/prd [idea]` - Insight-driven PRD generation
-- `/docs [type]` - Auto documentation generation based on code changes
-
-</details>
-
-<details>
-<summary><b>v0.4.0 (2026-02-24) — E2E Verification + Worktree Support</b></summary>
-
-- `/my-cc-harness:e2e-verify` - Feature-based E2E test verification
-- Auto-prompt for Worktree usage on session initialization
-- Added parallel agent execution rules
-- Removed `langfuse` skill
-- Expanded Boris tips, added Prompt Caching rules
-
-</details>
-
-<details>
-<summary><b>v0.3.1 (2026-02-06) — Bug Fix</b></summary>
-
-- Fixed `settings.json` plugin marketplace reference error
-- Updated `install.sh` agent/skill counts
-- Reflected Opus 4.5 → Opus 4.6
-
-</details>
-
-<details>
-<summary><b>v0.3.0 (2025-02-03) — Stitch + Image Generation</b></summary>
-
-- Added E2E agent-browser, 5 Stitch skills
-- Added `stitch-developer`, `junior-mentor` agents
-- Added `nano-banana` image generation skill
-
-</details>
-
-<details>
-<summary><b>v0.2.0 (2025-02-03) — SPEC-Based Development</b></summary>
-
-- Added `/spec`, `/spec-verify` skills
-
-</details>
-
-<details>
-<summary><b>v0.1.0 (2025-01-22) — Initial Release</b></summary>
-
-- Initial release
-
-</details>
-
----
-
-## License
-
-MIT
