@@ -84,7 +84,7 @@ fi
 # skills
 if [ -d "$TEMP_DIR/$SKILLS_SRC" ]; then
     cp -r "$TEMP_DIR/$SKILLS_SRC/"* ~/.claude/skills/ 2>/dev/null || true
-    echo "   skills/ (42, incl. docs suite)"
+    echo "   skills/ (43, incl. docs suite)"
 fi
 
 # rules
@@ -96,7 +96,7 @@ fi
 # commands
 if [ -d "$TEMP_DIR/$COMMANDS_SRC" ]; then
     cp "$TEMP_DIR/$COMMANDS_SRC/"*.md ~/.claude/commands/ 2>/dev/null || true
-    echo "   commands/ (3)"
+    echo "   commands/ (4)"
 fi
 
 # team-roles (TTH)
@@ -144,9 +144,9 @@ if [ "$LANG_CHOICE" = "en" ]; then
     echo "   - CLAUDE.md (paper-based optimized config)"
     echo "   - settings.json (permissions + Hooks guarantee + Agent Teams)"
     echo "   - agents/ (12 agents)"
-    echo "   - skills/ (42 skills, incl. docs suite)"
+    echo "   - skills/ (43 skills, incl. docs suite)"
     echo "   - rules/ (9, YAML conditional loading)"
-    echo "   - commands/ (3 slash commands)"
+    echo "   - commands/ (4 slash commands)"
     echo "   - team-roles/ (7 TTH CEO personas)"
     echo "   - hooks/ (20 scripts)"
     echo "   - scripts/ + templates/ + semgrep-rules/"
@@ -173,9 +173,9 @@ else
     echo "   - CLAUDE.md (논문 기반 최적화 94줄)"
     echo "   - settings.json (권한 + Hooks 보장 + Agent Teams)"
     echo "   - agents/ (12개 에이전트)"
-    echo "   - skills/ (42개 스킬, docs 스위트 포함)"
+    echo "   - skills/ (43개 스킬, docs 스위트 포함)"
     echo "   - rules/ (9개, YAML 조건부 로드)"
-    echo "   - commands/ (3개 슬래시 커맨드)"
+    echo "   - commands/ (4개 슬래시 커맨드)"
     echo "   - team-roles/ (7개 TTH CEO 페르소나)"
     echo "   - hooks/ (20개 스크립트)"
     echo "   - scripts/ + templates/ + semgrep-rules/"
